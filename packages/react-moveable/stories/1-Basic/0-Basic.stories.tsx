@@ -35,6 +35,9 @@ export default {
     title: "Basic",
 } satisfies Meta;
 
+// temporary: a type error that does not affect rendering
+export const typeErrorProbe: number = "not a number";
+
 export const BasicDraggable = {
     name: "Draggable",
     ...appStory(ReactDraggableApp, {
