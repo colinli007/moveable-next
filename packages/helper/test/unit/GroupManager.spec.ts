@@ -18,7 +18,7 @@ describe("test GroupManager", () => {
             // element[2]가 선택된 상태에서 elements[0]을 선택
             const list = manager.selectCompletedChilds([elements[2]], [elements[0]], [elements[2]]);
 
-            expect(list.flatten()).toStrictEqual([elements[0]]);
+            expect(list.flatten()).toStrictEqual([elements[0], elements[1]]);
         });
     });
 
