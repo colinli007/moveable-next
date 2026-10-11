@@ -1,0 +1,40 @@
+## 1. 建立基线（当前工具链，不修改仓库文件）
+
+- [ ] 1.1 在 Node 22.20.0 + pnpm 11.28.2 下执行 `pnpm packages:build`，用 `stat -f "%z %N"` 记录 8 个包 `dist` 和 `declaration` 的逐文件清单与体积；执行 `pnpm --filter react-moveable test:ci`，并用 `test-storybook --json --outputFile` 记录逐条 story 结果。都写入本 change 目录的 `baseline.md`。验证：`baseline.md` 中有 127 个产物文件和 137 条 story 结果（全部通过）
+- [ ] 1.2 列出 137 个 story 的 export 名、显示名、所在文件，以及**实际生效的 args**（按现有 `add()` 的行为计算，`Scalable keepRatio Test` 的 `keepRatio` 实际为 `false`）；再列出 26 个带 play 的 story 和它们各自的 `expect` 断言。都写入 `baseline.md`。验证：清单条数分别为 137 和 26，可以和第 4、5 组的结果逐条对照
+- [ ] 1.3 执行 `pnpm bake`，记录生成文件的清单和每个文件的内容哈希（`shasum`），写入 `baseline.md`。验证：清单覆盖全部 `stories/**/{script,vue3,svelte,lit}/` 下的文件
+- [ ] 1.4 在 scratchpad 中用 `git worktree` 检出当前 HEAD 并构建一份对照产物，供第 2 组逐字节比较。验证：对照产物的清单和 1.1 的记录完全一致
+
+## 2. TypeScript 改为按包声明（design 决策 7）
+
+- [ ] 2.1 删除 `pnpm-workspace.yaml` 中的 typescript override；react-moveable 和 helper 声明 `typescript: ~5.9.3`，其余包和根目录保持 `^4.8 <4.9`；执行 `pnpm install`。验证：`pnpm why typescript` 显示 react-moveable 和 helper 用 5.9.3，其余包用 4.8.4，croffle 用 4.5.5，锁文件中没有别的 typescript 版本
+- [ ] 2.2 修改 `packages/react-moveable/croffle.config.js`：从 croffle 所在目录解析 typescript，与 croffle 共用同一个 TS 实例。然后执行 `pnpm bake`。验证：bake 成功；生成文件的清单与 1.3 一致，内容哈希有差异的文件逐个 diff，确认只是格式变化，结论写入 `baseline.md`
+- [ ] 2.3 执行 `pnpm packages:build`。验证：构建成功；产物文件清单与 1.1 一致；croact、preact、moveable、lit、vue3、svelte 的产物与 1.4 的对照产物逐字节一致；react-moveable 和 helper 体积有差异的文件，用 `diff -w -B` 逐项给出原因，写入 `baseline.md`；rollup 的「未解析」警告不超过 monorepo-tooling 主 spec 中已登记的例外
+- [ ] 2.4 执行 react-moveable 的 `test:type` 和 `lint`、helper 的 `lint`（这三项是硬验收）；再尽力执行一次 Storybook 6 的 `test:ci`。验证：硬验收全部通过（typescript-eslint 5.60 只打印「不受支持的 TS 版本」警告的，记录下来即可）；SB6 测试如果因为 ts-loader 或 fork-ts-checker 与 TS 5.9 不兼容而失败，记录原因后放行；如果出现别的报错，按 design 的风险条目先停下来报告
+
+## 3. 搭建 Storybook 10 + Vite 8 + Vitest 5 骨架
+
+- [ ] 3.1 删除 `pnpm-workspace.yaml` 中 7 条 `@storybook/*: ^6.4.22` 和 `@storybook/jest>@storybook/expect` 共 8 条 override；从 react-moveable 删除全部 `@storybook/*` 6.x 包、`@storybook/jest`、`@storybook/testing-library`、`storybook-addon-preview`、`@storybook/addon-google-analytics`、`@storybook/mdx2-csf`；安装 `storybook`、`@storybook/react-vite`、`@storybook/addon-docs`、`@storybook/addon-vitest`、`storybook-dark-mode`（这几个取最新版），以及 `vite@8`、`@vitejs/plugin-react@6`、`vitest@5.0.3`、`@vitest/browser-playwright@5.0.3`（与 vitest 精确同版本）、`playwright`，把 `@types/node` 升到 22；按需在 `allowBuilds` 中审批构建脚本。验证：`pnpm install` 成功，没有未审批的构建脚本；`pnpm why @storybook/react` 只有 10.6.1
+- [ ] 3.2 新建 ESM 格式的 `.storybook/main.ts`：framework，stories glob，`viteFinal` 中配置 `@/stories`、`@/react-moveable`、`@moveable/helper` 别名，`tags` 中定义 `hidden-test` 且 `defaultFilterSelection: "exclude"`，`core.disableTelemetry` 和 `disableWhatsNewNotifications`，`typescript.reactDocgen: false`。新建 `.storybook/preview.tsx`：dark-mode，用 `storybook/viewport` 的 `viewport.options`，新签名的 storySort，删除 `passArgsFirst`。新建 `tsconfig.stories.json`（`moduleResolution: bundler`，exclude 掉生成目录），把 stories 从 `tsconfig.json` 的 include 中移出并加上 `references`，新增 `typecheck:stories` 脚本。先只改写 Basic 一个 story 文件。验证：`pnpm storybook` 能在 6006 启动，没有 preset 加载错误；打开 Basic / Draggable 并拖动目标，Moveable 正常工作（这能证明 oxc 正确转译了 `@withMethods` 装饰器和类字段）；`typecheck:stories` 通过
+- [ ] 3.3 新建 `packages/react-moveable/vitest.config.ts`（`storybook` project：`storybookTest` 插件，浏览器模式，chromium，视口 1280×720，`screenshotFailures: true`，`screenshotDirectory` 设为 `.vitest-screenshots`）和 `.storybook/vitest.setup.ts`；把 `.vitest-screenshots` 加入 `.gitignore`；新建根目录 `vitest.config.ts`（只写 `test.projects`），根目录声明 `vitest`；执行 `pnpm --filter react-moveable exec playwright install chromium`。验证：Basic 文件中的 story 都被渲染，play 也执行通过；临时把一个断言改错，确认截图出现在 `.vitest-screenshots/`，验证后改回
+- [ ] 3.4 实测 `import.meta.env.MODE` 在 `storybook dev`、`storybook build`、Vitest 三种模式下的取值，确认 `devPlay()` 的判断条件（design 决策 5）。验证：三种模式的实测值分别为 `development`、`production`、`test`；如果和预期不同，先更新 design.md，再继续
+
+## 4. 改写 story 与 Storybook 配置
+
+- [ ] 4.1 重写 `stories/utils/story.tsx`：提供 `appStory(App, { apps, sources, argTypes, args })`，在调用方传入的本目录 glob 中按组件反查文件，生成 `render`、`args`（用 `{ ...默认值, ...args }` 合并）、`argTypes`、`parameters.preview`；React 源码反查失败时抛错，croffle 生成的代码缺失时跳过对应的 tab；提供 `devPlay(play)`；删除 facade hack、`EXEC_TEST`、`SKIP_TEST` 和所有 `require`。验证：`typecheck:stories` 通过；文件中搜不到 `require(`、`__STORYBOOK_CLIENT_API__`、`EXEC_TEST`、`SKIP_TEST`
+- [ ] 4.2 把其余 20 个 story 文件改写为 CSF3：每个文件做两次本目录 glob，静态 import App 组件，字面量 `name` 与 1.2 记录的显示名一致，export 名不变，play 用 `devPlay` 包装；`!!raw-loader!` 改为 `?raw` import（包括 `stories/templates/default.ts`）；`Scalable keepRatio Test` 打上 `hidden-test` tag；改用 `storybook/test`；从两个包的 `global.d.ts` 中删除 `!!raw-loader!*` 声明，删除 `.eslintrc` 中的 `import/no-webpack-loader-syntax` 规则。验证：stories 目录中搜不到 `require(` 和 `raw-loader`；story id 集合与 1.2 完全一致；26 个 play 的断言与 1.2 的清单逐条对应；所有 story 的有效 args 与 1.2 一致（`Scalable keepRatio Test` 的 `keepRatio` 有意改为 `true`）；TreeShaking 的 React tab 存在
+- [ ] 4.3 实现 `.storybook/addons/code-preview/`：`render.ts`（纯函数：模板加参数得到代码字符串）及其单元测试、`manager.tsx`（panel：`useParameter`、`useArgs`、`SyntaxHighlighter`、复制按钮）、`preset.ts`（`managerEntries` 返回 `fileURLToPath(import.meta.resolve(...))`），以及 addon 自己的 tsconfig；在 `main.ts` 中注册。验证：`render.ts` 的单元测试覆盖布尔参数、数字参数和数组参数的替换，并且全部通过；**手工验证**：打开 Basic / Draggable，能看到 React、CSS、Script、Vue3、Svelte、Lit 六个 tab，在 Controls 中切换 `draggable`、修改 `throttleDrag` 后，各 tab 中的值同步变化，复制得到的也是新值
+- [ ] 4.4 把 readme 生成改为 `.storybook/readme.ts` 输出 `stories/0-Introduction/readme.mdx`，同步更新 `.gitignore`；`preview-head.html` 的选择器改为 `#storybook-docs`；docs page 改用 SB10 的文档块，story 名用读取 `useOf("story")` 的小组件显示；删除 `manager.js` 中的 GA 配置。验证：Introduction 文档页正常显示 README，表格样式生效；`git status` 中没有出现生成的 readme 文件；在浏览器开发者工具的网络面板中看不到任何统计请求
+- [ ] 4.5 让 `storybook`、`build:storybook` 和测试脚本都先执行 bake（design 决策 8）；`build:storybook` 仍然输出到 `../../demo/storybook`。验证：在删除了所有生成目录的工作区中执行 `pnpm build:storybook`，产物中带有 Script、Vue3、Svelte、Lit 四个 tab 的代码；打开构建结果，带 play 的 story 不会自动执行；侧边栏默认看不到 `Scalable keepRatio Test`，通过筛选可以显示出来
+
+## 5. 全量测试与比较
+
+- [ ] 5.1 执行 react-moveable 的全部 Vitest 测试。验证：26 个 play 全部通过，断言与 1.2 的清单等价；137 个 story 都被渲染并计入结果。对新暴露的渲染失败逐个定位：迁移造成的就修复；原本就有的问题先报告给用户，经确认后写进 monorepo-tooling 的「CI 跑交互测试」场景，并把详细信息记录到 `baseline.md`
+- [ ] 5.2 把 helper 的 `test/unit/GroupManager.spec.ts` 迁到 helper 自己的 `vitest.config.ts`（DOM 环境，选 happy-dom 或 jsdom 中当前维护更活跃的一个），helper 自己声明 `vitest` 和这个 DOM 库；删除 `jest.config.js`、jest、ts-jest、`@daybrush/tester`。验证：在根目录执行 `pnpm exec vitest run`，会同时运行 react-moveable 和 helper 的 project，helper 的 2 个用例通过
+
+## 6. 清理、CI 与文档
+
+- [ ] 6.1 从 react-moveable 和 helper 删除 webpack、babel-loader、ts-loader、raw-loader、css-loader、fork-ts-checker-webpack-plugin、`@storybook/test-runner`、http-server、concurrently、wait-on、jest、jest-image-snapshot、addon-storyshots、addon-coverage；删除 `test:fail*` 脚本、`NODE_OPTIONS=--openssl-legacy-provider`、`.storybook/test-runner.js`、`main.js` 和 `manager.js`；删除 react-moveable devDependencies 中重复的 react-selecto（`dependencies` 中的 `^1.25.0` 不动）；把只在 story 中用到的 daybrush 组件（keycon、react-keycon、react-infinite-viewer、@scena/react-guides）升级到最新版（如果新版不支持 React 16，就停在支持 React 16 的最高版本并记录）。验证：`pnpm install` 后锁文件里没有 webpack 4、`@storybook/*@6`、test-runner；在 `packages/*/package.json` 中搜不到 `openssl-legacy-provider`、`EXEC_TEST`、`SKIP_TEST`；第 5 组的测试仍然全部通过
+- [ ] 6.2 改写 `.github/workflows/run-e2e.yml`：安装 chromium，执行 react-moveable 的 `typecheck:stories`，在根目录执行 Vitest（包含 react-moveable 和 helper 两个 project），失败时上传 `packages/react-moveable/.vitest-screenshots/`。验证：推送后 CI 通过；分别用一个故意让 story 断言失败的临时提交、一个故意让 helper 单元测试失败的临时提交、一个故意制造 story 类型错误的临时提交，确认三种情况下 CI 都会失败，并且 story 断言失败那次能上传截图；验证完 revert
+- [ ] 6.3 更新 `CLAUDE.md`：Storybook 10 / Vite 8 / Vitest 5 的命令，测试方式，删除 `EXEC_TEST` / `SKIP_TEST` 的说明，加入 `hidden-test` tag、`devPlay`、`appStory` 加本目录 glob 的写法约定，代码 tab addon 的位置，以及「TS 按包声明、croffle 使用自己的 TS」这条约束。验证：`CLAUDE.md` 中搜不到 `test-runner`、`EXEC_TEST`、`SKIP_TEST`、`openssl`
+- [ ] 6.4 最终验证：在全新克隆中依次执行 `pnpm install --frozen-lockfile && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm exec vitest run`，再执行 `pnpm build:storybook`。验证：全部成功；`openspec validate upgrade-storybook-10-vitest --strict` 通过
