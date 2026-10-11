@@ -66,11 +66,6 @@ export function convertSvelteTemplate(text: string) {
     return convertTemplate(previewText, /([a-zA-Z_0-9]+) = ([a-zA-Z_0-9]+);/g, true);
 }
 
-export function convertAngularTemplate(text: string) {
-    const previewText = text.replace(/@Input\(\) ([a-zA-Z_0-9]+): any;/g, "$1 = $1;");
-
-    return convertTemplate(previewText, /([a-zA-Z_0-9]+) = ([a-zA-Z_0-9]+);/g, true);
-}
 export function convertReactTemplate(text: string) {
     const previewText = text.replace(/@\//g, "");
 

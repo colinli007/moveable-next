@@ -46,10 +46,9 @@
         "storybook": "npm run storybook --prefix ./packages/react-moveable",
         "bake": "npm run bake --prefix ./packages/react-moveable",
         "build": "npm run build --prefix ./packages/react-moveable",
-        "packages:update": "lerna-helper version && yarn && npm run update-type-consts",
-        "update-type-consts": "node ./config/update-type-consts.js",
-        "packages:build": "npm run build --prefix packages/react-moveable && npm run update-type-consts && lerna run build --ignore ngx-moveable --ignore moveable-storybook --ignore snappable --ignore react-moveable",
-        "packages:publish": "lerna-helper publish --ignore ngx-moveable,@moveable/helper --commit 'chore: publish packages'",
+        "packages:update": "lerna-helper version && yarn",
+        "packages:build": "npm run build --prefix packages/react-moveable && lerna run build --ignore react-moveable",
+        "packages:publish": "lerna-helper publish --ignore @moveable/helper --commit 'chore: publish packages'",
         "changelog": "lerna-helper changelog --type all --base moveable",
         "doc": "rm -rf ./doc && jsdoc -c jsdoc.json",
         "build:storybook": "npm run build:storybook --prefix ./packages/react-moveable",
@@ -74,8 +73,7 @@
     },
     "workspaces": {
         "packages": [
-            "packages/*",
-            "packages/ngx-moveable/projects/ngx-moveable"
+            "packages/*"
         ],
         "nohoist": [
             "**/vue-tsc",

@@ -46,7 +46,6 @@
         "./stories/**/*.tsx"
     ],
     "exclude": [
-        "./stories/**/angular/**/*.ts",
         "./stories/**/lit/**/*.ts"
     ]
 }

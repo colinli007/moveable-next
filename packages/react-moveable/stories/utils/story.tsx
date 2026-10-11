@@ -120,17 +120,6 @@ export function add(storyTitle: string, parameter: StoryParameter) {
             });
         } catch (e) {
         }
-        // Vue2
-        try {
-            const vueCode = require(`!!raw-loader!@/stories/${directory}vue2/${fileName}/App.vue`).default;
-
-            previews.push({
-                tab: "Vue2",
-                template: convertTemplate(vueCode, /"\$preview_([^"]+)"/g),
-                copy: true,
-                language: "html",
-            });
-        } catch (e) { }
         // Svelte
         try {
             const svelteCode = require(`!!raw-loader!@/stories/${directory}svelte/${fileName}/App.svelte`).default;
@@ -140,30 +129,6 @@ export function add(storyTitle: string, parameter: StoryParameter) {
                 template: convertTemplate(svelteCode, /"\$preview_([^"]+)"/g),
                 copy: true,
                 language: "html",
-            });
-        } catch (e) { }
-        // Angular html
-        try {
-            const angularCode = require(`!!raw-loader!@/stories/${directory}angular/${fileName}/App.component.html`).default;
-
-            previews.push({
-                tab: "Angular",
-                template: angularCode,
-                description: "App.comoponent.html",
-                copy: true,
-                language: "tsx",
-            });
-        } catch (e) { }
-        // Angular
-        try {
-            const angularCode = require(`!!raw-loader!@/stories/${directory}angular/${fileName}/App.ts`).default;
-
-            previews.push({
-                tab: "Angular",
-                template: convertTemplate(angularCode, /"\$preview_([^"]+)"/g),
-                description: "App.comoponent.ts",
-                copy: true,
-                language: "tsx",
             });
         } catch (e) { }
         // Lit

@@ -2,14 +2,12 @@ const {
     ReactCroissant,
     VueWaffle,
     DefaultModulePrefixSirup,
-    ModuleSirupFactory,
     TemplateSirupFactory,
     SvelteWaffle,
     ScriptWaffle,
     ScriptComponentSirupFactory,
     createInlineNewExpression,
     factory,
-    AngularWaffle,
     LitWaffle,
     transform,
     copyJsxAttribute,
@@ -23,7 +21,7 @@ const {
 } = require("@daybrush/utils");
 const ts = require("typescript");
 
-cleanPaths("stories/**/+([0-9A-Za-z])-*/{script,vue2,vue3,svelte,angular,lit}/");
+cleanPaths("stories/**/+([0-9A-Za-z])-*/{script,vue3,svelte,lit}/");
 
 
 const scriptMoveableScriptComponentSirup = ScriptComponentSirupFactory({
@@ -47,23 +45,6 @@ const scriptSelectoComponentSirup = ScriptComponentSirupFactory({
         );
     },
 });
-
-const ngxModuleSirup = ModuleSirupFactory(
-    {
-        module: /ngx-/g,
-        name: "default",
-    },
-    {
-        module: module => module,
-        name: (_, binding) => `Ngx${binding}Component`,
-    },
-);
-
-const ngxTemplateSirup = TemplateSirupFactory(
-    /^Ngx(.+)Component$/g,
-    text => decamelize(text.replace(/^Ngx/g, "ngx").replace(/Component$/g, ""), "-"),
-);
-
 
 function vueKeyconSirup(sirup) {
     sirup.requestId({
@@ -230,27 +211,6 @@ const config = [
                     waffle,
                 };
             },
-            // Vue 2
-            (defrosted) => {
-                const hasKeycon = !!defrosted.allRequires["react-keycon"];
-                const waffle = new VueWaffle({
-                    useVue2: true,
-                    useOptionsAPI: !hasKeycon,
-                });
-
-                if (hasKeycon) {
-                    waffle.addSirup(
-                        sirup => {
-                            sirup.convertImport("vue-keycon", "vue2-keycon");
-                        },
-                        vueKeyconSirup,
-                    );
-                }
-                return {
-                    dist: `./{type}/{name}/App{ext}`,
-                    waffle,
-                };
-            },
             // Svelte
             (defrosted) => {
                 const hasKeycon = !!defrosted.allRequires["react-keycon"];
@@ -259,27 +219,6 @@ const config = [
                 if (hasKeycon) {
                     waffle.addSirup(svelteKeyconSirup);
                 }
-                return {
-                    dist: `./{type}/{name}/App{ext}`,
-                    waffle,
-                };
-            },
-            // Angular
-            (defrosted) => {
-                const hasKeycon = !!defrosted.allRequires["react-keycon"];
-
-                if (hasKeycon) {
-                    return;
-                }
-                const waffle = new AngularWaffle({
-                    useTemplateUrl: true,
-                });
-
-                waffle.addSirup(
-                    ngxModuleSirup,
-                    ngxTemplateSirup,
-                );
-
                 return {
                     dist: `./{type}/{name}/App{ext}`,
                     waffle,

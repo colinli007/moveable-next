@@ -2,8 +2,7 @@
     "npmClient": "yarn",
     "useWorkspaces": true,
     "packages": [
-        "packages/*",
-        "packages/ngx-moveable/projects/ngx-moveable"
+        "packages/*"
     ],
     "version": "independent",
     "lernaHelperOptions": {
