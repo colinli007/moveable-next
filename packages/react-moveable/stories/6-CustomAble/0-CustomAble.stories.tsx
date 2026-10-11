@@ -1,31 +1,59 @@
-import { add } from "../utils/story";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { appStory } from "../utils/story";
+import ReactDimensionViewableApp from "./ReactDimensionViewableApp";
+import ReactEditableApp from "./ReactEditableApp";
+import ReactCustomRotatableApp from "./ReactCustomRotatableApp";
+import ReactMouseEnterLeaveApp from "./ReactMouseEnterLeaveApp";
+import ReactDragTargetAbleApp from "./ReactDragTargetAbleApp";
+
+const apps = import.meta.glob("./*App.tsx", { eager: true });
+const sources = import.meta.glob<string>("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+});
 
 export default {
     title: "Make Custom Able",
-};
+} satisfies Meta;
 
-export const CustomAbleDimensionViewable = add("DimensionViewable", {
-    app: require("./ReactDimensionViewableApp").default,
-    path: require.resolve("./ReactDimensionViewableApp"),
-});
+export const CustomAbleDimensionViewable = {
+    name: "DimensionViewable",
+    ...appStory(ReactDimensionViewableApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const CustomAbleEditable = add("Editable", {
-    app: require("./ReactEditableApp").default,
-    path: require.resolve("./ReactEditableApp"),
-});
+export const CustomAbleEditable = {
+    name: "Editable",
+    ...appStory(ReactEditableApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const CustomAbleRotatble = add("Custom Rotatable", {
-    app: require("./ReactCustomRotatableApp").default,
-    path: require.resolve("./ReactCustomRotatableApp"),
-});
+export const CustomAbleRotatble = {
+    name: "Custom Rotatable",
+    ...appStory(ReactCustomRotatableApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const CustomAbleMouseEnterLeave = add("Mouse Enter & Leave", {
-    app: require("./ReactMouseEnterLeaveApp").default,
-    path: require.resolve("./ReactMouseEnterLeaveApp"),
-});
+export const CustomAbleMouseEnterLeave = {
+    name: "Mouse Enter & Leave",
+    ...appStory(ReactMouseEnterLeaveApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
-export const CustomAbleDragTarget = add("DragTarget", {
-    app: require("./ReactDragTargetAbleApp").default,
-    path: require.resolve("./ReactDragTargetAbleApp"),
-});
+export const CustomAbleDragTarget = {
+    name: "DragTarget",
+    ...appStory(ReactDragTargetAbleApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;

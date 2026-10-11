@@ -19,28 +19,36 @@ Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩�
 ```bash
 # 根目录
 pnpm install               # 安装依赖（根目录一次装好所有包）
-pnpm storybook             # = react-moveable 的 storybook（端口 6006），主要的开发/调试环境
+pnpm storybook             # = react-moveable 的 Storybook（先 bake，端口 6006），主要的开发/调试环境
+pnpm test                  # 先 bake，再跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试）
 pnpm build                 # 只构建 react-moveable
 pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact/preact → moveable → lit/vue3/svelte，helper 独立）
+pnpm build:storybook       # 先 bake，再构建静态 Storybook 到 demo/storybook
 pnpm doc                   # jsdoc 生成 doc/
 pnpm deploy                # node config/deploy.mjs 复制产物到 demo/，再用 gh-pages 推送到 origin
 
 # packages/react-moveable（或在根目录用 pnpm --filter react-moveable <script>）
 pnpm lint                  # eslint ./src
 pnpm test:type             # tsc -p tsconfig.test.json，对 tests/types.ts 做类型断言检查
+pnpm typecheck:stories     # tsc -p stories：stories 和 .storybook 的类型检查（CI 会跑）
 pnpm build                 # lint + test:type + rollup + declaration
 pnpm exec playwright install chromium   # 首次跑测试前安装浏览器（不靠 postinstall）
-pnpm test:ci               # 构建测试版 storybook 并用 @storybook/test-runner（Playwright）跑所有 play 交互测试
-pnpm test                  # 对已在 6006 端口运行的 storybook 跑 test-runner（本地调试单个用例：开着 pnpm storybook，在 Interactions 面板看对应 story 的 play）
+pnpm test                  # 先 bake，再跑本包的 Vitest
+pnpm exec vitest run stories/1-Basic    # 只跑某个目录 / 文件的 story 测试
 ```
 
-Storybook 仍是 6.5（webpack 4），在 Node 22 下靠 `storybook` / `test:build` / `test:fail-build` / `build:storybook` 脚本里的 `NODE_OPTIONS=--openssl-legacy-provider` 运行。
+Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon-vitest`（Vitest 5 浏览器模式，Playwright 驱动 chromium）。Vitest 配置按包分开：根目录 `vitest.config.mts` 只汇总 `packages/*/vitest.config.mts`；react-moveable 有 `storybook`（浏览器）和 `unit`（node，code-preview 的单元测试）两个 project，helper 一个（happy-dom）。配置文件用 `.mts`，因为包的 `package.json` 不是 `"type": "module"`。
 
-测试即 storybook story 的 `play` 函数（`stories/**/*.stories.tsx`，用 `stories/utils/testing.tsx` 的 `pan`/`pinch`/`rotate` 模拟手势，再断言 `style.transform`）。环境变量约定（见 `stories/utils/story.tsx`、`.storybook/test-runner.js`）：
-- `EXEC_TEST=true`：测试构建，没有 `play` 的 story 渲染为空。
-- `SKIP_TEST=true`：生产/文档构建，不挂 `play`；test-runner 在此模式下给每个 story 截图到 `__snapshots__/`（CI 失败时用于对比）。
+测试：每个 story 都在 1280×720 视口下真实渲染并算作一个测试，带 `play` 的再执行断言（`stories/**/*.stories.tsx`，用 `stories/utils/testing.tsx` 的 `pan`/`pinch`/`rotate` 模拟手势，再断言 `style.transform`）。失败截图在根目录 `.vitest/attachments/failure-screenshots/`。本地调试单个用例：开着 `pnpm storybook`，在 Interactions 面板看对应 story 的 play 的每一步。
 
-`pnpm bake`（croffle）会把 React story 自动转译成 script（vanilla）/vue3/svelte/lit 版本的示例代码，生成在各 story 目录的子文件夹里，不要手改这些生成目录。
+story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
+- 每个 story 文件静态 import 自己的 App，并对**本目录**做两次 `import.meta.glob`（`apps` 和 `?raw` 的 `sources`），交给 `appStory(App, { apps, sources, argTypes, args })` 生成 `render`、`args`、`argTypes` 和代码 tab；`name`、`tags` 必须写成字面量（索引器只读静态值），export 名就是 story id，不要改。
+- `play` 用 `devPlay(...)` 包一层：开发模式和测试中执行，发布的 Storybook 中不执行。`userEvent` 等来自 `storybook/test`，是异步的，要 `await`。
+- 只为测试存在的 story 打 `tags: ["hidden-test"]`：侧边栏默认隐藏（可在标签筛选中显示），照常参与测试。
+- 公共样式 `stories/common.css`、`stories/templates/default.css` 在 `.storybook/preview.tsx` 中全局引入；`.storybook/vitest.setup.ts` 给测试页面补上 Storybook 默认的 padded 布局。
+- 代码 tab（React / CSS / Script / Vue3 / Svelte / Lit，随 Controls 实时替换参数）是本地 addon `.storybook/addons/code-preview/`，读取 story 的 `parameters.preview`。
+
+`pnpm bake`（croffle）会把 React story 自动转译成 script（vanilla）/vue3/svelte/lit 版本的示例代码，生成在各 story 目录的子文件夹里（已 git 忽略），不要手改这些生成目录；`storybook`、`build:storybook`、`test` 都会先执行它。
 
 ## 架构
 

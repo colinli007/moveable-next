@@ -1,131 +1,239 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
+import { appStory, devPlay } from "../utils/story";
 import { splitBracket, splitComma } from "@daybrush/utils";
-import { add } from "../utils/story";
 import { findMoveable, pan, wait } from "../utils/testing";
-import { expect } from "@storybook/jest";
+import ReactNoTargetApp from "./ReactNoTargetApp";
+import ReactATagApp from "./ReactATagApp";
+import ReactInputApp from "./ReactInputApp";
+import ReactSafariApp from "./ReactSafariApp";
+import ReactCustomElementApp from "./ReactCustomElementApp";
+import ReactCustomElementBoundsApp from "./ReactCustomElementBoundsApp";
+import ReactAccuracyApp from "./ReactAccuracyApp";
+import ReactLargeZoomElementGuidelinesApp from "./ReactLargeZoomElementGuidelinesApp";
+import ReactFlexApp from "./ReactFlexApp";
+import ReactWillChangeApp from "./ReactWillChangeApp";
+import ReactStopDragApp from "./ReactStopDragApp";
+import ReactClickApp from "./ReactClickApp";
+import ReactNestedTargetApp from "./ReactNestedTargetApp";
+import ReactZoomedCursorApp from "./ReactZoomedCursorApp";
+import ReactHandleLargeNumberApp from "./ReactHandleLargeNumberApp";
+import ReactOverflowApp from "./ReactOverflowApp";
+import ReactDragTargetApp from "./ReactDragTargetApp";
+import ReactDragStartGroupApp from "./ReactDragStartGroupApp";
+import ReactChangingSnapContainerApp from "./ReactChangingSnapContainerApp";
+import ReactFixedSnapApp from "./ReactFixedSnapApp";
+import ReactZoomedTargetApp from "./ReactZoomedTargetApp";
+import ReactTRSTargetApp from "./ReactTRSTargetApp";
+import ReactZoomedSnapApp from "./ReactZoomedSnapApp";
+import ReactRequestBoundsApp from "./ReactRequestBoundsApp";
+import ReactRotateClippableApp from "./ReactRotateClippableApp";
+import ReactAccurateElementGuidelineApp from "./ReactAccurateElementGuidelineApp";
+import ReactAccurateElementGuideline2App from "./ReactAccurateElementGuideline2App";
+import ReactDragAPIApp from "./ReactDragAPIApp";
+import ReactChangeTargetsOnClickApp from "./ReactChangeTargetsOnClickApp";
+import ReactScalableKeepRatioApp from "./ReactScalableKeepRatioApp";
+import ReactIframeApp from "./ReactIframeApp";
+import ReactGroupPaddingApp from "./ReactGroupPaddingApp";
+import ReactTranslate50App from "./ReactTranslate50App";
+import ReactNestedSVGApp from "./ReactNestedSVGApp";
+
+const apps = import.meta.glob("./*App.tsx", { eager: true });
+const sources = import.meta.glob<string>("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+});
 
 export default {
     title: "Variable Situations",
-};
+} satisfies Meta;
 
-export const TestsNoTarget = add("No Target", {
-    app: require("./ReactNoTargetApp").default,
-    path: require.resolve("./ReactNoTargetApp"),
-});
-export const TestsClickATag = add("Click a tag", {
-    app: require("./ReactATagApp").default,
-    path: require.resolve("./ReactATagApp"),
-});
+export const TestsNoTarget = {
+    name: "No Target",
+    ...appStory(ReactNoTargetApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
+export const TestsClickATag = {
+    name: "Click a tag",
+    ...appStory(ReactATagApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsInput = add("Any native input element", {
-    app: require("./ReactInputApp").default,
-    path: require.resolve("./ReactInputApp"),
-});
-export const TestsSafari = add("Test Control Box in Safari", {
-    app: require("./ReactSafariApp").default,
-    path: require.resolve("./ReactSafariApp"),
-});
-export const TestsCustomElement = add("Test Custom Element Offset", {
-    app: require("./ReactCustomElementApp").default,
-    path: require.resolve("./ReactCustomElementApp"),
-    play: async ({ canvasElement }) => {
+export const TestsInput = {
+    name: "Any native input element",
+    ...appStory(ReactInputApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
+export const TestsSafari = {
+    name: "Test Control Box in Safari",
+    ...appStory(ReactSafariApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
+export const TestsCustomElement = {
+    name: "Test Custom Element Offset",
+    ...appStory(ReactCustomElementApp, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
         const moveableElement = findMoveable(canvasElement);
 
         expect(moveableElement.style.transform).toBe("translate3d(60px, 192px, 0px)");
-    },
-});
-export const TestsCustomElementBounds = add("Test Custom Element with Bounds", {
-    app: require("./ReactCustomElementBoundsApp").default,
-    path: require.resolve("./ReactCustomElementBoundsApp"),
-    play: async ({ canvasElement }) => {
+    }),
+} satisfies StoryObj;
+export const TestsCustomElementBounds = {
+    name: "Test Custom Element with Bounds",
+    ...appStory(ReactCustomElementBoundsApp, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
         const customElement = canvasElement.querySelector("custom-element")!;
         const innerMoveable = customElement!.shadowRoot!.querySelector<HTMLElement>(".moveable-control-box")!;
 
         expect(innerMoveable.style.transform).toBe("translate3d(50px, 50px, 0px)");
-    },
-});
-export const TestsAccuracy = add("Check drag accuracy when using bounds", {
-    app: require("./ReactAccuracyApp").default,
-    path: require.resolve("./ReactAccuracyApp"),
-});
+    }),
+} satisfies StoryObj;
+export const TestsAccuracy = {
+    name: "Check drag accuracy when using bounds",
+    ...appStory(ReactAccuracyApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsLargeZoom = add("Check element guidelines accuracy when zoom is large", {
-    app: require("./ReactLargeZoomElementGuidelinesApp").default,
-    path: require.resolve("./ReactLargeZoomElementGuidelinesApp"),
-});
+export const TestsLargeZoom = {
+    name: "Check element guidelines accuracy when zoom is large",
+    ...appStory(ReactLargeZoomElementGuidelinesApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsFlex = add("Test flex element", {
-    app: require("./ReactFlexApp").default,
-    path: require.resolve("./ReactFlexApp"),
-});
+export const TestsFlex = {
+    name: "Test flex element",
+    ...appStory(ReactFlexApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsWillChange = add("Test Container with will change", {
-    app: require("./ReactWillChangeApp").default,
-    path: require.resolve("./ReactWillChangeApp"),
-});
+export const TestsWillChange = {
+    name: "Test Container with will change",
+    ...appStory(ReactWillChangeApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsStopDrag = add("Stop drag if target is select, input, textarea", {
-    app: require("./ReactStopDragApp").default,
-    path: require.resolve("./ReactStopDragApp"),
-});
+export const TestsStopDrag = {
+    name: "Stop drag if target is select, input, textarea",
+    ...appStory(ReactStopDragApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsClick = add("Stop Click event's Propagation for dragStart", {
-    app: require("./ReactClickApp").default,
-    path: require.resolve("./ReactClickApp"),
-});
+export const TestsClick = {
+    name: "Stop Click event's Propagation for dragStart",
+    ...appStory(ReactClickApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsNestedTarget = add("Nested Moveable's target", {
-    app: require("./ReactNestedTargetApp").default,
-    path: require.resolve("./ReactNestedTargetApp"),
-});
+export const TestsNestedTarget = {
+    name: "Nested Moveable's target",
+    ...appStory(ReactNestedTargetApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsZoomedCursor = add("Zoomed Cursor", {
-    app: require("./ReactZoomedCursorApp").default,
-    path: require.resolve("./ReactZoomedCursorApp"),
-});
+export const TestsZoomedCursor = {
+    name: "Zoomed Cursor",
+    ...appStory(ReactZoomedCursorApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsHandleLargeNumber = add("Test performance for large number instances", {
-    app: require("./ReactHandleLargeNumberApp").default,
-    path: require.resolve("./ReactHandleLargeNumberApp"),
-});
+export const TestsHandleLargeNumber = {
+    name: "Test performance for large number instances",
+    ...appStory(ReactHandleLargeNumberApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsOverflow = add("Test overflow: auto target", {
-    app: require("./ReactOverflowApp").default,
-    path: require.resolve("./ReactOverflowApp"),
-});
+export const TestsOverflow = {
+    name: "Test overflow: auto target",
+    ...appStory(ReactOverflowApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsDragtarget = add("Test Drag Target", {
-    app: require("./ReactDragTargetApp").default,
-    path: require.resolve("./ReactDragTargetApp"),
-});
+export const TestsDragtarget = {
+    name: "Test Drag Target",
+    ...appStory(ReactDragTargetApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsDragStart = add("Test Drag Start Group Manually", {
-    app: require("./ReactDragStartGroupApp").default,
-    path: require.resolve("./ReactDragStartGroupApp"),
-});
+export const TestsDragStart = {
+    name: "Test Drag Start Group Manually",
+    ...appStory(ReactDragStartGroupApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsChangingSnapContainer = add("Test Changing Snap Container", {
-    app: require("./ReactChangingSnapContainerApp").default,
-    path: require.resolve("./ReactChangingSnapContainerApp"),
-});
+export const TestsChangingSnapContainer = {
+    name: "Test Changing Snap Container",
+    ...appStory(ReactChangingSnapContainerApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsFixedSnap = add("Test Snap with position: fixed", {
-    app: require("./ReactFixedSnapApp").default,
-    path: require.resolve("./ReactFixedSnapApp"),
-});
+export const TestsFixedSnap = {
+    name: "Test Snap with position: fixed",
+    ...appStory(ReactFixedSnapApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
-export const TestsZoomedTarget = add("Test css zoomed target", {
-    app: require("./ReactZoomedTargetApp").default,
-    path: require.resolve("./ReactZoomedTargetApp"),
-});
+export const TestsZoomedTarget = {
+    name: "Test css zoomed target",
+    ...appStory(ReactZoomedTargetApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
-export const TestsTRSTarget = add("Test css translate & rotate & scale target", {
-    app: require("./ReactTRSTargetApp").default,
-    path: require.resolve("./ReactTRSTargetApp"),
-    play: async ({ canvasElement }) => {
+export const TestsTRSTarget = {
+    name: "Test css translate & rotate & scale target",
+    ...appStory(ReactTRSTargetApp, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
         const target = canvasElement.querySelector<HTMLElement>(".target")!;
         const controlBox = canvasElement.querySelector<HTMLElement>(".moveable-control-box")!;
@@ -156,29 +264,41 @@ export const TestsTRSTarget = add("Test css translate & rotate & scale target", 
         expect(splitComma(splitBracket(controlBox.style.transform).value!).map(v => {
             return parseInt(v, 10);
         })).toEqual([343, 248, 0]);
-    },
-});
+    }),
+} satisfies StoryObj;
 
-export const TestsZoomedSnap = add("Test snap for scaled target", {
-    app: require("./ReactZoomedSnapApp").default,
-    path: require.resolve("./ReactZoomedSnapApp"),
-});
+export const TestsZoomedSnap = {
+    name: "Test snap for scaled target",
+    ...appStory(ReactZoomedSnapApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsRequestBounds = add("Test request with bounds", {
-    app: require("./ReactRequestBoundsApp").default,
-    path: require.resolve("./ReactRequestBoundsApp"),
-});
+export const TestsRequestBounds = {
+    name: "Test request with bounds",
+    ...appStory(ReactRequestBoundsApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const TestsRotateClippable = add("Test rotate & clippable", {
-    app: require("./ReactRotateClippableApp").default,
-    path: require.resolve("./ReactRotateClippableApp"),
-});
+export const TestsRotateClippable = {
+    name: "Test rotate & clippable",
+    ...appStory(ReactRotateClippableApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
-export const TestsAccurateElementGuidelines = add("Test Accurate Element Guidelines", {
-    app: require("./ReactAccurateElementGuidelineApp").default,
-    path: require.resolve("./ReactAccurateElementGuidelineApp"),
-    play: async ({ canvasElement }) => {
+export const TestsAccurateElementGuidelines = {
+    name: "Test Accurate Element Guidelines",
+    ...appStory(ReactAccurateElementGuidelineApp, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
         const target = canvasElement.querySelector<HTMLElement>(".target2")!;
         // const controlBox = canvasElement.querySelector<HTMLElement>(".moveable-control-box")!;
@@ -192,13 +312,16 @@ export const TestsAccurateElementGuidelines = add("Test Accurate Element Guideli
         });
         expect(target.style.transform).toBe("translate(0px, 0px)");
         // expect(controlBox.style.transform).toBe("translate3d(200px, 200px, 0px)");
-    },
-});
+    }),
+} satisfies StoryObj;
 
-export const TestsAccurateElementGuidelines2 = add("Test Accurate Element Guidelines 0.2", {
-    app: require("./ReactAccurateElementGuideline2App").default,
-    path: require.resolve("./ReactAccurateElementGuideline2App"),
-    play: async ({ canvasElement }) => {
+export const TestsAccurateElementGuidelines2 = {
+    name: "Test Accurate Element Guidelines 0.2",
+    ...appStory(ReactAccurateElementGuideline2App, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
         const target = canvasElement.querySelector<HTMLElement>(".target2")!;
 
@@ -210,45 +333,63 @@ export const TestsAccurateElementGuidelines2 = add("Test Accurate Element Guidel
             interval: 10,
         });
         expect(target.style.transform).toBe("translate(0px, 0px)");
-    },
-});
+    }),
+} satisfies StoryObj;
 
-export const TestDragAPI = add("Test Drag API", {
-    app: require("./ReactDragAPIApp").default,
-    path: require.resolve("./ReactDragAPIApp"),
-});
-
-
-export const TestChangeTargetsOnClick = add("Test Change Target on Click Group", {
-    app: require("./ReactChangeTargetsOnClickApp").default,
-    path: require.resolve("./ReactChangeTargetsOnClickApp"),
-});
+export const TestDragAPI = {
+    name: "Test Drag API",
+    ...appStory(ReactDragAPIApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
-
-export const TestScalableKeepRatio = add("Even if the size is 0, the ratio is maintained.", {
-    app: require("./ReactScalableKeepRatioApp").default,
-    path: require.resolve("./ReactScalableKeepRatioApp"),
-});
-
-
-
-export const TestIframe = add("Test Iframe", {
-    app: require("./ReactIframeApp").default,
-    path: require.resolve("./ReactIframeApp"),
-});
+export const TestChangeTargetsOnClick = {
+    name: "Test Change Target on Click Group",
+    ...appStory(ReactChangeTargetsOnClickApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
-export const TestGroupPadding = add("Test Show Group's Padding", {
-    app: require("./ReactGroupPaddingApp").default,
-    path: require.resolve("./ReactGroupPaddingApp"),
-});
+
+export const TestScalableKeepRatio = {
+    name: "Even if the size is 0, the ratio is maintained.",
+    ...appStory(ReactScalableKeepRatioApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
-export const TestTranslate50 = add("Test translate(-50%, -50%)", {
-    app: require("./ReactTranslate50App").default,
-    path: require.resolve("./ReactTranslate50App"),
-    play: async ({ canvasElement }) => {
+
+export const TestIframe = {
+    name: "Test Iframe",
+    ...appStory(ReactIframeApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
+
+
+export const TestGroupPadding = {
+    name: "Test Show Group's Padding",
+    ...appStory(ReactGroupPaddingApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
+
+
+export const TestTranslate50 = {
+    name: "Test translate(-50%, -50%)",
+    ...appStory(ReactTranslate50App, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
         const target = canvasElement.querySelector<HTMLElement>(".target")!;
         const controlBox = canvasElement.querySelector<HTMLElement>(".moveable-control-box")!;
@@ -263,11 +404,14 @@ export const TestTranslate50 = add("Test translate(-50%, -50%)", {
         });
         expect(target.style.transform).toBe("translate(50px, -50px)");
         expect(controlBox.style.transform).toBe("translate3d(150px, 100px, 0px)");
-    },
-});
+    }),
+} satisfies StoryObj;
 
 
-export const TestNestedSVG = add("Test Nested SVG", {
-    app: require("./ReactNestedSVGApp").default,
-    path: require.resolve("./ReactNestedSVGApp"),
-});
+export const TestNestedSVG = {
+    name: "Test Nested SVG",
+    ...appStory(ReactNestedSVGApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;

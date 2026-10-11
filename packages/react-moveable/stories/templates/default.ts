@@ -1,3 +1,3 @@
-import DEFAULT_CSS_TEMPLATE from "!!raw-loader!./default.css";
+import DEFAULT_CSS_TEMPLATE from "./default.css?raw";
 
 export { DEFAULT_CSS_TEMPLATE };

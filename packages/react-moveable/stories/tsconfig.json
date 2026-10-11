@@ -1,0 +1,24 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "moduleResolution": "bundler",
+        "types": [
+            "vite/client",
+            "node"
+        ],
+        "allowImportingTsExtensions": true
+    },
+    "include": [
+        "./**/*.ts",
+        "./**/*.tsx",
+        "../.storybook/**/*.ts",
+        "../.storybook/**/*.tsx",
+        "../global.d.ts"
+    ],
+    "exclude": [
+        "./**/script/**",
+        "./**/vue3/**",
+        "./**/svelte/**",
+        "./**/lit/**"
+    ]
+}

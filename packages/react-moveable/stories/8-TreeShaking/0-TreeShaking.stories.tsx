@@ -1,13 +1,25 @@
-import { add } from "../utils/story";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { appStory } from "../utils/story";
+import TreeShakingApp from "./TreeShakingApp";
+
+const apps = import.meta.glob("./*App.tsx", { eager: true });
+const sources = import.meta.glob<string>("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+});
 
 
 
 export default {
     title: "Support Tree Shaking",
-};
+} satisfies Meta;
 
 
-export const TreeShaking = add("Use only Draggable, Resizable, Rotatable", {
-    app: require("./TreeShakingApp").default,
-    path: require.resolve("./TreeShakingApp"),
-});
+export const TreeShaking = {
+    name: "Use only Draggable, Resizable, Rotatable",
+    ...appStory(TreeShakingApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;

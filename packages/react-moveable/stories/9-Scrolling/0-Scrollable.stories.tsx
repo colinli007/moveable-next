@@ -1,14 +1,26 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { appStory } from "../utils/story";
 import { DEFAULT_SCROLLABLE_CONTROLS } from "../controls/default";
-import { add } from "../utils/story";
+import ReactScrollableApp from "./ReactScrollableApp";
+
+const apps = import.meta.glob("./*App.tsx", { eager: true });
+const sources = import.meta.glob<string>("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+});
 
 export default {
     title: "Support Scroll",
-};
+} satisfies Meta;
 
-export const ScrollingScrollable = add("Use Scrollable", {
-    app: require("./ReactScrollableApp").default,
-    path: require.resolve("./ReactScrollableApp"),
-    argsTypes: {
-        ...DEFAULT_SCROLLABLE_CONTROLS,
-    },
-});
+export const ScrollingScrollable = {
+    name: "Use Scrollable",
+    ...appStory(ReactScrollableApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_SCROLLABLE_CONTROLS,
+        },
+    }),
+} satisfies StoryObj;

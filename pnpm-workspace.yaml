@@ -4,13 +4,6 @@ packages:
 overrides:
   "@daybrush/utils": "^1.13.0"
   "@types/react": "^16.9.17"
-  "@storybook/react": "^6.4.22"
-  "@storybook/addon-actions": "^6.4.22"
-  "@storybook/addon-controls": "^6.4.22"
-  "@storybook/addon-docs": "^6.4.22"
-  "@storybook/addon-links": "^6.4.22"
-  "@storybook/addon-viewport": "^6.4.22"
-  "@storybook/addons": "^6.4.22"
   "@egjs/agent": "^2.2.1"
   "@egjs/children-differ": "^1.0.1"
   "@egjs/list-differ": "^1.0.0"
@@ -23,8 +16,9 @@ overrides:
   "croact-css-styled": "^1.1.9"
   "react-css-styled": "^1.1.9"
   "tslib": "^2.3.1"
-  # @storybook/jest@0.0.10 depends on the `storybook-jest` dist-tag; pin it to the version yarn.lock resolved
-  "@storybook/jest>@storybook/expect": "27.5.2-0"
+  # react-keycon pulls @cfcs/react (core ~0.0.6, resolves to 0.0.26) and keycon (core ^0.0.6 = 0.0.6).
+  # Two copies of @cfcs/core break useKeycon's result type; 0.0.6 is within both ranges.
+  "@cfcs/react>@cfcs/core": "0.0.6"
 
 # Only esbuild needs its install script (prepares the platform binary used by vite).
 # The rest only print banners, compile an optional fsevents@1, download Playwright browsers
@@ -34,7 +28,6 @@ allowBuilds:
   esbuild: true
   "@sveltejs/kit": false
   core-js: false
-  core-js-pure: false
   fsevents: false
   playwright: false
   preact: false

@@ -75,7 +75,7 @@ export const DEFAULT_RESIZABLE_CONTROLS = {
         defaultValue: true,
     }),
     edge: makeArgType({
-        type: "array",
+        type: "object",
         description: makeLink("Resizable", "edge"),
         defaultValue: [],
     }),
@@ -110,7 +110,7 @@ export const DEFAULT_RESIZABLE_CONTROLS = {
         defaultValue: 1,
     }),
     renderDirections: makeArgType({
-        type: "array",
+        type: "object",
         description: makeLink("Resizable", "renderDirections"),
         defaultValue: ["nw", "n", "ne", "w", "e", "sw", "s", "se"],
     }),
@@ -133,7 +133,7 @@ export const DEFAULT_SCALABLE_CONTROLS = {
         defaultValue: 0,
     }),
     renderDirections: makeArgType({
-        type: "array",
+        type: "object",
         description: makeLink("Scalable", "renderDirections"),
         defaultValue: ["nw", "n", "ne", "w", "e", "sw", "s", "se"],
     }),
@@ -182,7 +182,7 @@ export const DEFAULT_WARPABLE_CONTROLS = {
         defaultValue: true,
     }),
     renderDirections: makeArgType({
-        type: "array",
+        type: "object",
         description: makeLink("Warpable", "renderDirections"),
         defaultValue: ["nw", "n", "ne", "w", "e", "sw", "s", "se"],
     }),

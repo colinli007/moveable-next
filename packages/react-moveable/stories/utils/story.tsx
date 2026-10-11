@@ -1,58 +1,59 @@
-/* eslint-disable no-empty */
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable max-len */
 import * as React from "react";
-import { ReactFramework, StoryContext } from "@storybook/react";
-import { ClientApi } from "@storybook/client-api";
+import type { StoryObj } from "@storybook/react-vite";
+import type { Preview } from "../../.storybook/addons/code-preview/render";
 
 import { convertReactTemplate, convertPath, makeArgs, convertTemplate } from "../utils";
 import { DEFAULT_CSS_TEMPLATE } from "../templates/default";
-import { getEntries, isFunction } from "@daybrush/utils";
 
-// production 모드거나, 실패시 true
-declare const SKIP_TEST: boolean;
-// test 여부
-declare const EXEC_TEST: boolean;
+type AppComponent = React.ComponentType<any>;
+type Play = NonNullable<StoryObj["play"]>;
 
-export interface StoryParameter {
-    app: any;
-    text?: string;
-    path?: string;
-    argsTypes?: Record<string, any>;
+/**
+ * The code croffle generates next to each App (`pnpm bake`).
+ * croffle does not generate every framework for every story, so a missing file only skips its tab.
+ */
+const GENERATED_TABS: Array<Omit<Preview, "template"> & { path: string; raw?: boolean }> = [
+    { path: "script/$name/App.html", tab: "Script", description: "HTML", language: "html", raw: true },
+    { path: "script/$name/App.js", tab: "Script", description: "JavaScript", language: "tsx" },
+    { path: "vue3/$name/App.vue", tab: "Vue3", language: "html" },
+    { path: "svelte/$name/App.svelte", tab: "Svelte", language: "html" },
+    { path: "lit/$name/App.ts", tab: "Lit", language: "tsx" },
+];
+
+export interface AppStoryOptions {
+    /**
+     * `import.meta.glob("./*App.tsx", { eager: true })` of the story file's own directory.
+     * Used to find the file of `App`.
+     */
+    apps: Record<string, unknown>;
+    /**
+     * `import.meta.glob("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", { query: "?raw", import: "default", eager: true })`
+     * of the story file's own directory: the React source and the code croffle generated from it.
+     */
+    sources: Record<string, string>;
+    argTypes?: Record<string, any>;
     args?: Record<string, any>;
-    texts?: Record<string, any>;
-    play?: (context: StoryContext<ReactFramework>) => Promise<void> | void;
 }
 
-function makeProxyObject(
-    defaultValue: Record<string, any> = {},
-    setter?: (obj: Record<string, any>, prop: string, value: any) => any,
-): Record<string, any> {
-    const proxy = new Proxy({} as Record<string, any>, {
-        set(obj, prop, value) {
-            if (!setter?.(obj, prop as string, value)) {
-                obj[prop as string] = value;
-            }
-            return true;
+/**
+ * Builds `render`, `args`, `argTypes` and the code tabs (`parameters.preview`) of a story that renders `App`.
+ */
+export function appStory(App: AppComponent, { apps, sources, argTypes = {}, args }: AppStoryOptions) {
+    const file = Object.keys(apps).find(path => (apps[path] as { default?: unknown }).default === App);
+    const reactCode = file && sources[file];
+
+    if (!reactCode) {
+        throw new Error(`Cannot find the source of ${App.displayName || App.name} in the story's directory.`);
+    }
+    const name = file.replace(/^\.\/(.+)\.tsx$/, "$1");
+    const generated = (path: string) => sources[`./${path.replace("$name", name)}`];
+    const previews: Preview[] = [
+        {
+            tab: "React",
+            template: convertReactTemplate(convertPath(reactCode)),
+            copy: true,
+            language: "tsx",
         },
-    });
-
-    getEntries(defaultValue).forEach(([key, value]) => {
-        proxy[key] = value;
-    });
-    return proxy;
-}
-
-export function add(storyTitle: string, parameter: StoryParameter) {
-    const {
-        text,
-        argsTypes,
-        args,
-        path,
-        play,
-        app,
-    } = parameter;
-    const previews: any[] = [
         {
             tab: "CSS",
             template: DEFAULT_CSS_TEMPLATE,
@@ -60,191 +61,34 @@ export function add(storyTitle: string, parameter: StoryParameter) {
             language: "css",
         },
     ];
+    GENERATED_TABS.forEach(({ path, raw, ...preview }) => {
+        const code = generated(path);
 
-    // test라면 play가 없는 스토리는 전부 빈공백으로 표시
-    if (EXEC_TEST && !play) {
-        return function Empty() {
-            return null;
-        };
-    }
-
-    // test가 아니라면 code preview 표시
-    if (!EXEC_TEST && path) {
-        const filePath = path.replace("./stories/", "");
-        const directory = filePath.replace(/\/([^/]+)$/g, "/");
-        const fileName = filePath.replace(/\S+\/(\S+)\.\S+$/g, "$1");
-        const reactCode = require(`!!raw-loader!@/stories/${filePath}`).default;
-
-        previews.unshift({
-            tab: "React",
-            template: convertReactTemplate(convertPath(reactCode)),
-            copy: true,
-            // codesandbox: DEFAULT_REACT_CODESANDBOX(["react-moveable"]),
-            language: "tsx",
-        });
-        // HTML
-        try {
-            const htmlCode = require(`!!raw-loader!@/stories/${directory}script/${fileName}/App.html`).default;
-
+        if (code) {
             previews.push({
-                tab: "Script",
-                description: "HTML",
-                template: htmlCode,
+                ...preview,
+                template: raw ? code : convertTemplate(code, /"\$preview_([^"]+)"/g),
                 copy: true,
-                language: "html",
             });
-        } catch (e) {
         }
-        // Script
-        try {
-            const scriptCode = require(`!!raw-loader!@/stories/${directory}script/${fileName}/App.js`).default;
+    });
 
-            previews.push({
-                tab: "Script",
-                description: "JavaScript",
-                template: convertTemplate(scriptCode, /"\$preview_([^"]+)"/g),
-                copy: true,
-                language: "tsx",
-            });
-        } catch (e) {
-        }
-        // Vue3
-        try {
-            const vueCode = require(`!!raw-loader!@/stories/${directory}vue3/${fileName}/App.vue`).default;
+    return {
+        render: (props: Record<string, any>) => <App {...props} />,
+        argTypes,
+        args: {
+            ...makeArgs(argTypes),
+            ...args,
+        },
+        parameters: {
+            preview: previews,
+        },
+    } satisfies StoryObj;
+}
 
-            previews.push({
-                tab: "Vue3",
-                template: convertTemplate(vueCode, /"\$preview_([^"]+)"/g),
-                copy: true,
-                language: "html",
-            });
-        } catch (e) {
-        }
-        // Svelte
-        try {
-            const svelteCode = require(`!!raw-loader!@/stories/${directory}svelte/${fileName}/App.svelte`).default;
-
-            previews.push({
-                tab: "Svelte",
-                template: convertTemplate(svelteCode, /"\$preview_([^"]+)"/g),
-                copy: true,
-                language: "html",
-            });
-        } catch (e) { }
-        // Lit
-        try {
-            const litCode = require(`!!raw-loader!@/stories/${directory}lit/${fileName}/App.ts`).default;
-
-            previews.push({
-                tab: "Lit",
-                template: convertTemplate(litCode, /"\$preview_([^"]+)"/g),
-                copy: true,
-                language: "tsx",
-            });
-        } catch (e) { }
-    } else if (text) {
-        previews.unshift({
-            tab: "React",
-            template: convertReactTemplate(convertPath(text)),
-            // codesandbox: DEFAULT_REACT_CODESANDBOX(["react-moveable"]),
-            copy: true,
-            language: "tsx",
-        });
-    }
-
-    const func = function (this: any, props: any) {
-        const Component = app;
-
-        return <Component {...props} />;
-    };
-
-    func.storyName = storyTitle;
-    func.argTypes = argsTypes || {};
-    func.args = {
-        ...makeArgs(argsTypes || {}),
-        args,
-    };
-    func.parameters = {
-        preview: previews,
-    };
-
-    // dev에서만 표시
-    if (play) {
-        const clientApi = (window as any).__STORYBOOK_CLIENT_API__ as ClientApi<any>;
-        const facade = clientApi.facade;
-        const csfExports = facade.csfExports;
-        const allStories = facade.stories;
-
-        if (!SKIP_TEST) {
-            // dev mode or test mode
-            func.play = play;
-
-            type StoryFunction = ((...args: any[]) => any) & {
-                storyName: string;
-                play: any;
-                args: any;
-                argTypes: any;
-                parameters: any;
-                isSkip?: boolean;
-            };
-
-            if (!("__PROXY__" in csfExports)) {
-                facade.csfExports = makeProxyObject({
-                    __PROXY__: () => { },
-                    ...csfExports,
-                }, (obj, prop, value) => {
-                    obj[prop] = makeProxyObject(value, (child, childProp, childValue: StoryFunction) => {
-                        if (!isFunction(childValue) || !childValue.play || childValue.isSkip) {
-                            return;
-                        }
-                        if (childValue.storyName.match(/Test$/g)) {
-                            return;
-                        }
-
-                        const copied = childValue.bind({}) as StoryFunction;
-
-                        copied.storyName = `${childValue.storyName} (original)`;
-                        copied.argTypes = childValue.argTypes;
-                        copied.args = childValue.args;
-                        copied.parameters = childValue.parameters;
-                        // copied.play = childValue.play;
-                        copied.isSkip = true;
-
-                        child[`${childProp}Original`] = copied;
-
-                        // childValue.play = null;
-                        childValue.isSkip = true;
-                        childValue.storyName = `${childValue.storyName} (test)`;
-                    });
-
-                    return true;
-                });
-                facade.stories = makeProxyObject(allStories, (obj, prop, value) => {
-                    if (value.name?.includes(" (test)")) {
-                        const id = `${prop}-original`;
-                        obj[`${prop}-original`] = {
-                            ...value,
-                            id,
-                            name: value.name.replace(" (original)", " (test)"),
-                        };
-                    }
-                });
-            }
-        } else if (!EXEC_TEST) {
-            // production mode
-            if (!("__PROXY__" in csfExports)) {
-                facade.csfExports = makeProxyObject({
-                    __PROXY__: () => { },
-                    ...csfExports,
-                });
-                facade.stories = makeProxyObject(allStories, (obj, prop, value) => {
-                    if (value.name?.match(/Test$/g)) {
-                        return true;
-                    }
-                });
-            }
-        }
-    }
-
-    return func;
+/**
+ * Plays run in development and in tests, but not in the published Storybook.
+ */
+export function devPlay(play: Play): Play | undefined {
+    return import.meta.env.MODE === "production" ? undefined : play;
 }

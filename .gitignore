@@ -25,3 +25,6 @@ dist/
 *.lerna_backup
 test.js
 .codegraph/
+
+# Vitest attachments (failure screenshots)
+.vitest/

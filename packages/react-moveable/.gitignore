@@ -28,4 +28,4 @@ stories/**/lit/
 .nyc_output
 test-static
 __snapshots__
-*.stories.mdx
+stories/0-Introduction/readme.mdx

@@ -41,11 +41,6 @@
         "./src/**/*.tsx",
         "./test/**/*.ts",
         "./test/**/*.tsx",
-        "./global.d.ts",
-        "./stories/**/*.ts",
-        "./stories/**/*.tsx"
-    ],
-    "exclude": [
-        "./stories/**/lit/**/*.ts"
+        "./global.d.ts"
     ]
 }

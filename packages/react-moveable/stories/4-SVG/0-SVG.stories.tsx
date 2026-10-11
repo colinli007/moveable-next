@@ -1,47 +1,85 @@
-import { add } from "../utils/story";
-import "../common.css";
-import "../templates/default.css";
-import { expect } from "@storybook/jest";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
+import { appStory, devPlay } from "../utils/story";
 import { wait } from "../utils/testing";
+import ReactPathApp from "./ReactPathApp";
+import ReactSVGSVGApp from "./ReactSVGSVGApp";
+import ReactSVGCircleApp from "./ReactSVGCircleApp";
+import ReactSVGLineApp from "./ReactSVGLineApp";
+import ReactSVGGApp from "./ReactSVGGApp";
+import ReactSVGTargetGApp from "./ReactSVGTargetGApp";
+import ReactSVGGroupApp from "./ReactSVGGroupApp";
+import ReactOriginApp from "./ReactOriginApp";
+import ReactOriginFillboxApp from "./ReactOriginFillboxApp";
+import ReactSVGForeignObjectApp from "./ReactSVGForeignObjectApp";
+import ReactSVGForeignObjectInnerApp from "./ReactSVGForeignObjectInnerApp";
+
+const apps = import.meta.glob("./*App.tsx", { eager: true });
+const sources = import.meta.glob<string>("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+});
 
 export default {
     title: "SVG",
-};
+} satisfies Meta;
 
-export const SVGPathElement = add("SVGPathElement", {
-    app: require("./ReactPathApp").default,
-    text: require("!!raw-loader!./ReactPathApp").default,
-});
-export const SVGSVGElement = add("SVGSVGElement", {
-    app: require("./ReactSVGSVGApp").default,
-    text: require("!!raw-loader!./ReactSVGSVGApp").default,
-});
+export const SVGPathElement = {
+    name: "SVGPathElement",
+    ...appStory(ReactPathApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
+export const SVGSVGElement = {
+    name: "SVGSVGElement",
+    ...appStory(ReactSVGSVGApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const SVGCircle = add("Circle", {
-    app: require("./ReactSVGCircleApp").default,
-    text: require("!!raw-loader!./ReactSVGCircleApp").default,
-});
+export const SVGCircle = {
+    name: "Circle",
+    ...appStory(ReactSVGCircleApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const SVGLine = add("Line", {
-    app: require("./ReactSVGLineApp").default,
-    text: require("!!raw-loader!./ReactSVGLineApp").default,
-});
+export const SVGLine = {
+    name: "Line",
+    ...appStory(ReactSVGLineApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const SVGG = add("SVGElement with G tag", {
-    app: require("./ReactSVGGApp").default,
-    text: require("!!raw-loader!./ReactSVGGApp").default,
-});
+export const SVGG = {
+    name: "SVGElement with G tag",
+    ...appStory(ReactSVGGApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const SVGTargetG = add("SVGElement with target G tag", {
-    app: require("./ReactSVGTargetGApp").default,
-    text: require("!!raw-loader!./ReactSVGTargetGApp").default,
-});
+export const SVGTargetG = {
+    name: "SVGElement with target G tag",
+    ...appStory(ReactSVGTargetGApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
-export const SVGGroup = add("SVG Group", {
-    app: require("./ReactSVGGroupApp").default,
-    text: require("!!raw-loader!./ReactSVGGroupApp").default,
-    play: async ({ canvasElement }) => {
+export const SVGGroup = {
+    name: "SVG Group",
+    ...appStory(ReactSVGGroupApp, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
 
         const area = canvasElement.querySelector<HTMLElement>(".moveable-area")!;
@@ -49,31 +87,43 @@ export const SVGGroup = add("SVG Group", {
         expect(area.style.width).toBe("191px");
         expect(area.style.height).toBe("57px");
         expect(area.style.transform).toBe("translate(0px, 0px) rotate(0deg) scale(1, 1)");
-    },
-});
+    }),
+} satisfies StoryObj;
 
 
-export const SVGOrigin = add("SVGPathElement with center origin", {
-    app: require("./ReactOriginApp").default,
-    text: require("!!raw-loader!./ReactOriginApp").default,
-});
+export const SVGOrigin = {
+    name: "SVGPathElement with center origin",
+    ...appStory(ReactOriginApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
-export const SVGFillboxOrigin = add("SVGPathElement with center origin and transform fill-box", {
-    app: require("./ReactOriginFillboxApp").default,
-    text: require("!!raw-loader!./ReactOriginFillboxApp").default,
-});
+export const SVGFillboxOrigin = {
+    name: "SVGPathElement with center origin and transform fill-box",
+    ...appStory(ReactOriginFillboxApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
 
 
-export const SVGForeignObject = add("SVGForeignObject", {
-    app: require("./ReactSVGForeignObjectApp").default,
-    text: require("!!raw-loader!./ReactSVGForeignObjectApp").default,
-});
+export const SVGForeignObject = {
+    name: "SVGForeignObject",
+    ...appStory(ReactSVGForeignObjectApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
 
-export const SVGForeignObjectInner = add("SVGForeignObject div", {
-    app: require("./ReactSVGForeignObjectInnerApp").default,
-    text: require("!!raw-loader!./ReactSVGForeignObjectInnerApp").default,
-});
+export const SVGForeignObjectInner = {
+    name: "SVGForeignObject div",
+    ...appStory(ReactSVGForeignObjectInnerApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;

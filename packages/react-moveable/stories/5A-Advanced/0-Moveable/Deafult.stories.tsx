@@ -1,20 +1,40 @@
-import { add } from "../../utils/story";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { appStory } from "../../utils/story";
+import ReactPositionFixedApp from "./ReactPositionFixedApp";
+import ReactSelectFormApp from "./ReactSelectFormApp";
+import ReactNoRelativeApp from "./ReactNoRelativeApp";
+
+const apps = import.meta.glob("./*App.tsx", { eager: true });
+const sources = import.meta.glob<string>("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+});
 
 export default {
     title: "Advanced Moveable Settings",
-};
+} satisfies Meta;
 
-export const AdancedMoveablePositionFixed = add("Target with position: fixed;", {
-    app: require("./ReactPositionFixedApp").default,
-    path: require.resolve("./ReactPositionFixedApp"),
-});
+export const AdancedMoveablePositionFixed = {
+    name: "Target with position: fixed;",
+    ...appStory(ReactPositionFixedApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const AdancedMoveableSelectForm = add("Select Form", {
-    app: require("./ReactSelectFormApp").default,
-    path: require.resolve("./ReactSelectFormApp"),
-});
+export const AdancedMoveableSelectForm = {
+    name: "Select Form",
+    ...appStory(ReactSelectFormApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const AdancedMoveableNoRelative = add("Static Body", {
-    app: require("./ReactNoRelativeApp").default,
-    path: require.resolve("./ReactNoRelativeApp"),
-});
+export const AdancedMoveableNoRelative = {
+    name: "Static Body",
+    ...appStory(ReactNoRelativeApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;

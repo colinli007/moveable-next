@@ -1,3 +1,6 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent } from "storybook/test";
+import { appStory, devPlay } from "../utils/story";
 import {
     DEFAULT_RESIZABLE_CONTROLS,
     DEFAULT_ROTATABLE_CONTROLS,
@@ -9,28 +12,41 @@ import {
     DEFAULT_RESIZABLE_GROUP_CONTROLS,
     DEFAULT_SCALABLE_GROUP_CONTROLS,
 } from "../controls/group";
-import { add } from "../utils/story";
-import { expect } from "@storybook/jest";
-import { userEvent } from "@storybook/testing-library";
 import { pan, rotate, wait } from "../utils/testing";
 import { throttle } from "@daybrush/utils";
 import { parse } from "css-to-mat";
+import ReactDraggableResizableRotatableApp from "./ReactDraggableResizableRotatableApp";
+import ReactDraggableScalableRotatableApp from "./ReactDraggableScalableRotatableApp";
+import ReactAllInOneApp from "./ReactAllInOneApp";
+import ReactMultipleGroupApp from "./ReactMultipleGroupApp";
+import ReactRoundableGroupApp from "./ReactRoundableGroupApp";
+import ReactFixedResizeGroupApp from "./ReactFixedResizeGroupApp";
+
+const apps = import.meta.glob("./*App.tsx", { eager: true });
+const sources = import.meta.glob<string>("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+});
 
 export default {
     title: "Group",
-};
+} satisfies Meta;
 
-export const GroupDraggableResizableRotatable = add("Draggable & Resizable & Rotatable", {
-    app: require("./ReactDraggableResizableRotatableApp").default,
-    path: require.resolve("./ReactDraggableResizableRotatableApp"),
-    argsTypes: {
-        ...DEFAULT_GROUPPABLE_GROUP_CONTROLS,
-        ...DEFAULT_RESIZABLE_CONTROLS,
-        ...DEFAULT_ROTATABLE_CONTROLS,
-        ...DEFAULT_DRAGGABLE_CONTROLS,
-        ...DEFAULT_RESIZABLE_GROUP_CONTROLS,
-    },
-    play: async ({ canvasElement }) => {
+export const GroupDraggableResizableRotatable = {
+    name: "Draggable & Resizable & Rotatable",
+    ...appStory(ReactDraggableResizableRotatableApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_GROUPPABLE_GROUP_CONTROLS,
+            ...DEFAULT_RESIZABLE_CONTROLS,
+            ...DEFAULT_ROTATABLE_CONTROLS,
+            ...DEFAULT_DRAGGABLE_CONTROLS,
+            ...DEFAULT_RESIZABLE_GROUP_CONTROLS,
+        },
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
 
         const areaElement = canvasElement.querySelector<HTMLElement>(`.moveable-control-box .moveable-area`)!;
@@ -79,19 +95,22 @@ export const GroupDraggableResizableRotatable = add("Draggable & Resizable & Rot
 
         expect(areaElement.style.width).toBe("420px");
         expect(areaElement.style.height).toBe("345px");
-    },
-});
-export const GroupDraggableScalableRotatable = add("Draggable & Scalable & Rotatable", {
-    app: require("./ReactDraggableScalableRotatableApp").default,
-    path: require.resolve("./ReactDraggableScalableRotatableApp"),
-    argsTypes: {
-        ...DEFAULT_GROUPPABLE_GROUP_CONTROLS,
-        ...DEFAULT_SCALABLE_CONTROLS,
-        ...DEFAULT_SCALABLE_GROUP_CONTROLS,
-        ...DEFAULT_ROTATABLE_CONTROLS,
-        ...DEFAULT_DRAGGABLE_CONTROLS,
-    },
-    play: async ({ canvasElement }) => {
+    }),
+} satisfies StoryObj;
+export const GroupDraggableScalableRotatable = {
+    name: "Draggable & Scalable & Rotatable",
+    ...appStory(ReactDraggableScalableRotatableApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_GROUPPABLE_GROUP_CONTROLS,
+            ...DEFAULT_SCALABLE_CONTROLS,
+            ...DEFAULT_SCALABLE_GROUP_CONTROLS,
+            ...DEFAULT_ROTATABLE_CONTROLS,
+            ...DEFAULT_DRAGGABLE_CONTROLS,
+        },
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
 
         const targets = canvasElement.querySelectorAll<HTMLElement>(".target")!;
@@ -118,24 +137,30 @@ export const GroupDraggableScalableRotatable = add("Draggable & Scalable & Rotat
             }
         });
 
-    },
-});
+    }),
+} satisfies StoryObj;
 
 
-export const GroupAllInOne = add("All in One", {
-    app: require("./ReactAllInOneApp").default,
-    path: require.resolve("./ReactAllInOneApp"),
-    argsTypes: {
-        ...DEFAULT_GROUPPABLE_GROUP_CONTROLS,
-        ...DEFAULT_DRAGGABLE_CONTROLS,
-        ...DEFAULT_SCALABLE_CONTROLS,
-        ...DEFAULT_ROTATABLE_CONTROLS,
-    },
-});
-export const GroupMultipleGroup = add("Multiple Group", {
-    app: require("./ReactMultipleGroupApp").default,
-    path: require.resolve("./ReactMultipleGroupApp"),
-    play: async ({ canvasElement }) => {
+export const GroupAllInOne = {
+    name: "All in One",
+    ...appStory(ReactAllInOneApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_GROUPPABLE_GROUP_CONTROLS,
+            ...DEFAULT_DRAGGABLE_CONTROLS,
+            ...DEFAULT_SCALABLE_CONTROLS,
+            ...DEFAULT_ROTATABLE_CONTROLS,
+        },
+    }),
+} satisfies StoryObj;
+export const GroupMultipleGroup = {
+    name: "Multiple Group",
+    ...appStory(ReactMultipleGroupApp, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
 
         const areaElement = canvasElement.querySelector<HTMLElement>(`.moveable-control-box .moveable-area`)!;
@@ -160,18 +185,21 @@ export const GroupMultipleGroup = add("Multiple Group", {
 
         // click
         await wait();
-        userEvent.click(canvasElement.querySelector("button")!);
+        await userEvent.click(canvasElement.querySelector("button")!);
 
         expect(throttle(parseFloat(areaElement.style.width), 0.1)).toBe(266.5);
         expect(throttle(parseFloat(areaElement.style.height), 0.1)).toBe(298.3);
         expect(areaElement.style.transform).toBe("translate(0px, 0px) rotate(0deg) scale(1, 1)");
-    },
-});
+    }),
+} satisfies StoryObj;
 
-export const GroupRoundableGroup = add("Roundable Group", {
-    app: require("./ReactRoundableGroupApp").default,
-    path: require.resolve("./ReactRoundableGroupApp"),
-    play: async ({ canvasElement }) => {
+export const GroupRoundableGroup = {
+    name: "Roundable Group",
+    ...appStory(ReactRoundableGroupApp, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
 
         const targets = canvasElement.querySelectorAll<HTMLElement>(".target")!;
@@ -189,11 +217,14 @@ export const GroupRoundableGroup = add("Roundable Group", {
         targets.forEach(target => {
             expect(target.style.borderRadius).toBe("30px");
         });
-    },
-});
+    }),
+} satisfies StoryObj;
 
 
-export const GroupFixedResizeGroup = add("Fixed Position Resize Group", {
-    app: require("./ReactFixedResizeGroupApp").default,
-    path: require.resolve("./ReactFixedResizeGroupApp"),
-});
+export const GroupFixedResizeGroup = {
+    name: "Fixed Position Resize Group",
+    ...appStory(ReactFixedResizeGroupApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;

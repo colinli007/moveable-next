@@ -1,4 +1,6 @@
-import { expect } from "@storybook/jest";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
+import { appStory, devPlay } from "../utils/story";
 import {
     DEFAULT_BOUNDS_CONTROLS,
     DEFAULT_DRAGGABLE_CONTROLS,
@@ -13,24 +15,46 @@ import {
     DEFAULT_SNAP_GRID_CONTROLS,
 } from "../controls/default";
 import { makeArgType, makeLink } from "../utils";
-import { add } from "../utils/story";
 import { pan, rotate, wait } from "../utils/testing";
+import ReactSnapGuidelinesApp from "./ReactSnapGuidelinesApp";
+import ReactSnapElementsApp from "./ReactSnapElementsApp";
+import ReactSnapGridApp from "./ReactSnapGridApp";
+import ReactSnapGridGroupApp from "./ReactSnapGridGroupApp";
+import ReactBoundScalableApp from "./ReactBoundScalableApp";
+import ReactBoundResizableApp from "./ReactBoundResizableApp";
+import ReactBoundRotatableApp from "./ReactBoundRotatableApp";
+import ReactBoundRotatableGroupApp from "./ReactBoundRotatableGroupApp";
+import ReactSnapContainerApp from "./ReactSnapContainerApp";
+import ReactInnerBoundResizableApp from "./ReactInnerBoundResizableApp";
+import ReactMaxSnapElementApp from "./ReactMaxSnapElementApp";
+import ReactSnapElementsGroupApp from "./ReactSnapElementsGroupApp";
+import ReactSnapRotationsApp from "./ReactSnapRotationsApp";
+
+const apps = import.meta.glob("./*App.tsx", { eager: true });
+const sources = import.meta.glob<string>("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+});
 
 
 export default {
     title: "Snap & Bound",
-};
+} satisfies Meta;
 
-export const SnapGuidelines = add("Snap Guidelines", {
-    app: require("./ReactSnapGuidelinesApp").default,
-    path: require.resolve("./ReactSnapGuidelinesApp"),
-    argsTypes: {
-        ...DEFAULT_SNAPPABLE_CONTROLS,
-        ...DEFAULT_SNAPPABLE_GUIDELINES_CONTROLS,
-        ...DEFAULT_DRAGGABLE_CONTROLS,
-        ...DEFAULT_SCALABLE_CONTROLS,
-    },
-    play: async ({ canvasElement }) => {
+export const SnapGuidelines = {
+    name: "Snap Guidelines",
+    ...appStory(ReactSnapGuidelinesApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_SNAPPABLE_CONTROLS,
+            ...DEFAULT_SNAPPABLE_GUIDELINES_CONTROLS,
+            ...DEFAULT_DRAGGABLE_CONTROLS,
+            ...DEFAULT_SCALABLE_CONTROLS,
+        },
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
         const target = canvasElement.querySelector<HTMLElement>(".target")!;
 
@@ -45,117 +69,150 @@ export const SnapGuidelines = add("Snap Guidelines", {
             interval: 10,
         });
         expect(target.style.transform).toBe("translate(-51px, -151px)");
-    },
-});
+    }),
+} satisfies StoryObj;
 
-export const SnapElements = add("Snap Elements", {
-    app: require("./ReactSnapElementsApp").default,
-    path: require.resolve("./ReactSnapElementsApp"),
-    argsTypes: {
-        ...DEFAULT_SNAPPABLE_CONTROLS,
-        ...DEFAULT_SNAPPABLE_ELEMENTS_CONTROLS,
-    },
-});
-
-
-export const SnapGrid = add("Snap Grid", {
-    app: require("./ReactSnapGridApp").default,
-    path: require.resolve("./ReactSnapGridApp"),
-    argsTypes: {
-        ...DEFAULT_DRAGGABLE_CONTROLS,
-        ...DEFAULT_SCALABLE_CONTROLS,
-        ...DEFAULT_SNAP_GRID_CONTROLS,
-    },
-});
+export const SnapElements = {
+    name: "Snap Elements",
+    ...appStory(ReactSnapElementsApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_SNAPPABLE_CONTROLS,
+            ...DEFAULT_SNAPPABLE_ELEMENTS_CONTROLS,
+        },
+    }),
+} satisfies StoryObj;
 
 
-export const SnapGridGroup = add("Snap Grid Group (snapGridAll)", {
-    app: require("./ReactSnapGridGroupApp").default,
-    path: require.resolve("./ReactSnapGridGroupApp"),
-    argsTypes: {
-        ...DEFAULT_DRAGGABLE_CONTROLS,
-        ...DEFAULT_RESIZABLE_CONTROLS,
-    },
-});
-
-export const SnapBoundDragScale = add("Bound Drag & Scale", {
-    app: require("./ReactBoundScalableApp").default,
-    path: require.resolve("./ReactBoundScalableApp"),
-    argsTypes: {
-        ...DEFAULT_DRAGGABLE_CONTROLS,
-        ...DEFAULT_SCALABLE_CONTROLS,
-        ...DEFAULT_BOUNDS_CONTROLS,
-    },
-});
-
-export const SnapBoundDragResize = add("Bound Drag & Resize", {
-    app: require("./ReactBoundResizableApp").default,
-    path: require.resolve("./ReactBoundResizableApp"),
-    argsTypes: {
-        ...DEFAULT_DRAGGABLE_CONTROLS,
-        ...DEFAULT_RESIZABLE_CONTROLS,
-        ...DEFAULT_BOUNDS_CONTROLS,
-    },
-});
+export const SnapGrid = {
+    name: "Snap Grid",
+    ...appStory(ReactSnapGridApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_DRAGGABLE_CONTROLS,
+            ...DEFAULT_SCALABLE_CONTROLS,
+            ...DEFAULT_SNAP_GRID_CONTROLS,
+        },
+    }),
+} satisfies StoryObj;
 
 
-export const SnapDragRotate = add("Bound Drag & Rotate", {
-    app: require("./ReactBoundRotatableApp").default,
-    path: require.resolve("./ReactBoundRotatableApp"),
-    argsTypes: {
-        ...DEFAULT_DRAGGABLE_CONTROLS,
-        ...DEFAULT_ROTATABLE_CONTROLS,
-        ...DEFAULT_BOUNDS_CONTROLS,
-    },
-});
+export const SnapGridGroup = {
+    name: "Snap Grid Group (snapGridAll)",
+    ...appStory(ReactSnapGridGroupApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_DRAGGABLE_CONTROLS,
+            ...DEFAULT_RESIZABLE_CONTROLS,
+        },
+    }),
+} satisfies StoryObj;
 
-export const SnapDragRotateGroup = add("Bound Drag & Rotate Group", {
-    app: require("./ReactBoundRotatableGroupApp").default,
-    path: require.resolve("./ReactBoundRotatableGroupApp"),
-});
+export const SnapBoundDragScale = {
+    name: "Bound Drag & Scale",
+    ...appStory(ReactBoundScalableApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_DRAGGABLE_CONTROLS,
+            ...DEFAULT_SCALABLE_CONTROLS,
+            ...DEFAULT_BOUNDS_CONTROLS,
+        },
+    }),
+} satisfies StoryObj;
 
-export const SnapSnapContainer = add("Use snapContainer option", {
-    app: require("./ReactSnapContainerApp").default,
-    path: require.resolve("./ReactSnapContainerApp"),
-    argsTypes: {
-        ...DEFAULT_SNAPPABLE_CONTROLS,
-        ...DEFAULT_SNAP_CONTAINER_CONTROLS,
-        ...DEFAULT_SNAPPABLE_GUIDELINES_CONTROLS,
-        ...DEFAULT_BOUNDS_CONTROLS,
-        ...DEFAULT_DRAGGABLE_CONTROLS,
-    },
-});
-
-export const SnapInnerBoundResize = add("inner bound with resize", {
-    app: require("./ReactInnerBoundResizableApp").default,
-    path: require.resolve("./ReactInnerBoundResizableApp"),
-    argsTypes: {
-        ...DEFAULT_INNER_BOUNDS_CONTROLS,
-    },
-});
-
-export const SnapMaxiumDistance = add("Set maximum distance for guidelines", {
-    app: require("./ReactMaxSnapElementApp").default,
-    path: require.resolve("./ReactMaxSnapElementApp"),
-    argsTypes: {
-        maxSnapElementGuidelineDistance: makeArgType({
-            type: "number",
-            description: makeLink("Snappable", "maxSnapElementGuidelineDistance"),
-            defaultValue: 100,
-        }),
-        maxSnapElementGapDistance: makeArgType({
-            type: "number",
-            description: makeLink("Snappable", "maxSnapElementGapDistance"),
-            defaultValue: 80,
-        }),
-    },
-});
+export const SnapBoundDragResize = {
+    name: "Bound Drag & Resize",
+    ...appStory(ReactBoundResizableApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_DRAGGABLE_CONTROLS,
+            ...DEFAULT_RESIZABLE_CONTROLS,
+            ...DEFAULT_BOUNDS_CONTROLS,
+        },
+    }),
+} satisfies StoryObj;
 
 
-export const SnapElementsGroup = add("Snap Elements (group)", {
-    app: require("./ReactSnapElementsGroupApp").default,
-    path: require.resolve("./ReactSnapElementsGroupApp"),
-    play: async ({ canvasElement }) => {
+export const SnapDragRotate = {
+    name: "Bound Drag & Rotate",
+    ...appStory(ReactBoundRotatableApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_DRAGGABLE_CONTROLS,
+            ...DEFAULT_ROTATABLE_CONTROLS,
+            ...DEFAULT_BOUNDS_CONTROLS,
+        },
+    }),
+} satisfies StoryObj;
+
+export const SnapDragRotateGroup = {
+    name: "Bound Drag & Rotate Group",
+    ...appStory(ReactBoundRotatableGroupApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
+
+export const SnapSnapContainer = {
+    name: "Use snapContainer option",
+    ...appStory(ReactSnapContainerApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_SNAPPABLE_CONTROLS,
+            ...DEFAULT_SNAP_CONTAINER_CONTROLS,
+            ...DEFAULT_SNAPPABLE_GUIDELINES_CONTROLS,
+            ...DEFAULT_BOUNDS_CONTROLS,
+            ...DEFAULT_DRAGGABLE_CONTROLS,
+        },
+    }),
+} satisfies StoryObj;
+
+export const SnapInnerBoundResize = {
+    name: "inner bound with resize",
+    ...appStory(ReactInnerBoundResizableApp, {
+        apps,
+        sources,
+        argTypes: {
+            ...DEFAULT_INNER_BOUNDS_CONTROLS,
+        },
+    }),
+} satisfies StoryObj;
+
+export const SnapMaxiumDistance = {
+    name: "Set maximum distance for guidelines",
+    ...appStory(ReactMaxSnapElementApp, {
+        apps,
+        sources,
+        argTypes: {
+            maxSnapElementGuidelineDistance: makeArgType({
+                type: "number",
+                description: makeLink("Snappable", "maxSnapElementGuidelineDistance"),
+                defaultValue: 100,
+            }),
+            maxSnapElementGapDistance: makeArgType({
+                type: "number",
+                description: makeLink("Snappable", "maxSnapElementGapDistance"),
+                defaultValue: 80,
+            }),
+        },
+    }),
+} satisfies StoryObj;
+
+
+export const SnapElementsGroup = {
+    name: "Snap Elements (group)",
+    ...appStory(ReactSnapElementsGroupApp, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
         const moveable = canvasElement.querySelector<HTMLElement>(".moveable-control-box")!;
         const target = canvasElement.querySelector<HTMLElement>(".moveable-area")!;
@@ -168,14 +225,17 @@ export const SnapElementsGroup = add("Snap Elements (group)", {
             interval: 10,
         });
         expect(moveable.style.transform).toBe("translate3d(-1px, -1px, 0px)");
-    },
-});
+    }),
+} satisfies StoryObj;
 
 
-export const SnapRotations = add("Snap Rotations", {
-    app: require("./ReactSnapRotationsApp").default,
-    path: require.resolve("./ReactSnapRotationsApp"),
-    play: async ({ canvasElement }) => {
+export const SnapRotations = {
+    name: "Snap Rotations",
+    ...appStory(ReactSnapRotationsApp, {
+        apps,
+        sources,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
         await wait();
 
         const target = canvasElement.querySelector<HTMLElement>(".target")!;
@@ -190,8 +250,8 @@ export const SnapRotations = add("Snap Rotations", {
             baseTarget: target,
         });
         expect(target.style.transform).toBe("translate(0px, 0px) rotate(90deg)");
-    },
-});
+    }),
+} satisfies StoryObj;
 
 
 // export * from "./9-maxSnapElement.stories";

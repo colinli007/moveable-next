@@ -1286,3 +1286,51 @@ b1c754cdc9091f4ea426911c5979de103a8d88d8  stories/9A-Components/vue3/ReactSelect
 - react-moveable `test:type`：通过。
 - react-moveable `lint`、helper `lint`：通过，没有 typescript-eslint 的版本警告，只有 eslint-plugin-react 原有的「React version not specified」提示。
 - Storybook 6 `test:build`（尽力验证）：失败，`fork-ts-checker-webpack-plugin@6.5.2` 的 `connectTypeScriptPerformance` 会给 `ts.performance.mark` 赋值，而 TS 5 中它是只读的 getter（`TypeError: Cannot set property mark of #<Object> which has only a getter`）。这属于 design 风险条目中允许的情况，记录后放行；Storybook 6 会在第 3 组整体替换。
+
+## 3. 骨架实测
+
+- `pnpm why @storybook/react`：只有 10.6.1。锁文件中还剩 test-runner、addon-coverage 带进来的 `@storybook/*@6.5.16` 内部包，6.1 删除这两个依赖后消失。
+- `pnpm peers check` 新增两条提示，都来自删除全局 TS override：svelte-moveable 的 `svelte2tsx@0.6.16` 期望 `typescript ^4.9.4 || ^5`（实际 4.8.4，原先被 override 改写了 peer 范围所以不提示；svelte 产物与基线逐字节一致）；react-moveable 的 `karma-typescript@4.1.1` 来自 `@daybrush/tester`，5.2 删除。
+- 6006 端口被一个已存在的 `start-storybook --ci` 进程（SB6）占用，骨架验证改用 6016 端口；`storybook dev` 脚本本身仍是 `-p 6006`。
+- `@withMethods`：oxc 输出使用旧版装饰器辅助函数 `_decorate`，`moveable!` 没有被输出为类字段；浏览器中 `getRect`、`updateRect`、`request`、`getManager`、`dragStart` 都是函数，`getRect()` 返回 `[200, 150, 100, 100]`；真实鼠标拖动 (+50, +40) 后 `transform` 从 `translate(100px, 0px)`（dev 模式 play 执行后的状态）变为 `translate(150px, 40px)`，没有控制台错误。
+- `import.meta.env.MODE`：`storybook dev` 为 `development`，`storybook build` 为 `production`（静态产物中打开 Basic / Draggable，目标保持初始状态），Vitest 为 `test`。
+- 视口：故意失败的断言打印出 `1280x720`；失败截图写入根目录 `.vitest/attachments/failure-screenshots/0-Basic.stories.tsx/Draggable.png`。
+
+## 4. story 改写后的比较
+
+- story 索引：137 个 story，id、显示名、export 名、是否带 play 与 1.2 完全一致。
+- 有效 args：136 个与 1.2 完全一致；`basic--basic-scalable-keep-ratio-test` 按 design 有意改为真正应用 `{ keepRatio: true }`。
+- play 断言：26 个 play、62 条 `expect` 与 1.2 逐条一致（只是外层包了 `devPlay`，`expect` 改从 `storybook/test` 引入）。
+- 代码 tab：131 个 story 有 React、CSS、Script（HTML + JavaScript）、Vue3、Svelte、Lit；2 个用到 keycon 的 story（`advanced-rotatable--advanced-rotatable-rotate-with-controls`、`combination-with-other-components--components-selecto-with-multiple-group`）没有 Script 和 Lit；4 个只有 React 和 CSS（`make-custom-able--custom-able-drag-target`、`support-tree-shaking--tree-shaking`、`variable-situations--tests-custom-element-bounds`、`variable-situations--test-iframe`），与 croffle 的生成规则一致。变化：4-SVG 的 11 个 story 原来通过 `text` 传源码，只显示 React 和 CSS，现在与其它 story 一样显示 croffle 生成的各框架代码。
+- 代码 tab 面板（Playwright 在 manager 中实际操作）：Basic / Draggable 的面板有 React、CSS、Script、Vue3、Svelte、Lit 六个 tab；在 Controls 中关闭 `draggable`、把 `throttleDrag` 改为 10 后，React（`draggable={false}`、`throttleDrag={10}`）、Script / Vue3（`draggable = false`、`throttleDrag = 10`）、Svelte、Lit（`draggable: any = false`、`throttleDrag: any = 10`）都同步更新；React tab 的复制按钮复制出的代码也是新值；没有页面错误。`render.ts` 的 5 个单元测试通过。
+- Introduction 文档页：README 正常渲染（标题、1 个表格、36 张图片），`preview-head.html` 的样式在 `#storybook-docs` 下生效（表格 `border-collapse: collapse`、单元格上边框 `solid`）；生成的 `stories/0-Introduction/readme.mdx` 被 git 忽略。组件文档页（Basic）显示标题、story 名「Draggable」、主 story 和 5 行 Controls。
+- 统计请求：在开发模式中打开 Introduction 和 Basic / Draggable，所有外部请求的域名只有 README 中图片所在的 `raw.githubusercontent.com`、`img.shields.io`、`opencollective.com`、`images.opencollective.com`、`contrib.rocks`、`daybrush.com`，没有任何统计、分析或遥测请求。
+- 发布构建（4.5）：删除全部 76 个生成目录后在根目录执行 `pnpm build:storybook`，bake 重新生成 136 个 App 的代码，产物输出到 `demo/storybook`。静态产物中 Basic / Draggable 的代码面板有 React、CSS、Script、Vue3、Svelte、Lit，Vue3 tab 有生成的代码；打开后目标的 `transform` 为空、Interactions 没有计数，play 没有执行；侧边栏默认看不到 `Scalable keepRatio Test`，在标签筛选中把 `hidden-test` 切换为显示后出现，并能正常渲染。
+
+## 5.1 全量 Vitest
+
+在根目录执行 `pnpm exec vitest run`：22 个测试文件中 21 个通过、1 个跳过（`stories/0-Introduction/readme.mdx`，纯文档页，没有 story），142 个测试全部通过 = react-moveable 的 137 个 story（其中 26 个执行 play，断言与 1.2 一致）+ code-preview 的 5 个单元测试。
+
+迁移中暴露并修复的两个问题（都是迁移造成的，不是原有问题，不需要登记例外）：
+
+1. `Group / Multiple Group` 断言页面坐标，在 Vitest 中 `left` 为 117.4（期望 133.4），整体差 16px：addon-vitest 渲染时不会给 `<body>` 加 Storybook 预览页的布局 class `sb-show-main sb-main-padded`（`padding: 1rem`）。新增 `.storybook/vitest.setup.ts` 补上这两个 class，期望值不变。
+2. 同一个 play 中 `userEvent.click(...)` 没有 `await`：`storybook/test` 的 user-event 14 是异步的，原来的 `@storybook/testing-library` 0.0.13 是同步的。改为 `await userEvent.click(...)`，期望值不变。
+
+stderr 中只有警告，没有渲染错误：React 16 下 Storybook 渲染器使用 `act(...)` 产生的「Do not await the result of calling act(...) with sync logic」（117 次）和「The callback passed to act(...) function must return undefined」（17 次）；以及 App 自身已有的 `stroke-width` / `stroke-linejoin` 属性名、列表缺少 `key` 的警告各 1 次。
+
+## 5.2 / 6.1
+
+- helper：jest 24 / ts-jest / `@daybrush/tester` 换成 Vitest 5.0.3 + happy-dom 20（近 6 个月 happy-dom 发布了 37 个正式版，jsdom 7 个），`@types/node` 升到 22（vitest 5 的 peer 要求）。根目录 `pnpm exec vitest run`：144 个测试全部通过（react-moveable 137 个 story + 5 个 code-preview 单元测试 + helper 2 个）。
+- 删除的依赖：react-moveable 的 webpack、babel-loader、ts-loader、raw-loader、css-loader、fork-ts-checker-webpack-plugin、`@storybook/test-runner`、http-server、concurrently、wait-on、jest、jest-image-snapshot、`@storybook/addon-coverage`、`@daybrush/tester`、devDependencies 中重复的 react-selecto（`dependencies` 中的 `^1.25.0` 保留）；helper 的 babel-loader、raw-loader、css-loader。锁文件中不再有 webpack 4、`@storybook/*@6`、test-runner、jest。`allowBuilds` 中删除已不在锁文件里的 `core-js-pure`。`pnpm peers check` 中 karma-typescript 的提示随 `@daybrush/tester` 消失。
+- story 依赖升级：keycon 1.0 → 1.4.0、react-keycon 0.1.2 → 0.3.0、react-infinite-viewer 0.19 → 0.28.1、@scena/react-guides 0.17 → 0.28.2，都没有用到 React 17/18 才有的 API，相关 story 全部通过。react-keycon 0.3.0 会装出两份 `@cfcs/core`（0.0.6 和 0.0.26），导致 `useKeycon` 返回类型退化、2 个 story 类型检查失败；经确认加了限定范围的 override `"@cfcs/react>@cfcs/core": "0.0.6"` 让两者共用一份。
+
+## 6.4 最终验证
+
+把将要提交的全部文件（`git ls-files -co --exclude-standard`，即已跟踪的文件加上未被忽略的新文件）复制到 scratchpad 中一个没有 `node_modules` 和生成目录的空目录，依次执行：
+
+- `pnpm install --frozen-lockfile`：成功。
+- `pnpm packages:build`：成功；127 个产物文件与 2.3（TS 按包声明后）的构建逐字节一致；rollup「Unresolved dependencies」警告仍是登记的 6 处。
+- `pnpm --filter react-moveable exec playwright install chromium`、`pnpm --filter react-moveable typecheck:stories`：成功。
+- `pnpm exec vitest run`：22 个测试文件通过、1 个跳过（readme.mdx），144 个测试全部通过。
+- `pnpm build:storybook`：bake 136 个 App 后构建成功，输出 `demo/storybook/index.html`。
+- 26 个 play 的 62 条 `expect` 与 1.2 逐条一致；`openspec validate upgrade-storybook-10-vitest --strict` 通过。

@@ -1,4 +1,4 @@
-name: Storybook Tests
+name: Tests
 on: [push, pull_request]
 jobs:
   test:
@@ -21,14 +21,14 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install Playwright browsers
         run: pnpm --filter react-moveable exec playwright install chromium
-      - name: Run Storybook tests
-        run: pnpm --filter react-moveable test:ci
-      - name: Run Original Storybook
-        if: ${{ failure() }}
-        run: pnpm --filter react-moveable test:fail-ci
-      - name: Archive Failed Artifact
+      - name: Type-check stories
+        run: pnpm --filter react-moveable typecheck:stories
+      # Story tests of react-moveable and unit tests of every package (root vitest.config.mts)
+      - name: Run tests
+        run: pnpm test
+      - name: Archive failure screenshots
         if: ${{ failure() }}
         uses: actions/upload-artifact@v7
         with:
-          name: failed snapshot
-          path: packages/react-moveable/__snapshots__
+          name: failure screenshots
+          path: .vitest/attachments/failure-screenshots

@@ -1,26 +1,50 @@
-import { add } from "../../utils/story";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { appStory } from "../../utils/story";
+import ReactFixedDirectionApp from "./ReactFixedDirectionApp";
+import ReactFlexApp from "./ReactFlexApp";
+import ReactGroupMinSizeApp from "./ReactGroupMinSizeApp";
+import ReactWithEdgeControlApp from "./ReactWithEdgeControlApp";
+
+const apps = import.meta.glob("./*App.tsx", { eager: true });
+const sources = import.meta.glob<string>("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+});
 
 
 export default {
     title: "Advacned Resizable",
-};
+} satisfies Meta;
 
-export const AdvancedResizableFixedDirection = add("Resizable & Scalable with fixed direction", {
-    app: require("./ReactFixedDirectionApp").default,
-    path: require.resolve("./ReactFixedDirectionApp"),
-});
+export const AdvancedResizableFixedDirection = {
+    name: "Resizable & Scalable with fixed direction",
+    ...appStory(ReactFixedDirectionApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const AdvancedResizableFlex = add("Resizable with display: flex", {
-    app: require("./ReactFlexApp").default,
-    path: require.resolve("./ReactFlexApp"),
-});
+export const AdvancedResizableFlex = {
+    name: "Resizable with display: flex",
+    ...appStory(ReactFlexApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const AdvancedResizableGroupMinSize = add("Limit Sizes with Group", {
-    app: require("./ReactGroupMinSizeApp").default,
-    path: require.resolve("./ReactGroupMinSizeApp"),
-});
+export const AdvancedResizableGroupMinSize = {
+    name: "Limit Sizes with Group",
+    ...appStory(ReactGroupMinSizeApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;
 
-export const AdvancedResizableEdgeControl = add("Using Edges and Controls with Draggable, Resizable, and Scalable", {
-    app: require("./ReactWithEdgeControlApp").default,
-    path: require.resolve("./ReactWithEdgeControlApp"),
-});
+export const AdvancedResizableEdgeControl = {
+    name: "Using Edges and Controls with Draggable, Resizable, and Scalable",
+    ...appStory(ReactWithEdgeControlApp, {
+        apps,
+        sources,
+    }),
+} satisfies StoryObj;

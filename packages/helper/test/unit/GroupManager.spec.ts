@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { createElements } from "./utils";
 import { GroupManager } from "../../src/";
 

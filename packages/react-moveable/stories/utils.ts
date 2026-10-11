@@ -6,7 +6,7 @@ export function makeOptionLink(ableName: string, option: string, property: strin
 }
 
 export function makeArgType(param: {
-    type: "array" | "text" | "radio" | "object" | "number" | "boolean" | "inline-radio";
+    type: "text" | "radio" | "object" | "number" | "boolean" | "inline-radio";
     description?: string;
     defaultValue: any;
     value?: any;
@@ -72,7 +72,11 @@ export function convertReactTemplate(text: string) {
     return convertTemplate(previewText);
 }
 
-export function convertTemplate(text: string, regex = /props\.([a-zA-Z0-9_]+)/g, includePrefix = false) {
+export function convertTemplate(
+    text: string,
+    regex = /props\.([a-zA-Z0-9_]+)/g,
+    includePrefix = false,
+): [string[], string[]] {
     const previewText = text.replace(/App\([^)]*\)/g, "App()");
     let result: RegExpExecArray | null;
     let index = 0;

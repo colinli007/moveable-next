@@ -36,7 +36,7 @@
 ### 1. 用 Storybook 10 + `@storybook/react-vite` + Vite 8
 选 Vite builder 的理由：它是 SB7 起 React 项目的默认推荐；vue3-moveable 和 svelte-moveable 本来就用 Vite；而且 `@storybook/addon-vitest` 只支持 Vite 系的 framework。Vite 版本选当前最新的 8.x，配套 `@vitejs/plugin-react` 6.x。
 
-Vite 8 的转译从 esbuild 换成了 oxc，所以要确认两件事：装饰器（`@withMethods`）在 oxc 下仍按 `experimentalDecorators` 的语义转译；类字段仍按 `useDefineForClassFields: false` 的语义处理。Vite 对每个文件使用「离它最近、且 include 匹配到它」的 tsconfig 读取这些选项，所以 `src/` 必须仍被 `tsconfig.json` 的 include 覆盖（见决策 7）。这两点在搭骨架时用会调用 Moveable 方法的 story 实测（tasks 3.2）。
+Vite 8 的转译从 esbuild 换成了 oxc，所以要确认两件事：装饰器（`@withMethods`）在 oxc 下仍按 `experimentalDecorators` 的语义转译；类字段仍按 `useDefineForClassFields: false` 的语义处理。Vite 对每个文件使用「离它最近、且 include 匹配到它」的 tsconfig 读取这些选项，所以 `src/` 必须仍被 `tsconfig.json` 的 include 覆盖（见决策 7）。实测结果（tasks 3.2）：oxc 用旧版装饰器辅助函数 `_decorate` 转译 `@withMethods`，`moveable!` 字段不会被输出为类字段（与 `useDefineForClassFields: false` 一致），`getRect`、`updateRect` 等代理方法在实例上可用，真实拖动正常。
 
 React 16.14.0 已经带有 `react/jsx-runtime`，满足 plugin-react 的要求；`@storybook/react` 10 通过 react-dom-shim 在 React 16 下使用 `ReactDOM.render`。docgen 产出对这些 App 组件没有用（props 都是 `Record<string, any>`），关掉（`typescript.reactDocgen: false`）以加快启动。
 - 备选方案：webpack5 builder，story 写法基本不用改。弃用原因：只是把迁移 Vite 的工作推迟到以后，而且用不了 Vitest addon。
@@ -46,13 +46,16 @@ React 16.14.0 已经带有 `react/jsx-runtime`，满足 plugin-react 的要求�
 每个 story 由 `storybookTest` 插件转成一个 Vitest 测试，在浏览器模式（Playwright 驱动的 chromium）下运行：先完整渲染，有 play 就再执行 play。测试不再需要「先构建 Storybook，再起 http-server，再等端口就绪」，所以 http-server、concurrently、wait-on 都删掉。`vitest` 和 `@vitest/browser-playwright` 精确锁定为同一个版本。
 
 需要显式设置的配置：
-- **失败截图**：addon-vitest 在没有显式设置时会把 `browser.screenshotFailures` 设成 `false`；即使打开，默认也会写到每个测试文件（也就是每个 story 文件）旁边的 `__screenshots__`。所以显式设置 `screenshotFailures: true`，并用 `screenshotDirectory` 统一输出到 `packages/react-moveable/.vitest-screenshots/`。这个目录加入 `.gitignore`，CI 按这个固定路径上传。
-- **视口**：test-runner 用 Playwright 默认的 1280×720；addon-vitest 在没有设置 viewport 参数时固定用 1200×900。依赖布局的断言可能因此变化，所以显式固定为 1280×720。
+- **失败截图**：addon-vitest 在没有显式设置时会把 `browser.screenshotFailures` 设成 `false`；即使打开，默认也会写到每个测试文件（也就是每个 story 文件）旁边的 `__screenshots__`。所以显式设置 `screenshotFailures: true`。Vitest 5 把失败截图作为测试附件保存，路径由根配置的 `attachmentsDir` 决定（默认 `.vitest/attachments`，在 project 中设置无效；`screenshotDirectory` 只影响手动调用的 `page.screenshot()`），所以所有失败截图都在根目录的 `.vitest/attachments/failure-screenshots/<story 文件>/<story 名>.png`，不需要额外配置。`.vitest/` 加入根目录的 `.gitignore`，CI 按这个固定路径上传。
+- **视口**：test-runner 用 Playwright 默认的 1280×720；addon-vitest 会在渲染每个 story 前按 viewport 参数和全局值调用 `page.viewport()`，没有匹配项时固定用 1200×900，所以只设置 Vitest 的 `browser.viewport` 不起作用。做法是在 `preview.tsx` 的 `viewport.options` 中增加一个 1280×720 的 `test` 选项，再通过 `storybookTest({ initialGlobals: { viewport: { value: "test" } } })` 只在测试中选中它，开发和发布的 Storybook 不受影响。
+- **setup 文件只补布局**：从 Storybook 10.3 起，addon-vitest 会自动应用 `preview` 的 project annotations，检测到手写的 `setProjectAnnotations` 反而会提示删除，所以 setup 文件里不写它。但 addon-vitest 渲染 story 时不会像 Storybook 的预览页那样按 `parameters.layout`（默认 `padded`）给 `<body>` 加 `sb-show-main sb-main-padded`，画布因此少了 1rem 的偏移；`Group / Multiple Group` 断言的是页面坐标（`getBoundingClientRect`），在 Vitest 中整体差 16px。所以 `.storybook/vitest.setup.ts` 只做一件事：给 `<body>` 加上这两个 class（本仓库的 story 都使用默认布局），让测试看到的布局与 Storybook 中一致，断言期望值不变。
 
 Vitest 配置按包分开，各自声明自己的依赖，符合「依赖显式声明」：
-- `packages/react-moveable/vitest.config.ts`：story 测试（浏览器模式）+ code-preview 拼接逻辑的单元测试（node 环境）；
-- `packages/helper/vitest.config.ts`：helper 的单元测试（DOM 环境，选 happy-dom 或 jsdom 中当前维护更活跃的一个）；
-- 根目录 `vitest.config.ts` 只写 `test.projects: ["packages/*/vitest.config.ts"]`，根目录只声明 `vitest`。
+- `packages/react-moveable/vitest.config.mts`：story 测试（浏览器模式）+ code-preview 拼接逻辑的单元测试（node 环境）；
+- `packages/helper/vitest.config.mts`：helper 的单元测试（DOM 环境，选 happy-dom 或 jsdom 中当前维护更活跃的一个）；
+- 根目录 `vitest.config.mts` 只写 `test.projects: ["packages/*/vitest.config.mts"]`，根目录只声明 `vitest`。Vitest 5 会把声明了 `projects` 的包配置展开成各自的 project。
+
+配置文件用 `.mts`：根目录和各包的 `package.json` 都没有 `"type": "module"`（react-moveable 的 rollup 配置仍是 CommonJS），用 `.ts` 时 Vite 会提示「ESM 语法的文件被当作 CommonJS 加载」，在它计划默认启用的 native 配置加载器下无法工作。
 
 原来那套「失败后再构建一次原始 Storybook 截图对比」的流程，也就是 `test:fail*` 脚本和 `test-runner.js` 的 `postRender`，一并删除。
 - 备选方案：继续用 test-runner 0.26。弃用原因：SB10 主推的是 Vitest addon；test-runner 需要额外的静态构建和服务进程；它的失败截图也要靠我们自己写的 `postRender` 维护。
@@ -90,18 +93,18 @@ export const BasicDraggable = {
 ### 5. 用 tags 和 `devPlay` 替代 facade hack
 - **测试专用 story**：在 `main.ts` 的 `tags` 中定义自定义 tag `hidden-test`，并设置 `defaultFilterSelection: "exclude"`。不用 `test-only` 这个名字，因为它是 SB10 刚删除的内置 tag，容易让人误会。侧边栏筛选只影响显示；Vitest 默认测试所有带 `test` tag 的 story，而 `test` tag 是自动加在每个 story 上的，所以被隐藏的 story 照常被测试。目前只有 `Scalable keepRatio Test` 需要打这个 tag。
 - **`(test)` / `(original)` 两份副本**：直接取消。开发模式下 play 会自动执行，可以在交互面板里看每一步，也可以重新运行。
-- **发布构建中 play 不执行**：`devPlay(play)` 在 `import.meta.env.MODE === "production"` 时返回 `undefined`，其余情况照常返回原函数。三种模式下 `MODE` 的取值已经从源码中查到：`storybook dev` 为 `development`，`storybook build` 为 `production`（builder-vite 的 `vite-config.ts`），Vitest 默认为 `test`。搭骨架时还会再实测一次（tasks 3.4）。Storybook 没有「静态构建时不执行 play」的官方开关，这是最小的显式实现。
+- **发布构建中 play 不执行**：`devPlay(play)` 在 `import.meta.env.MODE === "production"` 时返回 `undefined`，其余情况照常返回原函数。三种模式下 `MODE` 的取值已经从源码中查到：`storybook dev` 为 `development`，`storybook build` 为 `production`（builder-vite 的 `vite-config.ts`），Vitest 默认为 `test`。tasks 3.4 实测三种模式分别为 `development`、`production`、`test`，并确认静态构建中打开带 play 的 story 时目标保持初始状态。Storybook 没有「静态构建时不执行 play」的官方开关，这是最小的显式实现。
 - 删除 `EXEC_TEST` 和 `SKIP_TEST`。
 - 备选方案：给测试专用 story 打 SB 内置的 `!dev` tag。弃用原因：那样在开发模式里也完全看不到，而且没法通过筛选打开。
 
 ### 6. 代码 tab 移植为本地 addon
 目录 `.storybook/addons/code-preview/` 下的结构：
 - `preset.ts`（Node 侧）：导出 `managerEntries`，返回 `fileURLToPath(import.meta.resolve("./manager.tsx"))`。SB10 要求 managerEntries 必须是文件路径，不能直接是 URL。
-- `manager.tsx`（浏览器的 manager 侧）：注册一个 panel，用 `storybook/manager-api` 的 `useParameter("preview")` 和 `useArgs()` 读取模板和当前参数，用 `storybook/internal/components` 的 `SyntaxHighlighter` 渲染代码，并提供复制按钮。
-- `render.ts`：纯函数，输入模板和参数，输出代码字符串。panel 和单元测试共用这个函数。
-- `main.ts` 中通过 `addons: [import.meta.resolve("./addons/code-preview/preset.ts")]` 注册。
+- `manager.tsx`（浏览器的 manager 侧）：注册一个 panel，用 `storybook/manager-api` 的 `useParameter("preview")` 和 `useArgs()` 读取模板和当前参数，用 `storybook/internal/components` 的 `TabsView` 分 tab、`SyntaxHighlighter` 渲染代码，复制直接用 `SyntaxHighlighter` 自带的 `copyable`，不再自己实现复制按钮。切换 story 时保留当前选中的 tab，新 story 没有这个 tab 时回到第一个。
+- `render.ts`：纯函数，输入模板和参数，输出代码字符串（与原包一致：`[strings, values]` 中名字是参数的值用 `JSON.stringify` 替换，其余保留原文），并按 tab 分组。panel、单元测试和 `story.tsx`（`Preview` 类型）共用。
+- `main.ts` 中通过 `addons: [fileURLToPath(import.meta.resolve("./addons/code-preview/preset.ts"))]` 注册。
 
-manager 运行在 Storybook 自带的 React 18 上，和项目里的 React 16 类型不一致，所以 addon 目录使用独立的 tsconfig 做类型检查，不和 stories 共用。
+manager 运行在 Storybook 自带的 React 上，但 addon 只用到 Storybook 组件的公开 props，在项目的 React 16 类型下（`skipLibCheck`）类型检查没有问题，所以 addon 不需要单独的 tsconfig，和 stories 一起由 `stories/tsconfig.json` 检查。
 
 `parameters.preview` 的数据结构保持不变，所以 `stories/utils.ts` 里的 `convertTemplate` 等函数也不用改。原包的 codesandbox 按钮在现有代码里本来就是注释掉的，不移植；它依赖 `@storybook/addon-knobs` 的部分也不移植。
 
@@ -115,7 +118,9 @@ manager 运行在 Storybook 自带的 React 18 上，和项目里的 React 16 �
 - 第三方工具在自己的 `dependencies` 中声明的 TS 版本不再被强制改写：croffle 使用 TS 4.5.5，vue3 构建链中的 `@microsoft/api-extractor` 使用它精确声明的 5.0.4（vue3 没有开 `rollupTypes`，构建不会用到它）；
 - `croffle.config.js` 改为从 croffle 所在目录解析 typescript，与 croffle 共用同一个 TS 实例，否则 `SyntaxKind` 的枚举值会对不上。
 
-stories 的类型检查：新增 `tsconfig.stories.json`，使用 `moduleResolution: bundler`、`types: ["vite/client"]`，配置别名路径，并 exclude 掉 croffle 生成的 `**/{script,vue3,svelte,lit}/**`（`allowJs` 打开时，这些生成的 `.js` 文件会被一起检查）。`tsconfig.json` 去掉对 stories 的 include（`src/` 仍然由它覆盖，见决策 1），并通过 `references` 引用 `tsconfig.stories.json`。新增 `typecheck:stories` 脚本，接入 CI。原来是 fork-ts-checker 在 Storybook 运行时顺带做类型检查，现在这项工作要独立出来。
+stories 的类型检查：新增 `stories/tsconfig.json`，继承库的 `tsconfig.json`（别名 `paths` 随之继承），改用 `moduleResolution: bundler`、`types: ["vite/client", "node"]`，include 同时覆盖 `.storybook/`，并 exclude 掉 croffle 生成的 `**/{script,vue3,svelte,lit}/**`（`allowJs` 打开时，这些生成的 `.js` 文件会被一起检查）。`.storybook/tsconfig.json` 只有一行 `extends`，让编辑器打开 `.storybook/` 下的文件时也能找到这份配置。`tsconfig.json` 去掉对 stories 的 include（`src/` 仍然由它覆盖，见决策 1）。新增 `typecheck:stories` 脚本（`tsc -p stories`），接入 CI。
+
+不用 `tsconfig.stories.json` 加 `references` 的原因：被引用的项目必须是 `composite` 并且允许产出，而 stories 会通过别名引入 helper 的源码，composite 要求把它们都列进 include、并统一 `rootDir`，代价远大于收益。编辑器（tsserver）和 Vite（oxc 的 tsconfig 解析）都按「离文件最近的 tsconfig.json」选配置，所以把配置放在目录里就足够了。原来是 fork-ts-checker 在 Storybook 运行时顺带做类型检查，现在这项工作要独立出来。
 
 - 备选方案：全局升级到 TS 5.9，同时升级 vue-tsc 等工具，并 fork croffle 改成 TS 5 API。弃用原因：会把框架包装升级提前拉进来，还要长期维护一个 croffle 的 fork。
 - 备选方案 TS 6：会把 `target: es5` 和 `moduleResolution: node` 变成错误。前者会改变发布出去的代码语法，属于产品决定。
@@ -128,13 +133,16 @@ stories 的类型检查：新增 `tsconfig.stories.json`，使用 `moduleResolut
 
 ### 9. 其余替换
 - `pnpm-workspace.yaml`：删除 7 条 `@storybook/*: ^6.4.22` 和 `@storybook/jest>@storybook/expect` 共 8 条 override。这一步必须在安装 SB10 之前完成（tasks 3.1），否则 SB10 的包会被压回 6.x。
-- `main.ts`：设置 `core: { disableTelemetry: true, disableWhatsNewNotifications: true }`，删除 GA addon 和 `manager.js` 中的 GA 配置。
+- `main.ts`：设置 `core: { disableTelemetry: true, disableWhatsNewNotifications: true }`，并用 `features.sidebarOnboardingChecklist` / `menuOnboardingChecklist` 关掉 SB10 侧边栏和菜单里的新手引导清单（这是库的 demo，不是待配置的项目）；删除 GA addon 和 `manager.js` 中的 GA 配置。`viteFinal` 中加入 `@vitejs/plugin-react`（`@storybook/react-vite` 不会自动加，没有它时 oxc 会沿用 `tsconfig.json` 的 `jsx: preserve`，JSX 不被转换），并用 Vite 8 的 `resolve.tsconfigPaths` 直接读取 `tsconfig.json` 的 `paths`，不在 Vite 配置中重复写一遍别名。
+- 公共样式：SB6 启动时会加载所有 story 模块，4-Options、4-SVG 引入的 `common.css` 和 `templates/default.css` 因此对所有 story 生效，很多 App 依赖这些样式定位 `.target`。Vite 下 CSS 只随引入它的模块加载，所以这两个文件改为在 `preview.tsx` 中全局引入，并删除两个 story 文件中的重复引入。`99-Tests` 下的 `snap.css`、`safari.css` 只用到那两个 App 自己的类名，不需要提升。
+- controls：SB7 起没有 `array` 控件，`controls/default.ts` 中 4 处 `type: "array"` 改为 `object`（JSON 编辑）。
+- storySort：Storybook 会读取这个函数的源码文本后 `eval`，所以函数里不能写类型标注；`parameters` 的类型是 `Record<string, any>`，也没有上下文类型可用，只能用一行 `@ts-expect-error` 说明。
 - `storybook-dark-mode` 升级到 5.x；viewport 和 controls 由 SB10 core 提供，`INITIAL_VIEWPORTS` 改从 `storybook/viewport` 导入，配置改为 `viewport.options`；删除 `controls.passArgsFirst`；`addon-docs` 保留。
 - readme：`.storybook/readme.ts` 改为生成 `stories/0-Introduction/readme.mdx`（`<Meta title="Introduction" />`）；`.gitignore` 中的 `*.stories.mdx` 改为忽略这个生成文件。
 - `preview-head.html`：选择器从 `#docs-root` 改为 `#storybook-docs`。
 - `preview.tsx`：storySort 改用 SB10 的索引项签名，按 `importPath` 做数字感知排序，保持现在的顺序。docs page 改用 SB10 的 `Title`、`Primary`、`Controls` 块；原来在副标题位置显示的 story 名，改用一个通过 `useOf("story")` 读取名字的小组件实现，因为 `Subtitle` 块显示的是 `parameters.docs.subtitle`，不是 story 名。
-- `@storybook/jest`、`@storybook/testing-library` → `storybook/test`；`stories/utils/testing.tsx` 的手势模拟是标准的 DOM 事件派发，不需要修改。play 中的 `canvasElement` 在 Vitest 下是一个挂在 `document.body` 下的容器，`querySelector` 的用法照旧可用。
-- 只在 story 中用到的 daybrush 组件（keycon、react-keycon、react-infinite-viewer、@scena/react-guides）升级到最新版；如果新版不支持 React 16，就停在支持 React 16 的最高版本，并记录原因。react-selecto 是库的运行时依赖，不升级，只删除 devDependencies 中重复的那一条。
+- `@storybook/jest`、`@storybook/testing-library` → `storybook/test`。`storybook/test` 的 `userEvent` 是 user-event 14，调用返回 Promise；原来的 `@storybook/testing-library` 0.0.13 是同步的，所以 play 中的 `userEvent.click(...)` 要改为 `await userEvent.click(...)`（只有 `Group / Multiple Group` 一处），这属于风险条目里允许的「只调整等待方式」；`stories/utils/testing.tsx` 的手势模拟是标准的 DOM 事件派发，不需要修改。play 中的 `canvasElement` 在 Vitest 下是一个挂在 `document.body` 下的容器，`querySelector` 的用法照旧可用。
+- 只在 story 中用到的 daybrush 组件（keycon、react-keycon、react-infinite-viewer、@scena/react-guides）升级到最新版；如果新版不支持 React 16，就停在支持 React 16 的最高版本，并记录原因。实测四个包的最新版（keycon 1.4.0、react-keycon 0.3.0、react-infinite-viewer 0.28.1、@scena/react-guides 0.28.2）都没有用到 React 17/18 才有的 API。react-keycon 0.2 起的依赖声明会装出两份 `@cfcs/core`（`@cfcs/react` 的 `~0.0.6` 解析到 0.0.26，keycon 的 `^0.0.6` 只能是 0.0.6），`useKeycon` 的返回类型因此退化为 `{}`；经用户确认，在 `pnpm-workspace.yaml` 中加一条限定范围的 `"@cfcs/react>@cfcs/core": "0.0.6"`，它仍在 `@cfcs/react` 声明的范围内，只是让两者共用一份。react-selecto 是库的运行时依赖，不升级，只删除 devDependencies 中重复的那一条。
 - react-moveable 的 `@types/node` 升级到 22（vitest 5 的 peer 要求）。
 
 ## Risks / Trade-offs
