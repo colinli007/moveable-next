@@ -478,7 +478,7 @@ react-moveable、croact-moveable、preact-moveable、vue3-moveable、svelte-move
 
 - 两边相同：`Failed to load preset` 和 `ERR_INVALID_ARG_TYPE`、PostCSS 弃用警告、18 条 TS factory API 弃用警告（第 3.2 节第 7 条，基线漏记）、`No issues found.`。
 - 只在 yarn 里出现：yarn 自己打印的 `react-selecto` 重复声明提示，pnpm 不输出这类提示。
-- **只在 pnpm 里出现**：`` `isModuleDeclaration` has been deprecated, please migrate to `isImportOrExportDeclaration` ``。来源是 pnpm 把 `@babel/types` 统一成了 7.21.2（yarn.lock 里本来就有，但基线的部分子树用的是 7.18.4 / 7.19.0）。这只是一条日志，不影响启动。**待用户确认。**
+- **只在 pnpm 里出现**：`` `isModuleDeclaration` has been deprecated, please migrate to `isImportOrExportDeclaration` ``。来源是 pnpm 把 `@babel/types` 统一成了 7.21.2（yarn.lock 里本来就有，但基线的部分子树用的是 7.18.4 / 7.19.0）。这只是一条日志，不影响启动。**用户已确认接受。**
 
 Node 22 下 Storybook 正常启动，`http://localhost:6006/` 和 `iframe.html` 都返回 200，没有 `ERR_OSSL_EVP_UNSUPPORTED`。也没有出现找不到 preset 或 addon 的问题，所以 `.storybook/main.js` 不需要改成绝对路径。
 

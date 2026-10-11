@@ -18,7 +18,7 @@
 
 - [x] 2.1 删除 `packages/vue-moveable`、`packages/ngx-moveable`、`packages/snappable`、根目录 `storybook/`，验证：这些目录不存在
 - [x] 2.2 删除 `config/update-type-consts.js`；从根 `package.json` 的 `workspaces` 中去掉 `packages/ngx-moveable/projects/ngx-moveable`，删除 `update-type-consts` 脚本，并从 `packages:build` / `packages:publish` 中去掉 Angular 常量生成步骤和对已删除包的 `--ignore`；`lerna.json` 的 `packages` 做同样修改，验证：在仓库中 grep `ngx-moveable`、`update-type-consts`，只剩 CHANGELOG 和 README 里的引用
-- [ ] 2.3 修改 `packages/react-moveable/croffle.config.js`：删除 Vue 2 和 Angular 的 waffle、`ngxModuleSirup`、`ngxTemplateSirup` 以及不再使用的 import，从 `cleanPaths` 中去掉 `vue2`、`angular`，验证：先手动删掉 `stories/**/vue2/`、`stories/**/angular/` 这些旧的生成目录（它们在 `.gitignore` 里，`cleanPaths` 不会再清理），再执行 `yarn bake`，之后只生成 script、vue3、svelte、lit 目录
+- [x] 2.3 修改 `packages/react-moveable/croffle.config.js`：删除 Vue 2 和 Angular 的 waffle、`ngxModuleSirup`、`ngxTemplateSirup` 以及不再使用的 import，从 `cleanPaths` 中去掉 `vue2`、`angular`，验证：先手动删掉 `stories/**/vue2/`、`stories/**/angular/` 这些旧的生成目录（它们在 `.gitignore` 里，`cleanPaths` 不会再清理），再执行 `yarn bake`，之后只生成 script、vue3、svelte、lit 目录
 - [x] 2.4 修改 `packages/react-moveable/stories/utils/story.tsx`，删除 Vue2 和两个 Angular 代码 tab；删除 `stories/utils.ts` 中不再被引用的 `convertAngularTemplate`；去掉 `tsconfig.json` 的 angular exclude 和 `.gitignore` 中 vue2、angular 的条目，验证：`yarn test:type` 和 `yarn lint` 通过，Storybook 的代码面板里没有 Vue2 和 Angular tab
 - [x] 2.5 执行 `yarn` 刷新 `yarn.lock` 后重新跑 `yarn packages:build` 和 `yarn test:ci`，验证：产物文件清单、测试结果都与 `baseline.md` 一致，且 `yarn.lock` 中不再有 `@angular/`、`@vue/cli-service`、`ng-packagr`；`vue-template-compiler` 只允许作为 `vue-tsc` → `@vue/language-core` 的传递依赖存在（用户已确认的例外，见 `baseline.md` 第 5 节）
 
@@ -54,7 +54,7 @@
   - 执行 `pnpm doc` 能正常生成 `doc/`，`jsdoc.json` 引用的路径有效
   - 单独执行 `node config/deploy.mjs` 后，`demo/release/<moveable 版本>/{dist,doc}`、`demo/release/latest/{dist,doc}`、`demo/helper/release/<moveable 版本>/dist`、`demo/helper/release/latest/dist` 都存在，且与源目录 `diff -r` 一致
   - 本步骤不执行推送
-- [ ] 3.10 Storybook（design 决策 8）：
+- [x] 3.10 Storybook（design 决策 8）：
   - 在 react-moveable 的 `storybook`、`test:build`、`test:fail-build`、`build:storybook` 脚本前加 `NODE_OPTIONS=--openssl-legacy-provider`
   - 执行 `pnpm --filter react-moveable exec playwright install chromium`
   - 如果出现找不到 preset 或 addon 的问题，把 `.storybook/main.js` 的 `addons` 和 `framework` 改写成用 `require.resolve` 计算出来的绝对路径
@@ -71,6 +71,6 @@
 ## 4. CI 与文档
 
 - [ ] 4.1 按 design 决策 9 改写 `.github/workflows/run-e2e.yml`（pnpm setup、Node 版本读 `.nvmrc`、缓存 pnpm store 和 Playwright、显式安装 Playwright 浏览器、使用当前主版本的 upload-artifact），验证：推送到 origin 后工作流的 Storybook 测试任务通过；用一个故意让 story 失败的临时提交确认能上传 `failed snapshot` 产物，验证完 revert
-- [ ] 4.2 更新 `CLAUDE.md`：包管理器、命令（yarn 改 pnpm）、Node 版本、包依赖链（去掉 vue-moveable 和 ngx-moveable）、构建流程（去掉 Angular 常量生成）、croffle 生成的框架列表，验证：在 `CLAUDE.md` 中 grep 不到 `yarn`、`lerna`、`ngx`、`Angular`、`Vue2`
-- [ ] 4.3 从根 README、`packages/moveable/README.md`、`packages/lit-moveable/README.md`、`packages/vue3-moveable/README.md` 中删除 Angular 和 Vue 2 的徽章与链接，删除 `handbook/handbook.md` 中的 Angular Example，验证：这些文件中 grep 不到 `ngx-moveable` 和 `vue-moveable`（`vue3-moveable` 除外）
-- [ ] 4.4 最终整体验证：在全新克隆中执行 `nvm use && pnpm install --frozen-lockfile && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable test:ci`，验证：全部成功；执行 `openspec validate migrate-to-pnpm-monorepo --strict` 通过
+- [x] 4.2 更新 `CLAUDE.md`：包管理器、命令（yarn 改 pnpm）、Node 版本、包依赖链（去掉 vue-moveable 和 ngx-moveable）、构建流程（去掉 Angular 常量生成）、croffle 生成的框架列表，验证：在 `CLAUDE.md` 中 grep 不到 `yarn`、`lerna`、`ngx`、`Angular`、`Vue2`
+- [x] 4.3 从根 README、`packages/moveable/README.md`、`packages/lit-moveable/README.md`、`packages/vue3-moveable/README.md` 中删除 Angular 和 Vue 2 的徽章与链接，删除 `handbook/handbook.md` 中的 Angular Example，验证：这些文件中 grep 不到 `ngx-moveable` 和 `vue-moveable`（`vue3-moveable` 除外）
+- [x] 4.4 最终整体验证：在全新克隆中执行 `nvm use && pnpm install --frozen-lockfile && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable test:ci`，验证：全部成功；执行 `openspec validate migrate-to-pnpm-monorepo --strict` 通过

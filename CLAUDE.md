@@ -4,10 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 仓库概况
 
-Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩放、旋转、变形、吸附、分组等交互的库，同一套核心逻辑发布为 React / Preact / 原生 JS / Vue2 / Vue3 / Svelte / Lit / Angular 多个包。
+Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩放、旋转、变形、吸附、分组等交互的库，同一套核心逻辑发布为 React / Preact / 原生 JS / Vue 3 / Svelte / Lit 多个包。
 
-- 包管理：仓库现状是 **yarn 1 workspaces + lerna（independent 版本）**，有 `yarn.lock`，`lerna.json` 的 `npmClient` 为 yarn；CI 用 Node 16。
-- TypeScript 锁定在 `^4.8 <4.9`（根 `resolutions` 强制），不要用 4.9+ 语法。
+- 运行时：Node **22.20.0**（根目录 `.nvmrc`，`nvm use` 即可切换；CI 读取同一个文件）。
+- 包管理：**pnpm workspace**（版本见根 `package.json` 的 `packageManager`，corepack 或全局 pnpm 会自动切换），只有一份根目录的 `pnpm-lock.yaml`，内部依赖写成 `workspace:~`。workspace 设置、overrides、`allowBuilds` 都在 `pnpm-workspace.yaml` 中。
+- 依赖布局是 pnpm 默认的严格（isolated）布局，不开任何 hoist：包里用到的模块、脚本调用的可执行文件都必须在**这个包自己的** `package.json` 里声明，不能依赖根目录兜底。依赖的构建脚本默认被拦截，新增需要构建的依赖时要写进 `allowBuilds`。
+- TypeScript 锁定在 `^4.8 <4.9`（`pnpm-workspace.yaml` 的 `overrides` 强制），不要用 4.9+ 语法。
 - 需求/设计走 OpenSpec 工作流（`openspec/`、`.claude/skills/openspec-*`、`/opsx:*` 命令）。
 
 ## 常用命令
@@ -16,24 +18,29 @@ Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩�
 
 ```bash
 # 根目录
-yarn                       # 安装依赖
-yarn storybook             # = react-moveable 的 storybook（端口 6006），主要的开发/调试环境
-yarn build                 # 只构建 react-moveable
-yarn packages:build        # 构建 react-moveable → 生成 Angular 输入输出常量 → lerna 构建其余包
+pnpm install               # 安装依赖（根目录一次装好所有包）
+pnpm storybook             # = react-moveable 的 storybook（端口 6006），主要的开发/调试环境
+pnpm build                 # 只构建 react-moveable
+pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact/preact → moveable → lit/vue3/svelte，helper 独立）
+pnpm doc                   # jsdoc 生成 doc/
+pnpm deploy                # node config/deploy.mjs 复制产物到 demo/，再用 gh-pages 推送到 origin
 
-# packages/react-moveable
-yarn lint                  # eslint ./src
-yarn test:type             # tsc -p tsconfig.test.json，对 tests/types.ts 做类型断言检查
-yarn build                 # lint + test:type + rollup + declaration
-yarn test:ci               # 构建测试版 storybook 并用 @storybook/test-runner（Playwright）跑所有 play 交互测试
-yarn test                  # 对已在 6006 端口运行的 storybook 跑 test-runner（本地调试单个用例：开着 yarn storybook，在 Interactions 面板看对应 story 的 play）
+# packages/react-moveable（或在根目录用 pnpm --filter react-moveable <script>）
+pnpm lint                  # eslint ./src
+pnpm test:type             # tsc -p tsconfig.test.json，对 tests/types.ts 做类型断言检查
+pnpm build                 # lint + test:type + rollup + declaration
+pnpm exec playwright install chromium   # 首次跑测试前安装浏览器（不靠 postinstall）
+pnpm test:ci               # 构建测试版 storybook 并用 @storybook/test-runner（Playwright）跑所有 play 交互测试
+pnpm test                  # 对已在 6006 端口运行的 storybook 跑 test-runner（本地调试单个用例：开着 pnpm storybook，在 Interactions 面板看对应 story 的 play）
 ```
+
+Storybook 仍是 6.5（webpack 4），在 Node 22 下靠 `storybook` / `test:build` / `test:fail-build` / `build:storybook` 脚本里的 `NODE_OPTIONS=--openssl-legacy-provider` 运行。
 
 测试即 storybook story 的 `play` 函数（`stories/**/*.stories.tsx`，用 `stories/utils/testing.tsx` 的 `pan`/`pinch`/`rotate` 模拟手势，再断言 `style.transform`）。环境变量约定（见 `stories/utils/story.tsx`、`.storybook/test-runner.js`）：
 - `EXEC_TEST=true`：测试构建，没有 `play` 的 story 渲染为空。
 - `SKIP_TEST=true`：生产/文档构建，不挂 `play`；test-runner 在此模式下给每个 story 截图到 `__snapshots__/`（CI 失败时用于对比）。
 
-`yarn bake`（croffle）会把 React story 自动转译成 vanilla/vue2/vue3/svelte/angular/lit 版本的示例代码，生成在各 story 目录的子文件夹里，不要手改这些生成目录。
+`pnpm bake`（croffle）会把 React story 自动转译成 script（vanilla）/vue3/svelte/lit 版本的示例代码，生成在各 story 目录的子文件夹里，不要手改这些生成目录。
 
 ## 架构
 
@@ -45,12 +52,13 @@ react-moveable  ← 全部核心逻辑（React class 组件）
  ├─ croact-moveable   用 rollup-plugin-react-compat 把 react 别名到 croact（轻量 React 兼容运行时）
  │    └─ moveable     原生 JS 版：croact 的 renderSelf 渲染 InnerMoveable，
  │         │          @Properties 装饰器按 MOVEABLE_PROPS / EVENTS / METHODS 自动生成 getter/setter/方法代理
- │         └─ vue-moveable / vue3-moveable / svelte-moveable / lit-moveable   包装原生 moveable
- └─ ngx-moveable     inputs/outputs 由 config/update-type-consts.js 从 react-moveable 的 dist 生成
-helper、snappable   独立工具包
+ │         └─ vue3-moveable / svelte-moveable / lit-moveable   包装原生 moveable
+helper              独立工具包（@moveable/helper）
 ```
 
-因此：**改行为只改 `react-moveable`**，其它包自动继承；新增 prop/事件必须登记在对应 able 的 `props` / `events` 数组里，才会进入 `MOVEABLE_PROPS` / `MOVEABLE_EVENTS`，进而被原生版、各框架包装和 Angular 自动暴露。
+moveable 的 UMD 产物（`dist/moveable.js`）把 react-moveable 和 croact 一起内联。react-moveable 本身不依赖 croact，所以 `packages/moveable/rollup.config.js` 里的 `resolveOwnCroactPlugin` 会从 moveable 自己的依赖中解析 croact；去掉它之后 UMD 会退化成依赖外部的 `React`。
+
+因此：**改行为只改 `react-moveable`**，其它包自动继承；新增 prop/事件必须登记在对应 able 的 `props` / `events` 数组里，才会进入 `MOVEABLE_PROPS` / `MOVEABLE_EVENTS`，进而被原生版和各框架包装自动暴露。
 
 ### Able 插件体系（核心）
 
@@ -73,4 +81,4 @@ helper、snappable   独立工具包
 
 ### 类型
 
-`src/types.ts`（数千行）是所有 props、事件参数、`MoveableManagerInterface` 的唯一来源；`tests/types.ts` 用于编译期类型断言（`yarn test:type`）。
+`src/types.ts`（数千行）是所有 props、事件参数、`MoveableManagerInterface` 的唯一来源；`tests/types.ts` 用于编译期类型断言（`pnpm test:type`）。

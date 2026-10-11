@@ -8,10 +8,6 @@
  <a href="https://github.com/daybrush/moveable/blob/master/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/daybrush/moveable.svg?style=flat-square&label=license&color=08CE5D"/></a>
  <a href="https://github.com/daybrush/moveable/tree/master/packages/react-moveable" target="_blank"> <img alt="React" src="https://img.shields.io/static/v1.svg?label=&message=React&style=flat-square&color=61daeb" /></a>
  <a href="https://github.com/daybrush/moveable/tree/master/packages/preact-moveable" target="_blank"><img alt="Preact" src="https://img.shields.io/static/v1.svg?label=&message=Preact&style=flat-square&color=673ab8" /></a>
- <a href="https://github.com/daybrush/moveable/tree/master/packages/ngx-moveable" target="_blank"><img alt="Angular" src="https://img.shields.io/static/v1.svg?label=&message=Angular&style=flat-square&color=C82B38" /></a>
- <a href="https://github.com/daybrush/moveable/tree/master/packages/vue-moveable" target="_blank"><img
-    alt="Vue"
-    src="https://img.shields.io/static/v1.svg?label=&message=Vue&style=flat-square&color=3fb984" /></a>
  <a href="https://github.com/daybrush/moveable/tree/master/packages/vue3-moveable" target="_blank"><img
     alt="Vue 3"
     src="https://img.shields.io/static/v1.svg?label=&message=Vue%203&style=flat-square&color=3fb984" /></a>
@@ -237,10 +233,8 @@ moveable.on("pinchStart", ({ target, clientX, clientY }) => {
 * [**moveable**](https://github.com/daybrush/moveable/blob/master/packages/moveable): A Vanilla Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
 * [**react-moveable**](https://github.com/daybrush/moveable/blob/master/packages/react-moveable): A React Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
 * [**preact-moveable**](https://github.com/daybrush/moveable/blob/master/packages/preact-moveable): A Preact Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
-* [**ngx-moveable**](https://github.com/daybrush/moveable/blob/master/packages/ngx-moveable): An Angular Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
 * [**svelte-moveable**](https://github.com/daybrush/moveable/blob/master/packages/svelte-moveable): A Svelte Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
 * [**lit-moveable**](https://github.com/daybrush/moveable/blob/master/packages/lit-moveable): A Lit Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
-* [**vue-moveable**](https://github.com/daybrush/moveable/blob/master/packages/vue-moveable): A Vue Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
 * [**vue3-moveable**](https://github.com/daybrush/moveable/blob/master/packages/vue3-moveable): A Vue 3 Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
 
 ## ⚙️ Developments

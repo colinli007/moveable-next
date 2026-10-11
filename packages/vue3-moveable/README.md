@@ -10,7 +10,6 @@
 <p align="middle">A Vue 3 Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable, Groupable, Snappable.</p>
 <p align="middle">
     <a href="https://daybrush.com/moveable" target="_blank"><strong>Demo</strong></a> /
-    <a href="https://github.com/daybrush/moveable/tree/master/packages/vue-moveable" target="_blank"><strong>Vue 2</strong></a> /
     <a href="https://daybrush.com/moveable/storybook/" target="_blank"><strong>Storybook</strong></a> /
     <a href="https://daybrush.com/moveable/release/latest/doc/" target="_blank"><strong>API</strong></a> /
     <a href="https://github.com/daybrush/scena" target="_blank"><strong>Main Project</strong></a>
@@ -91,11 +90,6 @@
 * Vue 3
 ```sh
 $ npm i vue3-moveable
-```
-
-* Vue 2
-```sh
-$ npm i vue-moveable@beta
 ```
 
 ## 🚀 How to use

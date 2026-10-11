@@ -118,7 +118,7 @@ In a group, Pinchable and Snappable are the same as they used to be. But warpabl
 # <a id="toc-change-target"></a> When the event starts while changing the target
 
 ### methods
-* [dragStart](https://daybrush.com/moveable/release/latest/doc/Moveable.html#dragStart): You can drag start the Moveable through the external `MouseEvent`or `TouchEvent`. (Angular: ngDragStart)
+* [dragStart](https://daybrush.com/moveable/release/latest/doc/Moveable.html#dragStart): You can drag start the Moveable through the external `MouseEvent`or `TouchEvent`.
 * [setState](https://daybrush.com/moveable/release/latest/doc/Moveable.html#setState): You can change options or properties dynamically.
 
 ### Vanilla Exmaple
@@ -155,34 +155,6 @@ onMouseDown(e) {
     }, () => {
         this.moveable.dragStart(nativeEvent);
     });
-}
-```
-
-### Angular Example
-```tsx
-
-@Component({
-    selector: 'AppComponent',
-    template: `
-<div (mousedown)="onMouseDown($event)">
-    <div class="target">target</div>
-    <div class="target">target2</div>
-</div>
-<ngx-moveable
-    #moveable
-    [target]="target"
-    />
-`,
-})
-export class AppComponent {
-    targert = null;
-    @ViewChild('moveable', { static: false })  moveable;
-    onMouseDown(e) {
-        this.target = e.target;
-        setTimeout(() => {
-            this.moveable.ngDragStart(e);
-        });
-    }
 }
 ```
 
