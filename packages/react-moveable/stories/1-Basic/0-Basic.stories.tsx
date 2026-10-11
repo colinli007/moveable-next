@@ -36,7 +36,7 @@ export default {
 } satisfies Meta;
 
 // temporary: a type error that does not affect rendering
-const typeErrorProbe: number = "not a number";
+export const typeErrorProbe: number = "not a number";
 
 export const BasicDraggable = {
     name: "Draggable",
