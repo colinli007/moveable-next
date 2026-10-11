@@ -12,6 +12,17 @@ const resolveCompatPlugin = compat({
     useCroact: true,
     resolveCompat: true,
 });
+// The UMD bundle inlines croact in place of react. Resolve it from this package,
+// which depends on croact, instead of from the importer (react-moveable does not).
+const resolveOwnCroactPlugin = {
+    name: "resolve-own-croact",
+    resolveId(importee) {
+        if (importee === "react" || importee === "react-dom") {
+            return this.resolve("croact", __filename, { skipSelf: true });
+        }
+        return null;
+    },
+};
 /*
     "demo:start": "rollup -c rollup.config.demo.js -w",
     "demo:build": "rm -rf ./demo/dist && rollup -c rollup.config.demo.js",
@@ -45,7 +56,7 @@ module.exports = builder([
         exports: "default",
         format: "umd",
         minifyPrototype: true,
-        plugins: [resolveCompatPlugin],
+        plugins: [resolveOwnCroactPlugin, resolveCompatPlugin],
         typescript2: true,
     },
     {
@@ -55,7 +66,7 @@ module.exports = builder([
         exports: "default",
         format: "umd",
         minifyPrototype: true,
-        plugins: [resolveCompatPlugin],
+        plugins: [resolveOwnCroactPlugin, resolveCompatPlugin],
         uglify: true,
         typescript2: true,
     },

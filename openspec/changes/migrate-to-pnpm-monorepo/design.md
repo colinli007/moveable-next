@@ -60,7 +60,7 @@
 - 备选方案：`workspace:*`。弃用原因：发布时会被改写成精确版本，改变了下游的版本范围语义。等以后做 `@moveable-next` 发布的 change 时再决定也不迟，选 `~` 对那时没有任何约束。
 
 ### 5. `resolutions` 原样迁移到 pnpm overrides
-条目和版本范围都保持不变，只换配置位置。所用 pnpm 版本支持在 `pnpm-workspace.yaml` 里写 `overrides` 的话，统一放在 `pnpm-workspace.yaml`，否则放在根 `package.json` 的 `pnpm.overrides`。精简条目留到以后的 Storybook 或依赖升级 change。同时删除 `packages/svelte-moveable/.npmrc`，避免子目录的 `resolution-mode` 设置干扰解析。
+条目和版本范围都保持不变，只换配置位置。另外新增了一条定向 override：`@storybook/jest>@storybook/expect: 27.5.2-0`。原因是 `@storybook/jest@0.0.10` 依赖的是 dist-tag `storybook-jest`，`pnpm import` 无法把 tag 对应到 yarn.lock 里的版本，会解析成 tag 当前指向的 28.1.3-5；这条 override 把它锁回基线版本。所用 pnpm 版本支持在 `pnpm-workspace.yaml` 里写 `overrides` 的话，统一放在 `pnpm-workspace.yaml`，否则放在根 `package.json` 的 `pnpm.overrides`。精简条目留到以后的 Storybook 或依赖升级 change。同时删除 `packages/svelte-moveable/.npmrc`，避免子目录的 `resolution-mode` 设置干扰解析。
 
 ### 6. 用 `pnpm -r` 替代 lerna 的任务编排
 根脚本对照：
@@ -94,7 +94,12 @@
 `pnpm/action-setup`（版本读 `packageManager`）→ `actions/setup-node`（`node-version-file: .nvmrc`，`cache: pnpm`）→ `pnpm install --frozen-lockfile` → 显式安装 Playwright 浏览器 → `pnpm --filter react-moveable test:ci` → 失败时运行 `test:fail-ci`，并用 `actions/upload-artifact` 上传 `__snapshots__`。Actions 一律用实施时的当前主版本。不再缓存 `**/node_modules`，改为缓存 pnpm store 和 Playwright 浏览器目录。
 
 ### 10. 包管理器版本
-`packageManager` 写实施时最新稳定版 pnpm 的精确版本。pnpm 10 起默认禁止依赖的生命周期脚本：用 `pnpm approve-builds` 审核后，只把确实需要构建的依赖（如 esbuild）写进 `onlyBuiltDependencies`，不能整体放开。Playwright 浏览器不靠 postinstall 下载，本地和 CI 都显式执行 `playwright install`。
+`packageManager` 写实施时最新稳定版 pnpm 的精确版本。pnpm 10 起默认禁止依赖的生命周期脚本：用 `pnpm approve-builds` 审核后，只把确实需要构建的依赖（如 esbuild）标记为允许，不能整体放开。
+
+**实施时的修正**：实施时 npm 上的最新版是 pnpm 12.11.2，但它改成了原生二进制分发。Node 22.20.0 自带的 corepack 0.34 会去找 `bin/pnpm.cjs`，在 12.x 里这个文件不存在；全局 pnpm 10 自动切换到 12.x 时也会报 ENOEXEC。这样就满足不了 spec 里「启用 Corepack 的开发者使用声明版本」。因此改用 **pnpm 11.28.2**，即 corepack 能正常运行的最新主版本。pnpm 11 的几项变化也一并适配：
+- 构建审批由 `allowBuilds` 取代 `onlyBuiltDependencies`，且默认开启 `strictDepBuilds`，未审批的构建脚本会让安装失败。
+- `.npmrc` 只读认证和 registry 配置，所以不再新建 `.npmrc`；不加任何 hoist 选项的目标不受影响。
+- 不再读取 `package.json` 的 `pnpm` 字段，overrides 只能写在 `pnpm-workspace.yaml`。Playwright 浏览器不靠 postinstall 下载，本地和 CI 都显式执行 `playwright install`。
 
 ## Risks / Trade-offs
 

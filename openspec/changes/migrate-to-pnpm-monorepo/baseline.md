@@ -217,6 +217,7 @@ croact-moveable、preact-moveable、moveable（含 UMD）、vue3-moveable、svel
 4. `Browserslist: caniuse-lite is outdated. Please run: npx browserslist@latest --update-db`
 5. manager / preview bundle 的 webpack `[big]` 体积提示。
 6. fork-ts-checker：`No issues found.`（不是警告，记录以便对比）
+7. **（第 7.8 节补记）** 18 条 TypeScript 旧 factory API 的弃用警告：`DeprecationWarning: 'createIdentifier' has been deprecated since v4.0.0. Use the appropriate method on 'ts.factory' ...`，另外还有 `createLiteral`、`createBinaryExpression`、`createExpressionStatement`、`createPropertyAssignment`、`createObjectLiteralExpression`、`createTypeOfExpression`、`createElementAccessExpression`、`createIfStatement`、`createBlock`、`createVariableDeclaration`、`createCatchClause`、`createTryStatement`、`createNull`、`createFalse`、`createTrue`，以及一条名称为空的 `''`。当时用 `head -40` 截取日志，这些行被 webpack 进度输出挤掉了，所以第一次没有记下来。
 
 ### 3.3 逐条 story 结果（status 文件 :: 名称）
 
@@ -397,3 +398,97 @@ passed stories/9A-Components/0-Components.stories.tsx :: Combination with Other 
 - **`vue-template-compiler@2.7.14` 仍在**：来源是 `vue3-moveable` 的 `vue-tsc@^1.8.1` → `@vue/language-core@1.8.2` 的 `dependencies`（Vue 3 类型检查工具链的传递依赖，不是 Vue 2 专属）。去掉它需要升级 vue-tsc，超出本 change「不升级依赖」的范围。**用户已确认登记为例外**，tasks 2.5 / 3.4 与 framework-packages spec 已相应修改。
 - `yarn packages:build`：成功，lerna 构建 7 个包。产物文件清单与第 2.3 节**完全一致，逐文件字节数也完全一致**。
 - `yarn test:ci`：20 suites / 137 tests 全部通过；逐条 story 结果与第 3.3 节**完全一致**。
+
+## 6. 补齐的依赖声明（任务 3.3）
+
+每条都对应第 4 节的使用位置和基线版本：
+
+| 声明方 | 段 | 依赖 | 范围 | 基线版本 / 依据 |
+|---|---|---|---|---|
+| react-moveable | devDependencies | `webpack` | `^4.46.0` | 4.46.0，`.storybook/main.js` |
+| react-moveable | devDependencies | `fork-ts-checker-webpack-plugin` | `^6.5.2` | 6.5.2，`.storybook/main.js` |
+| react-moveable | devDependencies | `@storybook/client-api` | `6.5.16` | 6.5.16，`stories/utils/story.tsx` |
+| react-moveable | devDependencies | `@storybook/theming` | `6.5.16` | 6.5.16，`.storybook/preview.jsx` |
+| react-moveable | devDependencies | `playwright` | `^1.25.2` | 1.25.2；3.10 和 CI 在本包执行 `playwright install`，属于脚本直接调用的可执行文件，版本与 test-runner 运行时使用的一致（任务清单未列出，此处补记） |
+| react-moveable、croact、helper、lit、moveable、preact | devDependencies | `rollup` | `~3.25.3` | 基线 `rollup -c` 实际执行的 CLI 是 3.25.3（见第 4 节），锁定同一版本，避免打包器版本变化导致产物差异 |
+| moveable、preact-moveable | dependencies | `framework-utils` | `^1.1.0` | 1.1.0，`src` import |
+| vue3-moveable、svelte-moveable | dependencies | `@daybrush/utils` | `^1.13.0` | 1.13.0，`src` import |
+| helper | devDependencies | `eslint`、`@typescript-eslint/parser`、`@typescript-eslint/eslint-plugin`、`eslint-plugin-import`、`eslint-plugin-react` | `^7.32.0`、`^3.10.1`、`^3.10.1`、`^2.26.0`、`^7.30.0` | 基线解析版本，`lint` 脚本与 `.eslintrc` |
+| 根 | devDependencies | `@scena/event-emitter` | `^1.0.5` | 1.0.5，`jsdoc.json` |
+
+## 7. 切换到 pnpm 后的记录（任务 3.1–3.7，Node 22.20.0 + pnpm 11.28.2）
+
+### 7.1 环境说明
+
+本机直连 `registry.npmjs.org` 时 TLS 会间歇性返回自签名证书（curl 同样如此），而 pnpm 不读取 macOS 的系统代理。因此本次 `pnpm import` / `pnpm install` 都临时加了 `HTTPS_PROXY=http://127.0.0.1:7890 HTTP_PROXY=http://127.0.0.1:7890` 环境变量，走本机代理。这只是本机网络问题，没有写进仓库配置。
+
+### 7.2 对 1.4 解析结果的更正
+
+1.4 的解析是在**删除包之前**测的。删包后（第 2 阶段，构建、测试与基线完全一致的那个状态）重新测了一遍，只有 helper 的 `@typescript-eslint/parser`、`@typescript-eslint/eslint-plugin` 不同：删包前是 3.10.1（来自已删除的包），删包后是 **5.60.1**（与 react-moveable 声明的一致）。因此 helper 声明的是 `^5.60.1`，其余各项不变。
+
+### 7.3 锁文件与 yarn.lock 的版本差异（任务 3.4）
+
+`pnpm import` 生成的锁文件里有 2429 个包版本。相对 `yarn.lock` 新出现的版本及其来源：
+
+- `@storybook/expect`：`@storybook/jest@0.0.10` 依赖的是 dist-tag `storybook-jest`，`pnpm import` 会把它解析成 tag 当前指向的 28.1.3-5（连带引入 `@types/jest@28.1.3`）。已用 override `@storybook/jest>@storybook/expect: 27.5.2-0` 锁回基线版本，见 design 决策 5。
+- `preact@8.5.3`：pnpm 自动安装缺失的 peer（`preact-compat` 等的 peer）。
+- `@types/keyv`、`@types/responselike`（来自 `got@6.7.1`）以及 `semver@5.5.1`、`yamlparser`（来自 `useragent@2.3.0`）：pnpm 内置兼容库补上的依赖。
+
+其余版本都在 `yarn.lock` 里出现过。yarn.lock 中有、pnpm 中没有的条目，是 pnpm 对同一范围选用了 yarn.lock 里的另一个已有版本，或者条目随已删除的包一起消失了。
+
+关键依赖的版本与 yarn.lock 一致：`typescript` 只有 4.8.4，gesto 1.19.4、rollup 3.25.3、react / react-dom 16.14.0、croact 1.0.4、webpack 4.46.0、playwright 1.25.2、vite 4.3.9、svelte 4.2.0、vue 3.3.4、lit 2.6.1、`@storybook/*` 6.5.16、`@storybook/test-runner` 0.9.4。
+
+### 7.4 构建脚本审批（任务 3.5）
+
+只允许 `esbuild` 执行构建脚本；`@sveltejs/kit`、`core-js`、`core-js-pure`、`fsevents`、`playwright`、`preact`、`svelte-preprocess` 都显式拒绝，理由写在 `pnpm-workspace.yaml` 的注释里。vue3-moveable 和 svelte-moveable 的 `vite build` 都成功。
+
+### 7.5 逐包构建暴露出的新增缺失依赖（任务 3.7）
+
+| 声明方 | 段 | 依赖 | 范围 | 依据 |
+|---|---|---|---|---|
+| croact-moveable | devDependencies | `@types/node` | `^18.11.3` | `src/index.umd.ts` 的 `module.exports`，rpt2 报 `TS2552: Cannot find name 'module'` |
+| moveable | devDependencies | `@types/node` | `^18.11.3` | `src/index.cjs.ts` 的 `module.exports`，同上 |
+
+hoist 布局下，TS 会自动加载根目录 `node_modules/@types/node`。当时 hoist 的具体版本没有记录，现在 yarn 的 node_modules 已经删除，无法复查。这个包只提供 `module` 全局变量的类型声明，不会进入产物，所以取 react-moveable 已声明、yarn.lock 里也有的 18.11.3。补齐后 8 个包的 `pnpm --filter <pkg> build` 全部成功，日志里没有 `command not found` 或 `Cannot find module`。
+
+### 7.6 moveable UMD（任务 3.8）
+
+**复现**：在不改配置的情况下用 pnpm 构建 moveable，`moveable.js` 和 `moveable.min.js` 都出现了 `(!) Unresolved dependencies: react (imported by "../react-moveable/dist/moveable.esm.js")` 和 `Missing global variable name: react (guessing "React")`，产物头部变成 `factory(require('react'))` / `global.React`，不再自包含。和 design 的预测不同，未解析的模块名是 `react`，不是 `croact`。原因是 `rollup-plugin-react-compat` 的 `resolveCompat` 从 importer（`packages/react-moveable/dist`）出发解析 `croact`，react-moveable 不依赖 croact，所以解析失败，原始的 `react` 就被当成了外部依赖。
+
+**修复**：在 `packages/moveable/rollup.config.js` 两个 UMD 构建的 compat 插件之前加了一个 `resolveId` 插件，把 `react` / `react-dom` 用 `this.resolve("croact", __filename)` 从 moveable 自己的目录解析（moveable 声明了 `croact`）。
+
+**验证**：构建日志里没有任何「未解析」警告；产物头部是 `factory()`；`moveable.js`、`moveable.min.js` 中 `require('croact')`、`require("croact")`、`global.croact`、`require('react')`、`global.React` 都是 0 次。`moveable.min.js` **与基线逐字节相同**。
+
+### 7.7 产物体积差异的原因
+
+为了逐字节对比，在 scratchpad 中用 git worktree 检出第 2 阶段提交 `c655b9de`，在 Node 16 + yarn 下重建了一份对照产物。它的文件清单和体积与第 2.3 节完全一致。和 pnpm 构建的产物相比，差异如下：
+
+| 文件 | 差异 | 原因 |
+|---|---|---|
+| `helper/dist/helper.js.map`、`lit-moveable/dist/*.map` | +42 ~ +956 字节 | `mappings` 完全相同，只是 `sources` 中的依赖路径从 `node_modules/<pkg>` 变成了 `node_modules/.pnpm/<id>/node_modules/<pkg>` |
+| `moveable/dist/moveable.js`、`moveable.esm.js`、`moveable.cjs.js` 及其 `.map` | -37 ~ -3670 字节 | `diff -w -B` 显示只有注释位置和空行不同。`@daybrush/builder` 用的 babel 从 `@babel/core 7.18.2 / @babel/generator 7.18.2` 变成了 `7.19.0 / 7.21.1`：都是 yarn.lock 里已有的版本，`pnpm import` 对同一范围选了另一个已有版本。新版 generator 会把行尾注释挪到单独一行，并去掉多余的空行。terser 压缩后的 `moveable.min.js` 与基线逐字节相同，可以证明语义没有变化 |
+| `lit-moveable/dist/moveable.umd.js`（3.12 全量构建时出现） | -37 字节 | lit 的 UMD 会内联 moveable 的 ESM 产物，差异与上一行 `moveable.esm.js` 的 -37 字节相同；`diff -w -B` 为空，只有空行不同 |
+| `lit-moveable/declaration/LitMoveable.d.ts` | -5 字节 | `render()` 的返回类型从 `import("lit-html").TemplateResult<1>` 变成 `import("lit").TemplateResult<1>`。严格布局下 lit-moveable 访问不到它没有声明的 `lit-html`，TS 改用 `lit` 重新导出的同一个类型 |
+
+react-moveable、croact-moveable、preact-moveable、vue3-moveable、svelte-moveable 以及其余 declaration 与基线逐字节大小相同。
+
+### 7.8 Storybook 启动警告对比（任务 3.10）
+
+第 3.2 节的原始日志已随 scratchpad 被清理。所以用第 7.7 节的 yarn 对照 worktree（Node 16）重新完整采集了一次启动日志，与 Node 22 + pnpm 的启动日志逐条比较（去掉 webpack 进度、堆栈行和模块清单之后去重）：
+
+- 两边相同：`Failed to load preset` 和 `ERR_INVALID_ARG_TYPE`、PostCSS 弃用警告、18 条 TS factory API 弃用警告（第 3.2 节第 7 条，基线漏记）、`No issues found.`。
+- 只在 yarn 里出现：yarn 自己打印的 `react-selecto` 重复声明提示，pnpm 不输出这类提示。
+- **只在 pnpm 里出现**：`` `isModuleDeclaration` has been deprecated, please migrate to `isImportOrExportDeclaration` ``。来源是 pnpm 把 `@babel/types` 统一成了 7.21.2（yarn.lock 里本来就有，但基线的部分子树用的是 7.18.4 / 7.19.0）。这只是一条日志，不影响启动。**待用户确认。**
+
+Node 22 下 Storybook 正常启动，`http://localhost:6006/` 和 `iframe.html` 都返回 200，没有 `ERR_OSSL_EVP_UNSUPPORTED`。也没有出现找不到 preset 或 addon 的问题，所以 `.storybook/main.js` 不需要改成绝对路径。
+
+### 7.9 全量构建对比（任务 3.12）
+
+`pnpm packages:build`（即 `pnpm -r build`）成功，构建顺序为 react-moveable → croact / preact → moveable → vue3 / lit / svelte，helper 独立构建。
+
+- 文件清单与第 2.3 节完全一致；体积差异逐项见第 7.7 节，都能解释。
+- 「Unresolved dependencies」与第 2.1 节登记的例外完全一致（react-moveable 13 个、helper 1 个、lit-moveable 5 个，各出现在 ESM 和 CJS 两次构建中），没有扩大；UMD 构建中没有此类警告。
+- croact-moveable、moveable、preact-moveable、lit-moveable 的 `dist` 中都没有 `__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED`。
+- 3.8 的 UMD 检查依然通过，`moveable.min.js` 与基线逐字节相同。
+
+Node 22 下的 `test:ci`（任务 3.11）：20 个 suite、137 个测试全部通过，逐条 story 结果与第 3.3 节完全一致。

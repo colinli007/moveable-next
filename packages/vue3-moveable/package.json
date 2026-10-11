@@ -49,8 +49,9 @@
     },
     "homepage": "https://daybrush.com/moveable",
     "dependencies": {
+        "@daybrush/utils": "^1.13.0",
         "framework-utils": "^1.1.0",
-        "moveable": "~0.53.0"
+        "moveable": "workspace:~"
     },
     "files": [
         "./*",
