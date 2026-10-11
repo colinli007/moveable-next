@@ -1334,3 +1334,11 @@ stderr 中只有警告，没有渲染错误：React 16 下 Storybook 渲染器�
 - `pnpm exec vitest run`：22 个测试文件通过、1 个跳过（readme.mdx），144 个测试全部通过。
 - `pnpm build:storybook`：bake 136 个 App 后构建成功，输出 `demo/storybook/index.html`。
 - 26 个 play 的 62 条 `expect` 与 1.2 逐条一致；`openspec validate upgrade-storybook-10-vitest --strict` 通过。
+
+## 6.2 CI
+
+- `b9da5c03`（本 change 的实现）推送后 CI 通过（run 38145127409）：stories 类型检查、bake 136 个 App、22 个测试文件通过、1 个跳过（readme.mdx）。
+- 故意让 story 断言失败（Basic / Draggable 期望改为 `translate(999px, 0px)`，run 38145290167）：「Run tests」失败，上传的「failure screenshots」产物中有 `0-Basic.stories.tsx/Draggable.png`（1280×720）。
+- 故意让 helper 单元测试失败（run 38145456772）：「Run tests」失败，日志中有 `FAIL helper test/unit/GroupManager.spec.ts > test GroupManager > test groups [[0, 1], 2], 3 > selectCompletedChilds 2 => [0, 1]`，统计为 1 failed / 143 passed。
+- 故意在 Basic 的 story 文件中加一个不影响渲染的类型错误（未导出的常量；本地确认 Basic 的 10 个 story 仍全部通过，run 38145645569）：「Type-check stories」失败，日志中有 `stories/1-Basic/0-Basic.stories.tsx(39,7): error TS2322`。第一次写成了 `export`，Storybook 会把它当成 story 导致渲染失败，不能证明「能渲染但类型错误」，所以又补了一个提交改为不导出。
+- 以上临时提交都已 revert，代码与 `b9da5c03` 一致。
