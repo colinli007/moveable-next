@@ -492,3 +492,19 @@ Node 22 下 Storybook 正常启动，`http://localhost:6006/` 和 `iframe.html` 
 - 3.8 的 UMD 检查依然通过，`moveable.min.js` 与基线逐字节相同。
 
 Node 22 下的 `test:ci`（任务 3.11）：20 个 suite、137 个测试全部通过，逐条 story 结果与第 3.3 节完全一致。
+
+## 8. CI 验证（任务 4.1）
+
+工作流使用 `actions/checkout@v7`、`pnpm/action-setup@v6`（pnpm 版本读取 `packageManager`）、`actions/setup-node@v7`（Node 版本读取 `.nvmrc`，`cache: pnpm`）、`actions/cache@v6`（缓存 Playwright 浏览器）、`actions/upload-artifact@v7`，都是实施时（2026-10）各 action 的最新主版本。
+
+| 提交 | Run | 结果 |
+|---|---|---|
+| `1e614d2f` 迁移后的正常提交 | 38110841238 | success，pnpm v11.28.2，20 suites / 137 tests 全部通过 |
+| `3ee5558f` 临时把 `0-Basic.stories.tsx` 的一处断言改错 | 38111106661 | failure（符合预期）；`Archive Failed Artifact` 成功上传 `failed snapshot`（816706 字节） |
+| `8cb215a1` revert 上面的临时提交 | 38111294593 | success，137 tests 全部通过 |
+
+补充说明：
+
+- 失败那次运行中，`Run Original Storybook`（`test:fail-ci`）本身也失败了。原因是 `SKIP_TEST=true` 的生产模式下，`stories/utils/story.tsx` 会把名字以 `Test` 结尾的 story 从 `facade.stories` 中隐藏，而 test-runner 仍然按索引去加载它们，于是报 `Unable to load story '...-test'`。这段逻辑本次迁移没有改动，判断为迁移前就有的行为，但没有在 yarn 下实际复现。截图照常生成并上传，满足 spec「测试失败时上传失败快照」的场景。
+- `pnpm/action-setup@v6` 会提示 `Detected a pnpm v10 installation layout at PNPM_HOME`，不影响运行。
+- 本机 git 钥匙串里的 GitHub token 没有 `workflow` 权限，推送修改 workflow 文件的提交时被拒绝。这几次推送改用了 `gh auth git-credential`：同一个账号（ID 46670238，原名 `li1164267803`，已改名为 `colinli007`），只对单条命令生效，没有改 git 配置。

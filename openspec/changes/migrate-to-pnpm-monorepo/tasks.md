@@ -70,7 +70,7 @@
 
 ## 4. CI 与文档
 
-- [ ] 4.1 按 design 决策 9 改写 `.github/workflows/run-e2e.yml`（pnpm setup、Node 版本读 `.nvmrc`、缓存 pnpm store 和 Playwright、显式安装 Playwright 浏览器、使用当前主版本的 upload-artifact），验证：推送到 origin 后工作流的 Storybook 测试任务通过；用一个故意让 story 失败的临时提交确认能上传 `failed snapshot` 产物，验证完 revert
+- [x] 4.1 按 design 决策 9 改写 `.github/workflows/run-e2e.yml`（pnpm setup、Node 版本读 `.nvmrc`、缓存 pnpm store 和 Playwright、显式安装 Playwright 浏览器、使用当前主版本的 upload-artifact），验证：推送到 origin 后工作流的 Storybook 测试任务通过；用一个故意让 story 失败的临时提交确认能上传 `failed snapshot` 产物，验证完 revert
 - [x] 4.2 更新 `CLAUDE.md`：包管理器、命令（yarn 改 pnpm）、Node 版本、包依赖链（去掉 vue-moveable 和 ngx-moveable）、构建流程（去掉 Angular 常量生成）、croffle 生成的框架列表，验证：在 `CLAUDE.md` 中 grep 不到 `yarn`、`lerna`、`ngx`、`Angular`、`Vue2`
 - [x] 4.3 从根 README、`packages/moveable/README.md`、`packages/lit-moveable/README.md`、`packages/vue3-moveable/README.md` 中删除 Angular 和 Vue 2 的徽章与链接，删除 `handbook/handbook.md` 中的 Angular Example，验证：这些文件中 grep 不到 `ngx-moveable` 和 `vue-moveable`（`vue3-moveable` 除外）
 - [x] 4.4 最终整体验证：在全新克隆中执行 `nvm use && pnpm install --frozen-lockfile && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable test:ci`，验证：全部成功；执行 `openspec validate migrate-to-pnpm-monorepo --strict` 通过
