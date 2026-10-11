@@ -19,7 +19,8 @@ const {
 const {
     decamelize,
 } = require("@daybrush/utils");
-const ts = require("typescript");
+// croffle bundles its own TypeScript (4.5); nodes built here must come from the same instance.
+const ts = require(require.resolve("typescript", { paths: [require.resolve("croffle")] }));
 
 cleanPaths("stories/**/+([0-9A-Za-z])-*/{script,vue3,svelte,lit}/");
 

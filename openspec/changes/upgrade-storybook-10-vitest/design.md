@@ -26,7 +26,7 @@
 - 测试覆盖只增不减：26 个 play 断言等价迁移，另外 111 个 story 从空跑变成真实渲染。
 
 **Non-Goals:**
-- 不改变 react-moveable 等库的源码和运行时行为。react-moveable 和 helper 升级 TS 后，产物要与基线一致或差异可以解释；其余包的 TS 版本不变，产物应逐字节一致。
+- 不改变 react-moveable 等库的源码和运行时行为。react-moveable 和 helper 升级 TS 后，产物要与基线一致或差异可以解释；其余包的 TS 版本不变，它们的产物只允许出现从 react-moveable 继承来的差异（croact、preact、moveable、lit 在构建时内联了 react-moveable 的产物）。
 - 不升级 React（仍为 16），不升级各框架包装的依赖（vue3 和 svelte 仍用各自现在的 TS 和 Vite），不替换库的构建工具，也不改 lint。这些都属于 proposal 列出的后续 change。
 - 不迁移到 CSF Next / `.test()`（理由见决策 3）。
 - 不修改 croffle 的转译规则，不 fork croffle。
@@ -85,7 +85,7 @@ export const BasicDraggable = {
 - 模块是同一个实例：Vite 在开发和构建时都按解析后的 id 去重，所以组件对象可以直接用来比较。
 - **缺失时的行为**：React 源码反查失败时直接抛错，避免 tab 静默消失，比如 glob 写成 `React*App.tsx` 就会漏掉 `TreeShakingApp.tsx`。croffle 生成的代码缺失时则跳过对应的 tab，因为按 croffle 的配置，部分 story 本来就不生成某些框架的代码。
 - 11 处 `!!raw-loader!`，加上 `stories/templates/default.ts` 里的那一处，都改为 `?raw` import；`global.d.ts` 中的 `!!raw-loader!*` 声明改为 `vite/client` 类型；`.eslintrc` 中的 `import/no-webpack-loader-syntax` 规则不再需要，删除。
-- 备选方案：在 `story.tsx` 里对整个 stories 目录做全局 glob。弃用原因：每个 story 文件和每个测试都会加载全部 136 个 App 以及约 1200 个生成文件的源码，HMR 时还会引起整页刷新。
+- 备选方案：在 `story.tsx` 里对整个 stories 目录做全局 glob。弃用原因：每个 story 文件和每个测试都会加载全部 136 个 App 以及约 660 个生成文件的源码，HMR 时还会引起整页刷新。
 
 ### 5. 用 tags 和 `devPlay` 替代 facade hack
 - **测试专用 story**：在 `main.ts` 的 `tags` 中定义自定义 tag `hidden-test`，并设置 `defaultFilterSelection: "exclude"`。不用 `test-only` 这个名字，因为它是 SB10 刚删除的内置 tag，容易让人误会。侧边栏筛选只影响显示；Vitest 默认测试所有带 `test` tag 的 story，而 `test` tag 是自动加在每个 story 上的，所以被隐藏的 story 照常被测试。目前只有 `Scalable keepRatio Test` 需要打这个 tag。
@@ -112,7 +112,8 @@ manager 运行在 Storybook 自带的 React 18 上，和项目里的 React 16 �
 `pnpm-workspace.yaml` 中的 typescript override 是 hoist 时代的产物：它让所有包，连同第三方工具，都必须同时升级。删除它之后：
 - react-moveable、helper 声明 `typescript: ~5.9.3`（SB10 的 peer 要求 `>= 4.9`，`moduleResolution: bundler` 要求 TS 5.0+）；
 - 其余包（croact、preact、moveable、lit、vue3、svelte）以及根目录继续声明 `^4.8 <4.9`，等各自的升级 change 再处理。这样 vue-tsc 1.8.2 仍然跑在它支持的 TS 4.8 上；
-- croffle 按它自己的 `dependencies` 使用 TS 4.5.5。`croffle.config.js` 改为从 croffle 所在目录解析 typescript，与 croffle 共用同一个 TS 实例，否则 `SyntaxKind` 的枚举值会对不上。
+- 第三方工具在自己的 `dependencies` 中声明的 TS 版本不再被强制改写：croffle 使用 TS 4.5.5，vue3 构建链中的 `@microsoft/api-extractor` 使用它精确声明的 5.0.4（vue3 没有开 `rollupTypes`，构建不会用到它）；
+- `croffle.config.js` 改为从 croffle 所在目录解析 typescript，与 croffle 共用同一个 TS 实例，否则 `SyntaxKind` 的枚举值会对不上。
 
 stories 的类型检查：新增 `tsconfig.stories.json`，使用 `moduleResolution: bundler`、`types: ["vite/client"]`，配置别名路径，并 exclude 掉 croffle 生成的 `**/{script,vue3,svelte,lit}/**`（`allowJs` 打开时，这些生成的 `.js` 文件会被一起检查）。`tsconfig.json` 去掉对 stories 的 include（`src/` 仍然由它覆盖，见决策 1），并通过 `references` 引用 `tsconfig.stories.json`。新增 `typecheck:stories` 脚本，接入 CI。原来是 fork-ts-checker 在 Storybook 运行时顺带做类型检查，现在这项工作要独立出来。
 
@@ -120,7 +121,7 @@ stories 的类型检查：新增 `tsconfig.stories.json`，使用 `moduleResolut
 - 备选方案 TS 6：会把 `target: es5` 和 `moduleResolution: node` 变成错误。前者会改变发布出去的代码语法，属于产品决定。
 - 备选方案 TS 7：原生编译器没有传统的 JS API，typescript-eslint、Storybook 的 docgen 等现在都无法运行。
 
-**验证**：沿用上一个 change 的方法，在 scratchpad 中用 git worktree 构建一份对照产物。react-moveable 和 helper 的产物逐文件比较大小，有差异就用 `diff -w -B` 找出原因；其余包的 TS 版本不变，产物应逐字节一致。bake 的结果（文件清单和内容哈希）也要和基线比较，因为 croffle 的 TS 会从 4.8.4 变成它自己声明的 4.5.5。
+**验证**：沿用上一个 change 的方法，在 scratchpad 中用 git worktree 构建一份对照产物。react-moveable 和 helper 的产物逐文件比较大小，有差异就用 `diff -w -B` 找出原因；其余包的 TS 版本不变，不内联 react-moveable 的产物应逐字节一致，内联了它的产物只允许出现与 react-moveable 相同的差异。bake 的结果（文件清单和内容哈希）也要和基线比较，因为 croffle 的 TS 会从 4.8.4 变成它自己声明的 4.5.5。
 
 ### 8. 构建和测试都先执行 bake
 `storybook`、`build:storybook` 和测试脚本都先执行 croffle bake，保证 Script / Vue3 / Svelte / Lit 这几个 tab 在 CI 和发布的 demo 中稳定存在，「查看 story 的代码面板」这个场景也就能被测试覆盖到。生成目录仍然在 `.gitignore` 中，不纳入版本管理。

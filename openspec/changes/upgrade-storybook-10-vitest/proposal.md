@@ -44,7 +44,7 @@ Node（22.20.0）和 pnpm（11.28.2）保持不变。React 仍为 16，它是库
 - `packages/react-moveable`：`.storybook/`（main、preview、manager、`preview-head.html` 改写，新增本地 code-preview addon 和 Vitest setup）、`stories/**`（21 个 story 文件改为 CSF3，重写 `stories/utils/story.tsx`，`stories/templates/default.ts` 中的 raw-loader 也一并替换）、`global.d.ts`、`.eslintrc`、`.gitignore`、`croffle.config.js`、`package.json`（依赖与脚本）、新增 `vitest.config.ts` 和 stories 专用 tsconfig
 - `packages/helper`：测试从 jest 改为 Vitest
 - 根目录与 `pnpm-workspace.yaml`：删除 typescript 和 `@storybook/*` 的 override，各包自行声明 TS 版本；`allowBuilds` 按新依赖重新审批；根目录新增只汇总各包配置的 Vitest projects
-- react-moveable、helper：TS 升到 5.9.3 后验证构建产物和 declaration，与当前基线对比；其余包的 TS 版本不变，产物应逐字节一致
+- react-moveable、helper：TS 升到 5.9.3 后验证构建产物和 declaration，与当前基线对比；其余包的 TS 版本不变：不内联 react-moveable 的产物应逐字节一致，内联了它的产物（croact、preact、moveable、lit）只允许出现与 react-moveable 相同的差异
 - croffle：`croffle.config.js` 改为使用 croffle 自己的 TS 实例，bake 结果与基线对比
 - CI：`.github/workflows/run-e2e.yml`
 - 文档：`CLAUDE.md`（命令、测试方式、环境变量约定）

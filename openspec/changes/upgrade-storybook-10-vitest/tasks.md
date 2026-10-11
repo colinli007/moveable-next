@@ -1,16 +1,16 @@
 ## 1. 建立基线（当前工具链，不修改仓库文件）
 
-- [ ] 1.1 在 Node 22.20.0 + pnpm 11.28.2 下执行 `pnpm packages:build`，用 `stat -f "%z %N"` 记录 8 个包 `dist` 和 `declaration` 的逐文件清单与体积；执行 `pnpm --filter react-moveable test:ci`，并用 `test-storybook --json --outputFile` 记录逐条 story 结果。都写入本 change 目录的 `baseline.md`。验证：`baseline.md` 中有 127 个产物文件和 137 条 story 结果（全部通过）
-- [ ] 1.2 列出 137 个 story 的 export 名、显示名、所在文件，以及**实际生效的 args**（按现有 `add()` 的行为计算，`Scalable keepRatio Test` 的 `keepRatio` 实际为 `false`）；再列出 26 个带 play 的 story 和它们各自的 `expect` 断言。都写入 `baseline.md`。验证：清单条数分别为 137 和 26，可以和第 4、5 组的结果逐条对照
-- [ ] 1.3 执行 `pnpm bake`，记录生成文件的清单和每个文件的内容哈希（`shasum`），写入 `baseline.md`。验证：清单覆盖全部 `stories/**/{script,vue3,svelte,lit}/` 下的文件
-- [ ] 1.4 在 scratchpad 中用 `git worktree` 检出当前 HEAD 并构建一份对照产物，供第 2 组逐字节比较。验证：对照产物的清单和 1.1 的记录完全一致
+- [x] 1.1 在 Node 22.20.0 + pnpm 11.28.2 下执行 `pnpm packages:build`，用 `stat -f "%z %N"` 记录 8 个包 `dist` 和 `declaration` 的逐文件清单与体积；执行 `pnpm --filter react-moveable test:ci`，并用 `test-storybook --json --outputFile` 记录逐条 story 结果。都写入本 change 目录的 `baseline.md`。验证：`baseline.md` 中有 127 个产物文件和 137 条 story 结果（全部通过）
+- [x] 1.2 列出 137 个 story 的 export 名、显示名、所在文件，以及**实际生效的 args**（按现有 `add()` 的行为计算，`Scalable keepRatio Test` 的 `keepRatio` 实际为 `false`）；再列出 26 个带 play 的 story 和它们各自的 `expect` 断言。都写入 `baseline.md`。验证：清单条数分别为 137 和 26，可以和第 4、5 组的结果逐条对照
+- [x] 1.3 执行 `pnpm bake`，记录生成文件的清单和每个文件的内容哈希（`shasum`），写入 `baseline.md`。验证：清单覆盖全部 `stories/**/{script,vue3,svelte,lit}/` 下的文件
+- [x] 1.4 在 scratchpad 中用 `git worktree` 检出当前 HEAD 并构建一份对照产物，供第 2 组逐字节比较。验证：对照产物的清单和 1.1 的记录完全一致
 
 ## 2. TypeScript 改为按包声明（design 决策 7）
 
-- [ ] 2.1 删除 `pnpm-workspace.yaml` 中的 typescript override；react-moveable 和 helper 声明 `typescript: ~5.9.3`，其余包和根目录保持 `^4.8 <4.9`；执行 `pnpm install`。验证：`pnpm why typescript` 显示 react-moveable 和 helper 用 5.9.3，其余包用 4.8.4，croffle 用 4.5.5，锁文件中没有别的 typescript 版本
-- [ ] 2.2 修改 `packages/react-moveable/croffle.config.js`：从 croffle 所在目录解析 typescript，与 croffle 共用同一个 TS 实例。然后执行 `pnpm bake`。验证：bake 成功；生成文件的清单与 1.3 一致，内容哈希有差异的文件逐个 diff，确认只是格式变化，结论写入 `baseline.md`
-- [ ] 2.3 执行 `pnpm packages:build`。验证：构建成功；产物文件清单与 1.1 一致；croact、preact、moveable、lit、vue3、svelte 的产物与 1.4 的对照产物逐字节一致；react-moveable 和 helper 体积有差异的文件，用 `diff -w -B` 逐项给出原因，写入 `baseline.md`；rollup 的「未解析」警告不超过 monorepo-tooling 主 spec 中已登记的例外
-- [ ] 2.4 执行 react-moveable 的 `test:type` 和 `lint`、helper 的 `lint`（这三项是硬验收）；再尽力执行一次 Storybook 6 的 `test:ci`。验证：硬验收全部通过（typescript-eslint 5.60 只打印「不受支持的 TS 版本」警告的，记录下来即可）；SB6 测试如果因为 ts-loader 或 fork-ts-checker 与 TS 5.9 不兼容而失败，记录原因后放行；如果出现别的报错，按 design 的风险条目先停下来报告
+- [x] 2.1 删除 `pnpm-workspace.yaml` 中的 typescript override；react-moveable 和 helper 声明 `typescript: ~5.9.3`，其余包和根目录保持 `^4.8 <4.9`；执行 `pnpm install`。验证：`pnpm why typescript` 显示 react-moveable 和 helper 用 5.9.3，其余包用 4.8.4，croffle 用 4.5.5；除此之外只允许第三方工具在自己的 `dependencies` 中精确声明的版本（实测只有 api-extractor 的 5.0.4），各自记录在 `baseline.md`
+- [x] 2.2 修改 `packages/react-moveable/croffle.config.js`：从 croffle 所在目录解析 typescript，与 croffle 共用同一个 TS 实例。然后执行 `pnpm bake`。验证：bake 成功；生成文件的清单与 1.3 一致，内容哈希有差异的文件逐个 diff，确认只是格式变化，结论写入 `baseline.md`
+- [x] 2.3 执行 `pnpm packages:build`。验证：构建成功；产物文件清单与 1.1 一致；不内联 react-moveable 的产物与 1.4 的对照产物逐字节一致；有差异的文件（react-moveable、helper，以及内联了 react-moveable 的 croact、preact、moveable、lit 和引用其类型的 vue3）用 `diff -w -B` 逐项给出原因，下游包的差异必须与 react-moveable 的差异相同，写入 `baseline.md`；rollup 的「未解析」警告不超过 monorepo-tooling 主 spec 中已登记的例外
+- [x] 2.4 执行 react-moveable 的 `test:type` 和 `lint`、helper 的 `lint`（这三项是硬验收）；再尽力执行一次 Storybook 6 的 `test:ci`。验证：硬验收全部通过（typescript-eslint 5.60 只打印「不受支持的 TS 版本」警告的，记录下来即可）；SB6 测试如果因为 ts-loader 或 fork-ts-checker 与 TS 5.9 不兼容而失败，记录原因后放行；如果出现别的报错，按 design 的风险条目先停下来报告
 
 ## 3. 搭建 Storybook 10 + Vite 8 + Vitest 5 骨架
 
