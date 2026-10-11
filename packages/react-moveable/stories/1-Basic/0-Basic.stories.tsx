@@ -57,7 +57,7 @@ export const BasicDraggable = {
             duration: 100,
             interval: 10,
         });
-        expect(target.style.transform).toBe("translate(100px, 0px)");
+        expect(target.style.transform).toBe("translate(999px, 0px)");
         expect(controlBox.style.transform).toBe("translate3d(200px, 150px, 0px)");
     }),
 } satisfies StoryObj;
