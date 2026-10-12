@@ -30,18 +30,18 @@
 ## 6. 清理、CI 与文档
 
 - [x] 6.1 从 6 个包删除 `rollup.config.js`、preact 的 `rollup.config.demo.js` 和 `demo/`、`src/demo/`、lit 的 `rollup.demo.config.js` 和 `demo/`、各包引用它们的 `start` 脚本、croact 的 `start` 脚本，以及 `packages:update`、`packages:dist` 等调用 pvu 的脚本；删除依赖 `@daybrush/builder`、`rollup`、`rollup-plugin-react-compat`、`rollup-plugin-preact`、`rollup-plugin-css-bundle`、`print-sizes`、`pvu`；检查 `.npmignore` 中与 rollup 相关的条目。执行 `pnpm install`。验证：这 6 个包的 `package.json` 和目录中搜不到 `rollup`、`@daybrush/builder`、`print-sizes`、`pvu`；锁文件中不再有 `@daybrush/builder`、`rollup-plugin-typescript2`、`rollup-plugin-react-compat`、`rollup-plugin-preact`
-- [ ] 6.2 `.github/workflows/run-e2e.yml` 在测试之前增加 `pnpm packages:build`。验证：推送后 CI 通过；用一个故意让 helper 构建失败的临时提交确认 CI 失败，并且日志中能看到包名；验证完 revert
+- [x] 6.2 `.github/workflows/run-e2e.yml` 在测试之前增加 `pnpm packages:build`。验证：推送后 CI 通过；用一个故意让 helper 构建失败的临时提交确认 CI 失败，并且日志中能看到包名；验证完 revert
 - [x] 6.3 更新 `CLAUDE.md`：
   - `build` 的步骤说明；
   - 包依赖链中 croact/preact/moveable 的说明，改为 tsdown 的 `deps` 配置、`output.paths` 改名和 UMD 的绝对路径 alias，删除 `resolveOwnCroactPlugin` 的描述；
   - 补充四条约束：产物语法目标为 ES2022，`useDefineForClassFields: false` 不可去掉；JSX 必须是经典转换（croact 没有 jsx-runtime）；产物运行时 import 的包必须在 package.json 中声明；6 个包用 TS 6，vue3/svelte 仍为 4.8。
 
   验证：`CLAUDE.md` 中搜不到 `rollup`、`resolveOwnCroactPlugin`、`rollup-plugin-react-compat`
-- [ ] 6.4 更新 `openspec/ROADMAP.md`：第 3 步 `replace-build-with-tsdown` 标为已完成，写一段「已完成」摘要。验证：ROADMAP 表格和「已完成」一节都反映本 change
+- [x] 6.4 更新 `openspec/ROADMAP.md`：第 3 步 `replace-build-with-tsdown` 标为已完成，写一段「已完成」摘要。验证：ROADMAP 表格和「已完成」一节都反映本 change
 
 ## 7. 全量验证
 
 - [x] 7.1 在删除了 6 个包 `dist/`、`declaration/` 的工作区中执行 `pnpm packages:build`。验证：按拓扑顺序全部成功，包括 vue3-moveable（`vue-tsc` 读取 moveable 由 TS 6 生成的类型声明）和 svelte-moveable；构建输出中没有「无法解析的 import」或「依赖被当作外部模块」之类的警告；tsdown 的固定提示（如对 CJS 格式的「建议改用 ESM」）逐条列出，作为预期输出记入 `baseline.md`
 - [x] 7.2 对新产物运行 1.2 的对比脚本，把逐项对比结果写入 `baseline.md`，每一处差异都说明原因。预期只有：语法目标、新增或修复的 sourcemap、preact 的 CJS 现在可以加载、helper 和 lit 导出对象的属性描述符、体积变化。结论摘要写入 design 的 Migration Plan。验证：没有无法解释的差异
 - [x] 7.3 逐条检查 `specs/library-build` 中能在命令行验证的场景：用装在 scratchpad 的 acorn（`ecmaVersion: 2022`）解析所有产物；react-moveable 和 moveable 的 ESM/CJS 产物，以及 moveable UMD 中来自本仓库源码的部分没有 `__extends`、`extendStatics`；每个产物有 `sourceMappingURL` 和非空的 map；把 helper 的 `version` 临时改掉后重新构建，所有产物的 banner 跟着变化，然后改回。验证：全部通过，结果记入 `baseline.md`
-- [ ] 7.4 在全新克隆中依次执行 `pnpm install --frozen-lockfile && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test`。验证：全部成功；`openspec validate replace-build-with-tsdown --strict` 通过
+- [x] 7.4 在全新克隆中依次执行 `pnpm install --frozen-lockfile && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test`。验证：全部成功；`openspec validate replace-build-with-tsdown --strict` 通过

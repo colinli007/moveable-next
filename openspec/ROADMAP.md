@@ -8,7 +8,7 @@
 |---|---|---|---|
 | 1 | 迁移到 pnpm workspace，Node 22 | 已完成 | `archive/2026-10-11-migrate-to-pnpm-monorepo` |
 | 2 | Storybook 10 + Vite 8，测试改为 Vitest 5 | 已完成 | `archive/2026-10-11-upgrade-storybook-10-vitest` |
-| 3 | 库构建工具替换 | 进行中 | `replace-build-with-tsdown`（之后 `migrate-eslint-flat-config`） |
+| 3 | 库构建工具替换 | 进行中 | `replace-build-with-tsdown`（已完成），`migrate-eslint-flat-config`（未开始） |
 | 4 | 框架包装升级 | 未开始 | |
 | 5 | 文档与部署 | 未开始 | |
 | 6 | 以 `@moveable-next` 发布 | 未开始 | |
@@ -21,11 +21,12 @@ yarn 1 + lerna + Node 16 换成 pnpm workspace（严格布局，不开 hoist）+
 ### 2. Storybook 10 + Vitest
 Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner` 换成 `@storybook/addon-vitest`（Vitest 5 浏览器模式），137 个 story 全部真实渲染并作为测试，26 个 play 断言不变；story 改写为 CSF3；代码 tab 移植为本地 addon；helper 测试改为 Vitest；删除全局 TypeScript override，改为各包自己声明（react-moveable、helper 用 5.9，其余包仍是 4.8）。
 
+### 3. 库构建工具替换（`replace-build-with-tsdown`）
+react-moveable、croact、preact、moveable、lit、helper 6 个包的 `@daybrush/builder` 和各个 rollup 插件换成 tsdown（每包一份 `tsdown.config.mts`，共用选项在 `config/build.mjs`），TypeScript 升到 6.0；产物语法目标从 ES5 改为 ES2022（`useDefineForClassFields: false`），产物文件名、CJS 形状、UMD 全局名、`declaration/` 结构不变，用结构对比和浏览器实测验证；ESM/CJS 设 `deps.onlyBundle: []`，补齐了产物实际 import 的依赖声明；删除 preact、lit 的 rollup demo；CI 在测试前执行 `pnpm packages:build`。
+
 ## 待进行
 
-### 3. 库构建工具替换
-拆成两个 change，按顺序进行：
-- `replace-build-with-tsdown`：用 **tsdown** 替换 `@daybrush/builder` 和各个 rollup 插件（包括 croact 的 `rollup-plugin-react-compat`、preact 的 `rollup-plugin-preact`、moveable 的 `resolveOwnCroactPlugin`），覆盖 react-moveable、croact、preact、moveable、lit、helper 6 个包（lit 只换构建工具）。这 6 个包的 TypeScript 升到 6.0（不升 7：typescript-eslint 8 只支持 `<6.1`）。产物语法目标定为 **ES2022**，不再支持 ES5，配合 `useDefineForClassFields: false`。产物对外形状（文件名、格式、CJS 形状、UMD 全局名、`declaration/` 结构）保持不变，用结构对比验证。CI 增加全量构建。
+### 3. 库构建工具替换（剩余部分）
 - `migrate-eslint-flat-config`：lint 改为 ESLint 10 flat config + typescript-eslint 8。
 
 ### 4. 框架包装升级

@@ -374,3 +374,13 @@ version: 0.1.3
 - 「sourcemap 有效」：每个产物末尾的 `sourceMappingURL` 指向同名 `.map`，`sources`、`mappings` 都不为空；`moveable.min.js.map`、`helper.min.js.map` 的 `sources` 包含本包 `src/` 下的文件。通过。
 - 「版本号随 package.json 变化」：把 helper 的 `version` 临时改为 `9.9.9-bannercheck` 后重新构建，4 个产物的头部注释都变为新版本号；改回后重新构建。通过。
 - 「不含 ES5 继承辅助函数」：react-moveable 的 ESM/CJS、moveable 的 ESM/CJS 中没有 `__extends`、`extendStatics`，组件为原生 `class ... extends`（react-moveable ESM 中 6 处，moveable ESM 中 3 处）。**但 moveable 的 UMD（`moveable.js`、`moveable.min.js`）中有**：sourcemap 显示它们全部来自被内联的第三方包的发布产物（croact、@egjs/children-differ、@scena/dragscroll、gesto、react-css-styled 都以 ES5 发布），本仓库代码中没有。spec 场景已收窄为「ESM/CJS 产物和 UMD 中来自本仓库源码的部分」，UMD 中内联的第三方依赖保持其发布时的语法。按收窄后的场景通过。
+
+## 6.2 CI
+
+- `5c9b1508`（本 change 的实现）推送后 CI 通过（run 38234377560）：「Build packages」按拓扑顺序构建全部 8 个包，之后的 stories 类型检查和测试都通过。
+- 故意让 helper 的构建失败（`src/index.ts` 末尾加 `export * from "./ci-missing-module"`，本地确认 lint 通过、失败发生在 tsdown，run 38234694047）：「Build packages」失败，日志中有 `packages/helper build: [UNRESOLVED_IMPORT] Could not resolve './ci-missing-module' in src/index.ts` 和 `ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL @moveable/helper@0.1.3 build`，后续步骤没有执行。
+- 临时提交已 revert（`9ad27260`），代码与 `5c9b1508` 一致。
+
+## 7.4 全新克隆
+
+从 `5c9b1508` 克隆到 scratchpad，依次执行 `pnpm install --frozen-lockfile`（锁文件无需更新）、`pnpm packages:build`（8 个包全部成功）、安装 chromium、`typecheck:stories`、`pnpm test`（22 个测试文件通过、1 个跳过，144 个测试通过），全部成功；`openspec validate replace-build-with-tsdown --strict` 通过。
