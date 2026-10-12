@@ -1,19 +1,18 @@
 {
     "compilerOptions": {
         "outDir": "./outjs/",
-        "esModuleInterop": false,
         "sourceMap": true,
         "module": "esnext",
-        "target": "es5",
-        "downlevelIteration": true,
+        "target": "es2022",
+        "useDefineForClassFields": false,
         "experimentalDecorators": true,
         "skipLibCheck": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "jsx": "preserve",
         "lib": [
-            "es2019",
-            "es2015",
-            "dom"
+            "es2022",
+            "dom",
+            "dom.iterable"
         ],
         "allowJs": true,
         "allowSyntheticDefaultImports": true,
@@ -22,8 +21,7 @@
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "isolatedModules": false,
-        "noEmit": true,
-        "baseUrl": "."
+        "noEmit": true
     },
     "include": [
         "./src/**/*.ts",

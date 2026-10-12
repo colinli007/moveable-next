@@ -22,7 +22,7 @@ import IndividualGroupable from "./IndividualGroupable";
 import { camelize, pushSet } from "@daybrush/utils";
 import { Able } from "../types";
 
-export const MOVEABLE_ABLES = /*#__PURE__*/[
+export const MOVEABLE_ABLES = [
     BeforeRenderable,
     Default, Snappable, Pinchable,
     Draggable, edgeDraggable,

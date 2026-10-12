@@ -20,6 +20,13 @@ overrides:
   # Two copies of @cfcs/core break useKeycon's result type; 0.0.6 is within both ranges.
   "@cfcs/react>@cfcs/core": "0.0.6"
 
+packageExtensions:
+  # preact-css-styled imports preact/compat but does not declare preact; under the
+  # isolated layout it cannot resolve preact. Remove once fixed upstream.
+  preact-css-styled:
+    peerDependencies:
+      preact: "*"
+
 # Only esbuild needs its install script (prepares the platform binary used by vite).
 # The rest only print banners, compile an optional fsevents@1, download Playwright browsers
 # (installed explicitly with `playwright install` instead) or run `svelte-kit sync`

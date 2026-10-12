@@ -8,7 +8,7 @@
 |---|---|---|---|
 | 1 | 迁移到 pnpm workspace，Node 22 | 已完成 | `archive/2026-10-11-migrate-to-pnpm-monorepo` |
 | 2 | Storybook 10 + Vite 8，测试改为 Vitest 5 | 已完成 | `archive/2026-10-11-upgrade-storybook-10-vitest` |
-| 3 | 库构建工具替换 | 未开始 | |
+| 3 | 库构建工具替换 | 进行中 | `replace-build-with-tsdown`（之后 `migrate-eslint-flat-config`） |
 | 4 | 框架包装升级 | 未开始 | |
 | 5 | 文档与部署 | 未开始 | |
 | 6 | 以 `@moveable-next` 发布 | 未开始 | |
@@ -24,10 +24,9 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 ## 待进行
 
 ### 3. 库构建工具替换
-- 用 Vite 库模式替换 `@daybrush/builder` 和各个 rollup 插件（包括 croact 的 `rollup-plugin-react-compat`、moveable 的 `resolveOwnCroactPlugin`）。
-- lint 改为 ESLint 10 flat config + typescript-eslint 8。
-- TypeScript 升到 6：需要处理 `target: es5` 和 `moduleResolution: node`（TS 6 中已报错）。修改 `target` 会改变发布产物的语法，属于产品决定。
-- 产物与当前基线逐文件比较，差异逐项说明。
+拆成两个 change，按顺序进行：
+- `replace-build-with-tsdown`：用 **tsdown** 替换 `@daybrush/builder` 和各个 rollup 插件（包括 croact 的 `rollup-plugin-react-compat`、preact 的 `rollup-plugin-preact`、moveable 的 `resolveOwnCroactPlugin`），覆盖 react-moveable、croact、preact、moveable、lit、helper 6 个包（lit 只换构建工具）。这 6 个包的 TypeScript 升到 6.0（不升 7：typescript-eslint 8 只支持 `<6.1`）。产物语法目标定为 **ES2022**，不再支持 ES5，配合 `useDefineForClassFields: false`。产物对外形状（文件名、格式、CJS 形状、UMD 全局名、`declaration/` 结构）保持不变，用结构对比验证。CI 增加全量构建。
+- `migrate-eslint-flat-config`：lint 改为 ESLint 10 flat config + typescript-eslint 8。
 
 ### 4. 框架包装升级
 - Vue 工具链（vue-tsc 1.8 依赖 TS 4.x，需要随 TS 一起升级）。
@@ -46,5 +45,6 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 
 ## 已知遗留
 - croffle 0.0.21 依赖 TS 4.5，只能处理 TS 4 的 AST；如果以后要升级或替换 croffle，需要单独评估。
+- preact-css-styled 1.1.9 import 了 `preact/compat`，但没有声明 preact，严格布局下无法加载；`pnpm-workspace.yaml` 中用 `packageExtensions` 给它补上 preact 的 peer 声明，上游修复后可删除。
 - react-keycon 0.3.0 的依赖声明会装出两份 `@cfcs/core`，目前用 `pnpm-workspace.yaml` 中限定范围的 override 让它们共用一份；上游修复后可删除。
 - Storybook 10 在 React 16 下测试时会打印 `act(...)` 警告，不影响结果；升级 React 后会消失。

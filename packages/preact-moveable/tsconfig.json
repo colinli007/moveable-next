@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
     "outDir": "./outjs/",
-    "esModuleInterop": false,
     "sourceMap": true,
     "module": "esnext",
-    "target": "es5",
+    "target": "es2022",
+    "useDefineForClassFields": false,
     "experimentalDecorators": true,
     "skipLibCheck": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "jsx": "preserve",
     "lib": [
-      "es2015",
-      "dom"
+      "es2022",
+      "dom",
+      "dom.iterable"
     ],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

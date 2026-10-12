@@ -14,8 +14,6 @@ packages
 release/
 demo/
 coverage/
-dist/report.html
-rollup-plugin-visualizer/
 outjs/
 .scene_cache
 *.mp3
