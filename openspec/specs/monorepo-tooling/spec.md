@@ -62,16 +62,16 @@
 - **THEN** react-moveable 先构建，croact-moveable 与 preact-moveable 在其后，moveable 在 croact-moveable 之后，lit-moveable、vue3-moveable、svelte-moveable 在 moveable 之后，helper 独立构建，且全部成功产出 `dist`
 
 #### Scenario: 构建产物与迁移前一致
-- **WHEN** 在迁移完成后执行全量构建
-- **THEN** 各包 `dist` 与 `declaration` 的文件列表与迁移前基线一致，体积差异可以解释（如依赖版本解析不同），没有缺失的入口文件
+- **WHEN** 替换构建工具或升级 TypeScript 之后执行全量构建，并与替换前保存的产物基线比较
+- **THEN** 以下各项与基线一致：每个产物的导出名集合，CJS 产物 `require` 后的形状，外部模块清单，UMD 产物内联的包和全局变量名，头部注释，`declaration/` 的文件列表。不一致的地方必须逐项说明原因并记录在对应 change 中，比如语法目标改变、新增 sourcemap、修正依赖声明
 
 #### Scenario: 构建过程中没有未解析的模块
 - **WHEN** 执行全量构建
-- **THEN** rollup 输出中不出现「无法解析的 import、被当作外部依赖处理」的警告（`UNRESOLVED_IMPORT` / "Unresolved dependencies"），迁移前基线中已存在的例外除外：react-moveable、helper、lit-moveable 的 ESM / CJS 构建会把各自已声明的运行时依赖当作 external 并产生此警告，这些例外的模块清单 MUST NOT 扩大，UMD 构建 MUST NOT 出现此警告
+- **THEN** 构建输出中不出现「无法解析的 import」或「依赖未声明、被当作外部模块」之类的警告，没有例外
 
 #### Scenario: moveable 的 UMD 产物自包含
 - **WHEN** 检查 `packages/moveable/dist/moveable.js` 与 `moveable.min.js`
-- **THEN** croact 与 react-moveable 的代码已被内联，产物中不存在对外部 `croact` 模块或全局变量的引用，行为与基线相同
+- **THEN** 满足 `library-build` 中「UMD 产物自包含」的要求：croact 与 react-moveable 的代码已被内联，产物中不存在对外部模块或依赖全局变量的引用
 
 ### Requirement: Storybook 交互测试可在受支持的运行时运行
 react-moveable 的 Storybook 开发服务、静态构建与交互测试 SHALL 能在 Node 22.20.0 下运行，且 MUST NOT 依赖任何旧版 OpenSSL 兼容参数。交互测试 SHALL 覆盖所有 story：每个 story 都在真实浏览器中以固定视口尺寸完整渲染，并作为一个测试计入结果；带交互脚本（play）的 story 还 SHALL 执行其中的断言。
@@ -115,7 +115,7 @@ react-moveable 的 Storybook 开发服务、静态构建与交互测试 SHALL �
 - **THEN** 不存在执行 `npm publish`、`pnpm publish`、lerna 发布或 lerna-helper 发布的脚本
 
 ### Requirement: CI 执行全部自动化检查
-CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查：react-moveable 的 story 交互测试、helper 的单元测试、story 代码的类型检查。其中任何一项失败，流水线 SHALL 失败。
+CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查：所有可发布包的全量构建、react-moveable 的 story 交互测试、helper 的单元测试、story 代码的类型检查。其中任何一项失败，流水线 SHALL 失败。
 
 #### Scenario: 单元测试失败
 - **WHEN** helper 的某个单元测试失败
@@ -124,6 +124,10 @@ CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查
 #### Scenario: story 类型错误
 - **WHEN** 某个 story 文件存在 TypeScript 类型错误
 - **THEN** CI 流水线失败，即使这个 story 在浏览器中仍然能够渲染
+
+#### Scenario: 构建失败
+- **WHEN** 任一可发布包的构建或类型声明生成失败
+- **THEN** CI 流水线失败，并能在日志中看到失败的包名
 
 ### Requirement: 发布的 Storybook 不自动执行交互
 静态构建并发布的 Storybook SHALL 只展示 story 的初始状态，MUST NOT 在浏览时自动执行 play 中的拖拽、缩放等模拟操作。开发模式下 SHALL 自动执行 play，便于调试。交互测试 SHALL 始终执行 play，不受这一规则影响。

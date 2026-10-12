@@ -8,7 +8,7 @@
 |---|---|---|---|
 | 1 | 迁移到 pnpm workspace，Node 22 | 已完成 | `archive/2026-10-11-migrate-to-pnpm-monorepo` |
 | 2 | Storybook 10 + Vite 8，测试改为 Vitest 5 | 已完成 | `archive/2026-10-11-upgrade-storybook-10-vitest` |
-| 3 | 库构建工具替换 | 进行中 | `replace-build-with-tsdown`（已完成），`migrate-eslint-flat-config`（未开始） |
+| 3 | 库构建工具替换 | 进行中 | `archive/2026-10-12-replace-build-with-tsdown`（已完成），`migrate-eslint-flat-config`（未开始） |
 | 4 | 框架包装升级 | 未开始 | |
 | 5 | 文档与部署 | 未开始 | |
 | 6 | 以 `@moveable-next` 发布 | 未开始 | |
