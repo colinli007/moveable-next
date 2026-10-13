@@ -72,7 +72,7 @@ export class LitMoveable extends LitElement {
     public updated(changedProperties) {
         const moveable = this.moveable;
         changedProperties.forEach((oldValue, propName) => {
-            const litName = propName === "mvDraggable" || propName === "litMoveable"
+            const litName = propName === "mvDraggable" || propName === "litDraggable"
                 ? "draggable"
                 : propName;
 

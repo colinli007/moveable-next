@@ -9,7 +9,7 @@
 | 1 | 迁移到 pnpm workspace，Node 22 | 已完成 | `archive/2026-10-11-migrate-to-pnpm-monorepo` |
 | 2 | Storybook 10 + Vite 8，测试改为 Vitest 5 | 已完成 | `archive/2026-10-11-upgrade-storybook-10-vitest` |
 | 3 | 库构建工具替换 | 已完成 | `archive/2026-10-12-replace-build-with-tsdown`，`archive/2026-10-13-migrate-eslint-flat-config` |
-| 4 | 框架包装升级 | 未开始 | |
+| 4 | 框架包装升级 | 进行中 | `upgrade-lit-3`（进行中），`upgrade-vue-toolchain`、`upgrade-svelte-5`（未开始） |
 | 5 | 文档与部署 | 未开始 | |
 | 6 | 以 `@moveable-next` 发布 | 未开始 | |
 
@@ -29,10 +29,11 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 ## 待进行
 
 ### 4. 框架包装升级
-- Vue 工具链（vue-tsc 1.8 依赖 TS 4.x，需要随 TS 一起升级）。
-- Svelte 5 / SvelteKit。
-- Lit 3。
-- 这些包目前仍声明 TS `^4.8 <4.9`，在这一步各自升级（svelte-moveable 依赖的 `svelte2tsx` 0.6.16 要求 TS `^4.9.4`，`pnpm install` 会报这一条 unmet peer）。
+按风险从小到大拆成三个 change，每个都给对应的包加上针对构建产物的浏览器测试（做法由 `upgrade-lit-3` 确定，见其 design）：
+- `upgrade-lit-3`：Lit 3，lit 改为 peerDependency，加 lit-moveable 的浏览器测试（进行中）。
+- `upgrade-vue-toolchain`：Vue 工具链（vue-tsc 1.8 依赖 TS 4.x，需要随 TS 一起升级；Vite 4 → 8）。
+- `upgrade-svelte-5`：Svelte 5 / SvelteKit。现在把方法挂到组件类原型上的做法在 Svelte 5 中失效，需要重新设计方法的暴露方式。
+- vue3-moveable、svelte-moveable 目前仍声明 TS `^4.8 <4.9`，在各自的 change 中升级（svelte-moveable 依赖的 `svelte2tsx` 0.6.16 要求 TS `^4.9.4`，`pnpm install` 会报这一条 unmet peer）。
 
 ### 5. 文档与部署
 - TypeDoc 替换 `@daybrush/jsdoc`。

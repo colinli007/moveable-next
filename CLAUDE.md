@@ -21,7 +21,7 @@ Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩�
 # 根目录
 pnpm install               # 安装依赖（根目录一次装好所有包）
 pnpm storybook             # = react-moveable 的 Storybook（先 bake，端口 6006），主要的开发/调试环境
-pnpm test                  # 先 bake，再跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试）
+pnpm test                  # 先 bake，再跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试 + 框架包装的浏览器测试；后者读构建产物，要先 pnpm packages:build）
 pnpm build                 # 只构建 react-moveable
 pnpm lint                  # ESLint 检查 6 个库包的 src，警告也算失败，不需要先构建
 pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact/preact → moveable → lit/vue3/svelte，helper 独立）
@@ -38,9 +38,11 @@ pnpm test                  # 先 bake，再跑本包的 Vitest
 pnpm exec vitest run stories/1-Basic    # 只跑某个目录 / 文件的 story 测试
 ```
 
-Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon-vitest`（Vitest 5 浏览器模式，Playwright 驱动 chromium）。Vitest 配置按包分开：根目录 `vitest.config.mts` 只汇总 `packages/*/vitest.config.mts`；react-moveable 有 `storybook`（浏览器）和 `unit`（node，code-preview 的单元测试）两个 project，helper 一个（happy-dom）。配置文件用 `.mts`，因为包的 `package.json` 不是 `"type": "module"`。
+Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon-vitest`（Vitest 5 浏览器模式，Playwright 驱动 chromium）。Vitest 配置按包分开：根目录 `vitest.config.mts` 只汇总 `packages/*/vitest.config.mts`；react-moveable 有 `storybook`（浏览器）和 `unit`（node，code-preview 的单元测试）两个 project，helper 一个（happy-dom），lit-moveable 一个（浏览器）。配置文件用 `.mts`，因为包的 `package.json` 不是 `"type": "module"`。
 
 测试：每个 story 都在 1280×720 视口下真实渲染并算作一个测试，带 `play` 的再执行断言（`stories/**/*.stories.tsx`，用 `stories/utils/testing.tsx` 的 `pan`/`pinch`/`rotate` 模拟手势，再断言 `style.transform`）。失败截图在根目录 `.vitest/attachments/failure-screenshots/`。本地调试单个用例：开着 `pnpm storybook`，在 Interactions 面板看对应 story 的 play 的每一步。
+
+框架包装的浏览器测试（目前是 lit-moveable，`packages/lit-moveable/test/`）：Vitest 浏览器模式，import 的是包的 `dist` 产物而不是源码（检查的就是使用者拿到的代码），所以要先构建。原生 moveable 的属性赋值经 croact 的 `setState` 异步生效，断言内部状态前用 `expect.poll` 等待（如 `getManager().props`）。同一个 `<lit-moveable>` 只能移除一次：再次移除会第二次 `destroy()` 并抛错。
 
 story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
 - 每个 story 文件静态 import 自己的 App，并对**本目录**做两次 `import.meta.glob`（`apps` 和 `?raw` 的 `sources`），交给 `appStory(App, { apps, sources, argTypes, args })` 生成 `render`、`args`、`argTypes` 和代码 tab；`name`、`tags` 必须写成字面量（索引器只读静态值），export 名就是 story id，不要改。
@@ -72,7 +74,7 @@ helper              独立工具包（@moveable/helper）
 6 个库包（react-moveable、croact、preact、moveable、lit、helper）用 tsdown（Rolldown）构建，每个包一份 `tsdown.config.mts`，共用选项（`target: "es2022"`、sourcemap、banner、`dts: false`）在根目录 `config/build.mjs`；类型声明由各包的 `declaration` 脚本（tsc）输出到 `declaration/`。产物文件名、CJS 的 `require()` 形状、UMD 全局名对外不变，改动后可以用 `openspec/changes/archive/*replace-build-with-tsdown/baseline.md` 中的方法对比。约束：
 - 产物语法目标是 ES2022，tsconfig 中的 `useDefineForClassFields: false` 不能去掉：`@Properties`、`@withMethods`、Lit 的 `@property` 定义在原型上的访问器会被实例字段遮住。
 - JSX 必须是经典转换（`jsx: react`，输出 `React.createElement`）：croact 没有 `jsx-runtime`。react-moveable 的构建读 `tsconfig.build.json`，因为 `tsconfig.json` 为了 Storybook 是 `jsx: preserve`。
-- 产物运行时 import 的包必须在该包 `package.json` 中声明；ESM/CJS 配置都设了 `deps.onlyBundle: []`，有 node_modules 包被打进产物时构建直接报错。react、preact、lit 暂时在配置中用 `deps.neverBundle` 保持 external，发布步骤再改成 peerDependencies。
+- 产物运行时 import 的包必须在该包 `package.json` 中声明；ESM/CJS 配置都设了 `deps.onlyBundle: []`，有 node_modules 包被打进产物时构建直接报错。react、preact 暂时在配置中用 `deps.neverBundle` 保持 external，发布步骤再改成 peerDependencies；lit-moveable 的 lit 已经是 peerDependency（Lit 3，`^3.0.0`），tsdown 会自动把 peer 当作外部模块。
 - croact、preact 内联 react-moveable 的 ESM 产物（`deps.alwaysBundle` + `mainFields: ["module", "main"]`），用 `outputOptions.paths` 把输出中的 `react` / `react-css-styled` 改名为 croact / preact 的对应包；moveable 的 ESM/CJS 同样把 `react-moveable` 改名为 `croact-moveable`。这些是输出改名，不能换成 alias（已声明的依赖会先被判定为 external，alias 不生效）。
 - moveable 的 UMD 要真正内联 croact：alias 指向 moveable 自己 `node_modules/croact` 的绝对路径（被内联的 react-moveable 产物从它自己的位置找不到 croact）。UMD 配置都是 `platform: "browser"`，否则会解析到 `node` 条件下的版本（如 lit 的 SSR 版本）。
 - CJS/UMD 入口（`src/index.umd.ts`）只把具名导出挂到 default 上再 `export default`，由 `outputOptions.exports: "default"` 生成 `module.exports = Moveable`；不要在源码里写 `module.exports`，也不要在这个入口里加 `export *`。

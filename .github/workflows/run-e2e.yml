@@ -29,7 +29,8 @@ jobs:
         run: pnpm --filter react-moveable exec playwright install chromium
       - name: Type-check stories
         run: pnpm --filter react-moveable typecheck:stories
-      # Story tests of react-moveable and unit tests of every package (root vitest.config.mts)
+      # Story tests of react-moveable, unit tests of every package and browser tests of the
+      # framework wrappers against their dist (root vitest.config.mts)
       - name: Run tests
         run: pnpm test
       - name: Archive failure screenshots

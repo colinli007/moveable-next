@@ -6,12 +6,7 @@ const shared = sharedOptions(import.meta.dirname);
 const library: UserConfig = {
     ...shared,
     entry: "src/index.ts",
-    deps: {
-        // lit is not declared as a dependency yet; it becomes a peerDependency
-        // with the Lit 3 upgrade (ROADMAP step 4).
-        neverBundle: [/^lit(\/|$)/],
-        onlyBundle: [],
-    },
+    deps: { onlyBundle: [] },
 };
 
 export default defineConfig([

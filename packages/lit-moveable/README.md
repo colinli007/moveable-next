@@ -25,23 +25,27 @@
 ## ⚙️ Installation
 ### npm
 ```bash
-$ npm install lit-moveable
+$ npm install lit-moveable lit
 ```
+
+lit-moveable requires [Lit](https://lit.dev) 3 (`lit` is a peer dependency).
 
 ## 🚀 How to use
 * The event name is prefixed with **lit** (`litDragStart`, `litDrag`).
-* `draggable` property is prefixed with **lit** (`litMoveable`).
-* `dragStart` method name is prefixed with **lite** (`litDragStart`)
+* `draggable` property is prefixed with **lit** (`litDraggable`).
+* `dragStart` method name is prefixed with **lit** (`litDragStart`).
 
 ```js
 import "lit-moveable";
-import { render } from "lit-html":
+import { html, render } from "lit";
+
+let translate = [0, 0];
 
 render(html`
 <div class="target" style="width: 200px;height: 100px;">Target</div>
 <lit-moveable
     .target=${".target"}
-    .litMoveable=${true}
+    .litDraggable=${true}
     .resizable=${true}
     @litDragStart=${({ detail: e }) => {
         e.set(translate);
@@ -61,14 +65,9 @@ render(html`
         e.target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px)`;
         translate = beforeTranslate;
     }}
-/>
-`);
+></lit-moveable>
+`, document.body);
 ```
-
-## ⚙️ Developments
-### `npm run start`
-
-Open ./demo/index.html
 
 ## ⭐️ Show Your Support
 Please give a ⭐️ if this project helped you!

@@ -53,16 +53,23 @@
     ],
     "scripts": {
         "build": "tsdown && pnpm run declaration",
-        "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json"
+        "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
+        "test": "vitest run"
     },
     "devDependencies": {
-        "lit": "^2.0",
+        "@vitest/browser-playwright": "5.0.3",
+        "lit": "^3.3.3",
+        "playwright": "^1.64.0",
         "tsdown": "~0.23.1",
-        "typescript": "~6.0.3"
+        "typescript": "~6.0.3",
+        "vitest": "5.0.3"
     },
     "dependencies": {
         "@daybrush/utils": "^1.13.0",
         "framework-utils": "^1.1.0",
         "moveable": "workspace:~"
+    },
+    "peerDependencies": {
+        "lit": "^3.0.0"
     }
 }
