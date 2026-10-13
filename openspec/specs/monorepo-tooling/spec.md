@@ -141,7 +141,7 @@ react-moveable 的 Storybook 开发服务、静态构建与交互测试 SHALL �
 - **THEN** 不存在执行 `npm publish`、`pnpm publish`、lerna 发布或 lerna-helper 发布的脚本
 
 ### Requirement: CI 执行全部自动化检查
-CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查：库包源码的代码检查、所有可发布包的全量构建、react-moveable 的 story 交互测试、helper 的单元测试、story 代码的类型检查。其中任何一项失败，流水线 SHALL 失败。
+CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查：库包源码的代码检查、所有可发布包的全量构建、react-moveable 的 story 交互测试、helper 的单元测试、框架包装的浏览器测试、story 代码的类型检查。其中任何一项失败，流水线 SHALL 失败。
 
 #### Scenario: 单元测试失败
 - **WHEN** helper 的某个单元测试失败
@@ -158,6 +158,10 @@ CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查
 #### Scenario: 代码检查失败
 - **WHEN** 任一库包的源码存在 lint 错误或警告
 - **THEN** CI 流水线失败，并能在日志中看到对应的文件路径和规则名
+
+#### Scenario: 框架包装测试失败
+- **WHEN** lit-moveable 的某个浏览器测试失败
+- **THEN** CI 流水线失败，并能在日志中看到失败的测试名称
 
 ### Requirement: 发布的 Storybook 不自动执行交互
 静态构建并发布的 Storybook SHALL 只展示 story 的初始状态，MUST NOT 在浏览时自动执行 play 中的拖拽、缩放等模拟操作。开发模式下 SHALL 自动执行 play，便于调试。交互测试 SHALL 始终执行 play，不受这一规则影响。

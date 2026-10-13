@@ -9,7 +9,7 @@
 | 1 | 迁移到 pnpm workspace，Node 22 | 已完成 | `archive/2026-10-11-migrate-to-pnpm-monorepo` |
 | 2 | Storybook 10 + Vite 8，测试改为 Vitest 5 | 已完成 | `archive/2026-10-11-upgrade-storybook-10-vitest` |
 | 3 | 库构建工具替换 | 已完成 | `archive/2026-10-12-replace-build-with-tsdown`，`archive/2026-10-13-migrate-eslint-flat-config` |
-| 4 | 框架包装升级 | 进行中 | `upgrade-lit-3`（进行中），`upgrade-vue-toolchain`、`upgrade-svelte-5`（未开始） |
+| 4 | 框架包装升级 | 进行中 | `archive/2026-10-13-upgrade-lit-3`（已完成），`upgrade-vue-toolchain`、`upgrade-svelte-5`（未开始） |
 | 5 | 文档与部署 | 未开始 | |
 | 6 | 以 `@moveable-next` 发布 | 未开始 | |
 
@@ -26,11 +26,13 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 
 `migrate-eslint-flat-config`：ESLint 7 + typescript-eslint 5 的 `.eslintrc`（react-moveable、helper 各一份）换成根目录一份 `eslint.config.mjs`（ESLint 10 flat config + typescript-eslint 8），依赖只在根目录声明，根目录 TypeScript 升到 6.0；检查范围扩大到 6 个库包的 `src`（croact、preact、moveable、lit 第一次被检查）；格式规则等价迁移到 `@stylistic/eslint-plugin`；修正新规则发现的 48 处问题（主要是 38 处无用赋值），不改变行为；lint 从各包的 `build` 中拿出来，CI 增加单独的 Lint 步骤；删除 croact、preact 废弃的 `tslint.json` 和未使用的 `eslint-plugin-import`。
 
+### 4. 框架包装升级（`upgrade-lit-3`）
+lit-moveable 升到 Lit 3，lit 改为 peerDependency（`^3.0.0`），tsdown 自动把它作为外部模块，删除 `neverBundle`；产物除 UMD 内联的 lit 版本外与升级前一致。新增第一组框架包装的浏览器测试（Vitest 浏览器模式，针对 `dist`，由根目录 `pnpm test` 执行），先在 Lit 2 上通过再升级；修正 `litDraggable` 在首次渲染后修改不生效的 bug；README 示例改为可运行。
+
 ## 待进行
 
-### 4. 框架包装升级
-按风险从小到大拆成三个 change，每个都给对应的包加上针对构建产物的浏览器测试（做法由 `upgrade-lit-3` 确定，见其 design）：
-- `upgrade-lit-3`：Lit 3，lit 改为 peerDependency，加 lit-moveable 的浏览器测试（进行中）。
+### 4. 框架包装升级（剩余部分）
+按风险从小到大拆成三个 change，已完成 `upgrade-lit-3`。剩下两个照它的做法给对应的包加上针对构建产物的浏览器测试（见 `archive/2026-10-13-upgrade-lit-3` 的 design）：
 - `upgrade-vue-toolchain`：Vue 工具链（vue-tsc 1.8 依赖 TS 4.x，需要随 TS 一起升级；Vite 4 → 8）。
 - `upgrade-svelte-5`：Svelte 5 / SvelteKit。现在把方法挂到组件类原型上的做法在 Svelte 5 中失效，需要重新设计方法的暴露方式。
 - vue3-moveable、svelte-moveable 目前仍声明 TS `^4.8 <4.9`，在各自的 change 中升级（svelte-moveable 依赖的 `svelte2tsx` 0.6.16 要求 TS `^4.9.4`，`pnpm install` 会报这一条 unmet peer）。

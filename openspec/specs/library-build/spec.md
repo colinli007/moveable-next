@@ -51,7 +51,7 @@
 - **THEN** 元素会重新渲染，内部的原生 Moveable 实例得到新的值
 
 ### Requirement: 外部依赖与声明一致
-ESM 和 CJS 产物 SHALL 把运行时依赖保留为外部 import 或 require，MUST NOT 内联它们。例外：croact-moveable 和 preact-moveable SHALL 内联 react-moveable 的代码。产物中出现的每个外部模块所属的包，SHALL 在该包 `package.json` 的 `dependencies` 或 `peerDependencies` 中声明；尚未声明为 peerDependencies 的框架运行时（react-moveable 的 `react`，preact-moveable 的 `preact`，lit-moveable 的 `lit`）除外。
+ESM 和 CJS 产物 SHALL 把运行时依赖保留为外部 import 或 require，MUST NOT 内联它们。例外：croact-moveable 和 preact-moveable SHALL 内联 react-moveable 的代码。产物中出现的每个外部模块所属的包，SHALL 在该包 `package.json` 的 `dependencies` 或 `peerDependencies` 中声明；尚未声明为 peerDependencies 的框架运行时（react-moveable 的 `react`，preact-moveable 的 `preact`）除外。
 
 #### Scenario: 外部模块都已声明
 - **WHEN** 收集每个 ESM 和 CJS 产物中的外部模块，按包名去重

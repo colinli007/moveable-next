@@ -22,5 +22,5 @@
 
 ## 5. 全量验证
 
-- [ ] 5.1 推送后确认 CI 通过，且 Run tests 步骤的日志中有 lit-moveable 的测试；再用一个让 lit-moveable 测试失败的临时提交（例如把源码中的 `camelize(\`lit ${name}\`)` 改成别的前缀）确认 CI 在 Run tests 步骤失败，日志中有失败的测试名称；验证完 revert。结果记入 `baseline.md`
-- [ ] 5.2 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test`。验证：全部成功，测试结果中包含 lit-moveable 的测试；`openspec validate upgrade-lit-3 --strict` 通过
+- [x] 5.1 推送后确认 CI 通过，且 Run tests 步骤的日志中有 lit-moveable 的测试；再用一个让 lit-moveable 测试失败的临时提交（例如把源码中的 `camelize(\`lit ${name}\`)` 改成别的前缀）确认 CI 在 Run tests 步骤失败，日志中有失败的测试名称；验证完 revert。结果记入 `baseline.md`
+- [x] 5.2 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test`。验证：全部成功，测试结果中包含 lit-moveable 的测试；`openspec validate upgrade-lit-3 --strict` 通过

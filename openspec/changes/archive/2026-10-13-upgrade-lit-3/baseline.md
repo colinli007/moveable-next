@@ -55,3 +55,13 @@ lit-moveable 新增 `peerDependencies: { "lit": "^3.0.0" }`，开发依赖 `lit`
 安装说明改为 `npm install lit-moveable lit`，并写明需要 Lit 3（peer）；`litMoveable` 改为 `litDraggable`；`**lite**` 改为 `**lit**`；示例 import 改为 `import { html, render } from "lit";`；删除指向已删除的 rollup demo 的「Developments」一节。要让示例真正能直接运行，还修正了三处 tasks 没有列出的问题：补上示例中用到但没有声明的 `let translate = [0, 0];`，`render()` 补上容器参数 `document.body`，自定义元素不能自闭合，`/>` 改为 `></lit-moveable>`。
 
 验证：README 中搜不到 `litMoveable`、`**lite**`、`demo/index.html`。把 README 的代码块原样作为 scratchpad 页面的模块脚本（`readme-example/`，用 Vite 解析 `lit` 和指向构建产物的 `lit-moveable`），在 Playwright chromium 中打开：控制框渲染出来，用真实鼠标拖动目标 (60, 40) 后 `transform` 为 `translate(60px, 40px)`，页面没有错误。
+
+## 5.1 CI
+
+- `461cc1d9`（本 change 的提交）：run 38358147312 通过，Run tests 步骤的日志中有 `✓ lit-moveable (chromium) test/LitMoveable.spec.ts (5 tests)`。
+- `d1bace85`（临时提交，把源码中的事件名前缀 `lit` 改为 `broken`）：run 38358470832 失败，失败在 Run tests 步骤，日志中有 `FAIL lit-moveable (chromium) test/LitMoveable.spec.ts > lit-moveable > dispatches lit-prefixed drag events`，失败截图作为 `failure screenshots` 产物上传。
+- `47727474` revert 了临时提交，run 38358727544 通过。
+
+## 5.2 全新克隆
+
+从 origin 全新克隆 `refactor`（`461cc1d9`），依次执行 `pnpm install --frozen-lockfile`、`pnpm lint`、`pnpm packages:build`、`playwright install chromium`、`typecheck:stories`、`pnpm test`，全部成功：24 个测试文件中 23 个通过、1 个 skipped，149 个测试通过（比上一个 change 多出的 5 个就是 lit-moveable 的测试）。
