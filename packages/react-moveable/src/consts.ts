@@ -24,7 +24,6 @@ function getCursorCSS(degree: number) {
         defaultCursor = "ew-resize";
     }
 
-    // tslint:disable-next-line: max-line-length
     return `cursor:${defaultCursor};cursor: url('${x1}') 16 16, ${defaultCursor};`;
 }
 

@@ -125,7 +125,7 @@ function getBorderRadius(
     minCounts: number[] = [0, 0],
     full?: boolean,
 ) {
-    let values: string[] = [];
+    let values: string[];
 
     if (!borderRadius || borderRadius === "0px") {
         values = [];

@@ -1,4 +1,3 @@
-/* eslint-disable no-cond-assign */
 import { deepFlat, isArray } from "@daybrush/utils";
 import { ArrayChild, SingleChild } from "./groups";
 import { GroupChild, TargetGroupsObject, TargetGroupsType, TargetList } from "./types";
@@ -69,7 +68,7 @@ export class GroupManager extends ArrayChild {
         const nextChild = root.findNextChild(target, targets, false);
         const targetChild = root.map.get(target);
 
-        let nextChilds: GroupChild[] = [];
+        let nextChilds: GroupChild[];
 
         if (nextChild) {
             nextChilds = [nextChild];

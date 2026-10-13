@@ -116,8 +116,8 @@ export function checkThrottleDragRotate(
     [isVerticalSnap, isHorizontalSnap]: boolean[],
     [verticalOffset, horizontalOffset]: number[]
 ) {
-    let offsetX = -verticalOffset;
-    let offsetY = -horizontalOffset;
+    let offsetX: number;
+    let offsetY: number;
 
     if (throttleDragRotate && distX && distY) {
         offsetX = 0;
@@ -507,7 +507,7 @@ export function getSnapBoundInfo(
         }
 
         const isVertical = snapLine === "vertical";
-        let sizeOffset = [0, 0];
+        let sizeOffset: number[];
 
         if (
             !keepRatio

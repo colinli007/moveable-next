@@ -809,7 +809,7 @@ export default class MoveableManager<T = {}>
         //     right -= Math.max(0, offsetWidth - clipPathInfo.right);
         // }
 
-        let absoluteOrigin: number[] = [];
+        let absoluteOrigin: number[];
 
         if (isPersisted) {
             absoluteOrigin = transformOrigin;
@@ -944,7 +944,7 @@ export default class MoveableManager<T = {}>
             }
             this.updateRect();
         });
-    }
+    };
     public getState(): MoveableManagerState {
         const props = this.props;
         if (props.target || (props as any).targets?.length) {
@@ -1107,7 +1107,7 @@ export default class MoveableManager<T = {}>
         e.stopPropagation();
         e.preventDefault();
         // removeEvent(window, "click", this._onPreventClick, true);
-    }
+    };
     private _isTargetChanged(useDragArea?: boolean) {
         const props = this.props;
         const nextTarget = props.dragTarget || props.target;

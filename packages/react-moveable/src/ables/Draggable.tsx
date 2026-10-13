@@ -165,7 +165,7 @@ export default {
         const throttleDrag = isGroup ? 0 : (props.throttleDrag || parentThrottleDrag || 0);
         const throttleDragRotate = parentEvent ? 0 : (props.throttleDragRotate || 0);
 
-        let dragRotateRad = 0;
+        let dragRotateRad: number;
         let isVerticalSnap = false;
         let isVerticalBound = false;
         let isHorizontalSnap = false;

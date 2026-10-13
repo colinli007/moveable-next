@@ -27,6 +27,12 @@ packageExtensions:
     peerDependencies:
       preact: "*"
 
+peerDependencyRules:
+  allowedVersions:
+    # eslint-plugin-react 7.37.5 runs on ESLint 10 but its peer range stops at ^9.7.
+    # Remove once a release declares ESLint 10.
+    eslint-plugin-react>eslint: "10"
+
 # Only esbuild needs its install script (prepares the platform binary used by vite).
 # The rest only print banners, compile an optional fsevents@1, download Playwright browsers
 # (installed explicitly with `playwright install` instead) or run `svelte-kit sync`

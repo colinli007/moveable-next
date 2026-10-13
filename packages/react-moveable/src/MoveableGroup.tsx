@@ -290,7 +290,7 @@ class MoveableGroup extends MoveableManager<GroupableProps> {
             });
             const rotations = posesRotations.map(({ rotation }) => rotation);
 
-            let groupRotation = 0;
+            let groupRotation: number;
             const firstRotation = rotations[0];
             const isSameRotation = rotations.every(nextRotation => {
                 return Math.abs(firstRotation - nextRotation) < 0.1;

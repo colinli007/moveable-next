@@ -353,7 +353,6 @@ background: var(--bounds-color);
             ];
         });
 
-        let controls: any[] = [];
         let lines: any[] = [];
 
         const isRect = type === "rect";
@@ -376,7 +375,7 @@ background: var(--bounds-color);
                     }}></div>;
             });
         }
-        controls = poses.map((pos, i) => {
+        const controls: any[] = poses.map((pos, i) => {
             return <div key={`clipControl${i}`}
                 className={prefix("control", "clip-control", "snap-control")}
                 data-clip-index={i}
@@ -635,8 +634,8 @@ background: var(--bounds-color);
             (props.clipVerticalGuidelines || []).map(v => convertUnitSize(`${v}`, width)),
             width!, height!,
         );
-        let guideXPoses: number[] = [];
-        let guideYPoses: number[] = [];
+        let guideXPoses: number[];
+        let guideYPoses: number[];
 
         if (isCircle || isEllipse) {
             guideXPoses = [guidePoses[4][0], guidePoses[2][0]];

@@ -14,6 +14,9 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      # Lints the src of the six library packages (root eslint.config.mjs); needs no build output
+      - name: Lint
+        run: pnpm lint
       # Builds every publishable package in dependency order (pnpm -r build)
       - name: Build packages
         run: pnpm packages:build

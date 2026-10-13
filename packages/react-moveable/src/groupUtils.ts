@@ -52,7 +52,7 @@ export function triggerChildGesto(
         const childMoveable = moveables[i];
         const state = childMoveable.state as MoveableManagerState<any>;
         const gestos = state.gestos;
-        let childEvent: any = ev;
+        let childEvent: any;
 
         if (isStart) {
             childEvent = new CustomGesto(ableName).dragStart(delta, ev);
@@ -95,9 +95,7 @@ export function triggerChildAbles<T extends Able>(
     const moveables = moveable.moveables;
     const childs = events.map((ev, i) => {
         const childMoveable = moveables[i];
-        let childEvent = ev;
-
-        childEvent = eachEvent(childMoveable, ev);
+        const childEvent = eachEvent(childMoveable, ev);
 
         const result = (able as any)[type]!(childMoveable,  { ...childEvent, parentFlag: true });
 

@@ -9,7 +9,8 @@ Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩�
 - 运行时：Node **22.20.0**（根目录 `.nvmrc`，`nvm use` 即可切换；CI 读取同一个文件）。
 - 包管理：**pnpm workspace**（版本见根 `package.json` 的 `packageManager`，corepack 或全局 pnpm 会自动切换），只有一份根目录的 `pnpm-lock.yaml`，内部依赖写成 `workspace:~`。workspace 设置、overrides、`allowBuilds` 都在 `pnpm-workspace.yaml` 中。
 - 依赖布局是 pnpm 默认的严格（isolated）布局，不开任何 hoist：包里用到的模块、脚本调用的可执行文件都必须在**这个包自己的** `package.json` 里声明，不能依赖根目录兜底。依赖的构建脚本默认被拦截，新增需要构建的依赖时要写进 `allowBuilds`。
-- TypeScript 由各包自己声明，不用全局 override：react-moveable、croact、preact、moveable、lit、helper 用 `~6.0.3`（`moduleResolution: bundler`，声明文件的 tsconfig 必须显式写 `rootDir`，否则 TS 6 会把它们输出到 `declaration/src/`）；vue3、svelte 和根目录仍是 `^4.8 <4.9`。vue3、svelte 会用 TS 4.8 读取 moveable 的 `declaration/`，所以这几个库的源码不要写会原样进入声明文件的 TS 5+ 语法（如 `export type * from`）。croffle 使用它自己依赖的 TS 4.5，`croffle.config.js` 必须从 croffle 所在目录解析 typescript，与它共用同一个实例。
+- TypeScript 由各包自己声明，不用全局 override：react-moveable、croact、preact、moveable、lit、helper 用 `~6.0.3`（`moduleResolution: bundler`，声明文件的 tsconfig 必须显式写 `rootDir`，否则 TS 6 会把它们输出到 `declaration/src/`）；根目录也是 `~6.0.3`，供 typescript-eslint 解析源码；vue3、svelte 仍是 `^4.8 <4.9`。vue3、svelte 会用 TS 4.8 读取 moveable 的 `declaration/`，所以这几个库的源码不要写会原样进入声明文件的 TS 5+ 语法（如 `export type * from`）。croffle 使用它自己依赖的 TS 4.5，`croffle.config.js` 必须从 croffle 所在目录解析 typescript，与它共用同一个实例。
+- Lint：根目录一份 `eslint.config.mjs`（ESLint 10 flat config + typescript-eslint 8 + `@stylistic/eslint-plugin`），eslint 和插件只在根 `package.json` 中声明。检查范围写在配置的 `files` 中（6 个库包的 `src/**/*.{ts,tsx}`），所以 `pnpm lint` 不带路径，编辑器插件和命令行的范围一致。各包的构建不执行 lint，CI 单独执行。eslint-plugin-react 只启用推荐集：推荐集以外有规则在 ESLint 10 下会报错。
 - 需求/设计走 OpenSpec 工作流（`openspec/`、`.claude/skills/openspec-*`、`/opsx:*` 命令）。整体的现代化步骤和进度见 `openspec/ROADMAP.md`，每完成一个 change 就更新它。
 
 ## 常用命令
@@ -22,16 +23,16 @@ pnpm install               # 安装依赖（根目录一次装好所有包）
 pnpm storybook             # = react-moveable 的 Storybook（先 bake，端口 6006），主要的开发/调试环境
 pnpm test                  # 先 bake，再跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试）
 pnpm build                 # 只构建 react-moveable
+pnpm lint                  # ESLint 检查 6 个库包的 src，警告也算失败，不需要先构建
 pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact/preact → moveable → lit/vue3/svelte，helper 独立）
 pnpm build:storybook       # 先 bake，再构建静态 Storybook 到 demo/storybook
 pnpm doc                   # jsdoc 生成 doc/
 pnpm deploy                # node config/deploy.mjs 复制产物到 demo/，再用 gh-pages 推送到 origin
 
 # packages/react-moveable（或在根目录用 pnpm --filter react-moveable <script>）
-pnpm lint                  # eslint ./src
 pnpm test:type             # tsc -p tsconfig.test.json，对 tests/types.ts 做类型断言检查
 pnpm typecheck:stories     # tsc -p stories：stories 和 .storybook 的类型检查（CI 会跑）
-pnpm build                 # lint + test:type + tsdown + declaration
+pnpm build                 # test:type + tsdown + declaration（不含 lint）
 pnpm exec playwright install chromium   # 首次跑测试前安装浏览器（不靠 postinstall）
 pnpm test                  # 先 bake，再跑本包的 Vitest
 pnpm exec vitest run stories/1-Basic    # 只跑某个目录 / 文件的 story 测试

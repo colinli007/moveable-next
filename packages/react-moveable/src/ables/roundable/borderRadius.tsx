@@ -188,7 +188,7 @@ export function removeRadiusPos(
         verticalRange,
     } = getRadiusRange(controlPoses.slice(startIndex));
     const radiuslIndex = index - startIndex;
-    let deleteCount = 0;
+    let deleteCount: number;
 
     if (radiuslIndex === 0) {
         deleteCount = length;

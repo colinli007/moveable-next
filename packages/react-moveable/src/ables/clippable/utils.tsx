@@ -198,21 +198,21 @@ export function getClipPath(
             bottom: minMaxs.maxY,
         } as const;
     } else if (isCircle || clipPrefix === "ellipse") {
-        let xPos = "";
-        let yPos = "";
+        let xPos: string;
+        let yPos: string;
         let radiusX = 0;
         let radiusY = 0;
         const values = splitSpace(value!);
 
         if (isCircle) {
-            let radius = "";
+            let radius: string;
             [radius = "50%", , xPos = "50%", yPos = "50%"] = values;
 
             radiusX = convertUnitSize(radius, Math.sqrt((width * width + height * height) / 2));
             radiusY = radiusX;
         } else {
-            let xRadius = "";
-            let yRadius = "";
+            let xRadius: string;
+            let yRadius: string;
             [xRadius = "50%", yRadius = "50%", , xPos = "50%", yPos = "50%"] = values;
 
             radiusX = convertUnitSize(xRadius, width);

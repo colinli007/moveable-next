@@ -131,9 +131,9 @@ function checkInnerBound(
     const isHorizontalBound = leftBoundInfo.isBound || rightBoundInfo.isBound;
     const verticalOffset = maxOffset(topBoundInfo.offset, bottomBoundInfo.offset);
     const horizontalOffset = maxOffset(leftBoundInfo.offset, rightBoundInfo.offset);
-    let offset = [0, 0];
-    let isBound = false;
-    let isAllBound = false;
+    let offset: number[];
+    let isBound: boolean;
+    let isAllBound: boolean;
 
     if (abs(horizontalOffset) < abs(verticalOffset)) {
         offset = [verticalOffset, 0];

@@ -319,7 +319,6 @@ export default {
         positions.forEach(([pos, rad], i) => {
             jsxs.push(
                 <div key={`rotation${i}`} className={prefix("rotation")} style={{
-                    // tslint:disable-next-line: max-line-length
                     transform: `translate(-50%) translate(${pos[0]}px, ${pos[1]}px) rotate(${rad}rad)`,
                 }}>
                     <div className={prefix("line rotation-line")} style={{
@@ -598,15 +597,15 @@ export default {
         } = moveable.props;
 
 
-        let beforeDelta = 0;
+        let beforeDelta: number;
         let beforeDist: number;
         let beforeRotation: number;
 
-        let delta = 0;
+        let delta: number;
         let dist: number;
         let rotation: number;
 
-        let absoluteDelta = 0;
+        let absoluteDelta: number;
         let absoluteDist: number;
         let absoluteRotation: number;
 

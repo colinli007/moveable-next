@@ -16,7 +16,6 @@ export default makeAble("clickable", {
     ] as const,
     always: true,
     dragRelation: "weak",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     dragStart() {
         return;
     },

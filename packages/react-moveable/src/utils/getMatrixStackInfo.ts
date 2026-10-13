@@ -84,7 +84,7 @@ export function getMatrixStackInfo(
         const individualTransforms = getIndividualTransforms(getStyle);
         let matrix: number[] = convertCSStoMatrix(getTransformMatrix(transform));
         let offsetParent: HTMLElement;
-        let isOffsetEnd = false;
+        let isOffsetEnd: boolean;
         let isStatic = false;
         let parentClientLeft = 0;
         let parentClientTop = 0;
@@ -194,7 +194,6 @@ export function getMatrixStackInfo(
         ) {
             offsetLeft -= offsetParent.offsetLeft;
             offsetTop -= offsetParent.offsetTop;
-            requestEnd = requestEnd || isOffsetEnd;
         }
 
 

@@ -186,8 +186,8 @@ export function getGapGuidelines(
             const rect2Start = rect2[mainNames.start]!;
             const rect2End = rect2[mainNames.end]!;
             const snapThreshold = snapThresholdMap[mainNames.start];
-            let gap = 0;
-            let pos = 0;
+            let gap: number;
+            let pos: number;
             let isStart = false;
             let isCenter = false;
             let isEnd = false;

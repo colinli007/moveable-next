@@ -54,7 +54,7 @@ export class LitMoveable extends LitElement {
 
         const moveable = this.moveable;
 
-        EVENTS.forEach((name, i) => {
+        EVENTS.forEach(name => {
             moveable.on(name as any, e => {
                 const result = this.dispatchEvent(new CustomEvent(camelize(`lit ${name}`), {
                     detail: { ...e },
@@ -86,7 +86,8 @@ export class LitMoveable extends LitElement {
         this.moveable.destroy();
     }
 }
-export interface LitMoveable extends LitMoveableOptions, MethodInterface<MoveableInterface, VanillaMoveable, LitMoveable> { }
+export interface LitMoveable
+    extends LitMoveableOptions, MethodInterface<MoveableInterface, VanillaMoveable, LitMoveable> { }
 
 declare global {
     interface HTMLElementTagNameMap {

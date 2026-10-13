@@ -51,6 +51,7 @@
         "build": "pnpm --filter react-moveable build",
         "packages:build": "pnpm -r build",
         "test": "pnpm bake && vitest run",
+        "lint": "eslint --max-warnings 0",
         "doc": "rm -rf ./doc && jsdoc -c jsdoc.json",
         "build:storybook": "pnpm --filter react-moveable build:storybook",
         "demo:build": "pnpm packages:build && pnpm doc && pnpm build:storybook",
@@ -62,10 +63,15 @@
     },
     "devDependencies": {
         "@daybrush/jsdoc": "^0.4.7",
+        "@eslint/js": "^10.0.1",
         "@scena/event-emitter": "^1.0.5",
+        "@stylistic/eslint-plugin": "^5.10.0",
         "daybrush-jsdoc-template": "^1.10.0",
+        "eslint": "^10.12.0",
+        "eslint-plugin-react": "^7.37.5",
         "gh-pages": "^2.0.1",
-        "typescript": "^4.8 <4.9",
+        "typescript": "~6.0.3",
+        "typescript-eslint": "^8.71.1",
         "vitest": "5.0.3"
     }
 }

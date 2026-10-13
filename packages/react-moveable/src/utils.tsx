@@ -681,7 +681,7 @@ export function getSize(
 
             // SVGSVGElement, HTMLElement
             if ("clientLeft" in target) {
-                let parentElement: HTMLElement | null = null;
+                let parentElement: HTMLElement | null;
 
                 if (position === "absolute") {
                     const offsetInfo = getOffsetInfo(target, getDocumentBody(target));
@@ -729,8 +729,6 @@ export function getSize(
 
             offsetWidth = contentWidth;
             offsetHeight = contentHeight;
-            clientWidth = contentWidth;
-            clientHeight = contentHeight;
 
             if (boxSizing) {
                 maxOffsetWidth = maxWidth;
@@ -1450,8 +1448,8 @@ export function getSizeDistByDist(
     keepRatio?: boolean,
 ) {
     const [startOffsetWidth, startOffsetHeight] = startSize;
-    let distWidth = 0;
-    let distHeight = 0;
+    let distWidth: number;
+    let distHeight: number;
 
     if (keepRatio && startOffsetWidth && startOffsetHeight) {
         const rad = getRad([0, 0], dist);
@@ -1481,7 +1479,7 @@ export function getSizeDistByDist(
             if (firstRad < 0) {
                 firstRad += Math.PI * 2;
             }
-            let rad = 0;
+            let rad: number;
 
             if (abs(secondRad - firstRad) < Math.PI / 2 || abs(secondRad - firstRad) > Math.PI / 2 * 3) {
                 rad = secondRad - firstRad;
@@ -1531,8 +1529,8 @@ export function getOffsetSizeDist(
         startOffsetWidth,
         startOffsetHeight,
     } = datas;
-    let distWidth = 0;
-    let distHeight = 0;
+    let distWidth: number;
+    let distHeight: number;
     const {
         distX,
         distY,
