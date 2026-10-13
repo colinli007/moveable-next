@@ -17,7 +17,7 @@
 
 ## 4. CI 与文档
 
-- [ ] 4.1 `.github/workflows/run-e2e.yml` 在 Install dependencies 之后、Build packages 之前增加 `pnpm lint` 步骤。验证：推送后 CI 通过；用一个故意制造 lint 错误（例如 react-moveable 源码中未使用的 import）的临时提交确认 CI 在 Lint 步骤失败，日志中能看到文件路径和规则名；验证完 revert。结果记入 `baseline.md`
+- [x] 4.1 `.github/workflows/run-e2e.yml` 在 Install dependencies 之后、Build packages 之前增加 `pnpm lint` 步骤。验证：推送后 CI 通过；用一个故意制造 lint 错误（例如 react-moveable 源码中未使用的 import）的临时提交确认 CI 在 Lint 步骤失败，日志中能看到文件路径和规则名；验证完 revert。结果记入 `baseline.md`
 - [x] 4.2 更新 `CLAUDE.md`：常用命令中把 react-moveable 的 `pnpm lint` 改为根目录的 `pnpm lint`，说明检查范围是 6 个库包的 `src`；`pnpm build` 的说明去掉 lint；TypeScript 一节中根目录改为 `~6.0.3`；补一句 lint 配置是根目录的 `eslint.config.mjs`，依赖只在根目录声明。验证：`CLAUDE.md` 中搜不到 `.eslintrc`、`eslint ./src`，也没有「根目录仍是 4.8」的说法
 - [x] 4.3 更新 `openspec/ROADMAP.md`：第 3 步标为已完成，表格中写两个 change；「已完成」中第 3 步补上 lint 的摘要，删除「待进行」中的第 3 步；「已知遗留」增加 eslint-plugin-react 的 peer 放行，写明只启用推荐集、额外启用 react 规则前要先确认它在 ESLint 10 下能运行。验证：表格、「已完成」「待进行」「已知遗留」都反映本 change
 
@@ -25,4 +25,4 @@
 
 - [x] 5.1 临时在 react-moveable 源码中加一个未使用的 import，执行 `pnpm --filter react-moveable build`，然后撤销。验证：构建成功并产出 `dist`、`declaration`（spec「包的构建不包含代码检查」）
 - [x] 5.2 执行 `pnpm doc`。验证：成功，`doc/` 的文件列表与 1.2 保存的相同
-- [ ] 5.3 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint`（此时没有任何构建产物），再执行 `pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test`。验证：全部成功，`pnpm lint` 在构建前就能通过（spec「不需要先构建」）；构建输出中不再有「React version not specified」；`openspec validate migrate-eslint-flat-config --strict` 通过
+- [x] 5.3 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint`（此时没有任何构建产物），再执行 `pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test`。验证：全部成功，`pnpm lint` 在构建前就能通过（spec「不需要先构建」）；构建输出中不再有「React version not specified」；`openspec validate migrate-eslint-flat-config --strict` 通过

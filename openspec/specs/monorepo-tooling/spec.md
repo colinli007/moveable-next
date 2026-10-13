@@ -40,8 +40,8 @@
 - **THEN** 不出现因未声明依赖导致的 "Cannot find module" 错误
 
 #### Scenario: 脚本调用的可执行文件可用
-- **WHEN** 任一工作区包执行自己的 `build` / `lint` / `declaration` 脚本
-- **THEN** 不出现 `command not found`，且调用的是该包自己声明的版本，而不是靠根目录兜底
+- **WHEN** 任一工作区包执行自己的 `build` / `declaration` 脚本，或在根目录执行代码检查命令
+- **THEN** 不出现 `command not found`，且调用的是脚本所属的包（根目录脚本为根 `package.json`）自己声明的版本，而不是靠其它位置兜底
 
 #### Scenario: 配置文件引用的路径有效
 - **WHEN** 在根目录执行文档生成（`doc`）
@@ -72,6 +72,32 @@
 #### Scenario: moveable 的 UMD 产物自包含
 - **WHEN** 检查 `packages/moveable/dist/moveable.js` 与 `moveable.min.js`
 - **THEN** 满足 `library-build` 中「UMD 产物自包含」的要求：croact 与 react-moveable 的代码已被内联，产物中不存在对外部模块或依赖全局变量的引用
+
+### Requirement: 代码检查
+仓库 SHALL 提供一条根命令，对 6 个库包（react-moveable、helper、croact-moveable、preact-moveable、moveable、lit-moveable）`src` 下的全部 TypeScript 源码执行静态检查（lint）。检查只在没有错误、也没有警告时通过；检查 MUST NOT 依赖构建产物，也 MUST NOT 被任何包的构建命令隐式执行。
+
+#### Scenario: 检查范围
+- **WHEN** 开发者在根目录执行代码检查命令
+- **THEN** 6 个库包 `src` 下的 `.ts`、`.tsx` 文件都被检查；`dist`、`declaration`、stories 和其它包的文件不被检查
+
+#### Scenario: 当前代码通过检查
+- **WHEN** 在没有改动的代码上执行代码检查命令
+- **THEN** 命令以 0 退出，输出中没有错误和警告，也没有关于配置或插件本身的提示（例如未指定 React 版本）
+
+#### Scenario: 发现问题时失败
+- **WHEN** 任一库包的源码中出现违反规则的代码（例如未使用的 import，或缩进不是 4 个空格）
+- **THEN** 命令以非 0 退出，输出中能看到文件路径、行号和规则名
+
+#### Scenario: 不需要先构建
+- **WHEN** 在全新克隆中安装依赖后，不执行任何构建就执行代码检查命令
+- **THEN** 检查正常完成，结果与构建之后执行相同
+
+### Requirement: 包的构建不包含代码检查
+各库包的构建命令 SHALL 只负责生成产物和类型声明，MUST NOT 执行代码检查；代码检查由「代码检查」requirement 中的根命令单独负责。
+
+#### Scenario: 存在 lint 问题时构建
+- **WHEN** 某个库包的源码存在 lint 问题但能正常编译，执行该包的构建命令
+- **THEN** 构建成功并产出 `dist` 和 `declaration`
 
 ### Requirement: Storybook 交互测试可在受支持的运行时运行
 react-moveable 的 Storybook 开发服务、静态构建与交互测试 SHALL 能在 Node 22.20.0 下运行，且 MUST NOT 依赖任何旧版 OpenSSL 兼容参数。交互测试 SHALL 覆盖所有 story：每个 story 都在真实浏览器中以固定视口尺寸完整渲染，并作为一个测试计入结果；带交互脚本（play）的 story 还 SHALL 执行其中的断言。
@@ -115,7 +141,7 @@ react-moveable 的 Storybook 开发服务、静态构建与交互测试 SHALL �
 - **THEN** 不存在执行 `npm publish`、`pnpm publish`、lerna 发布或 lerna-helper 发布的脚本
 
 ### Requirement: CI 执行全部自动化检查
-CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查：所有可发布包的全量构建、react-moveable 的 story 交互测试、helper 的单元测试、story 代码的类型检查。其中任何一项失败，流水线 SHALL 失败。
+CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查：库包源码的代码检查、所有可发布包的全量构建、react-moveable 的 story 交互测试、helper 的单元测试、story 代码的类型检查。其中任何一项失败，流水线 SHALL 失败。
 
 #### Scenario: 单元测试失败
 - **WHEN** helper 的某个单元测试失败
@@ -128,6 +154,10 @@ CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查
 #### Scenario: 构建失败
 - **WHEN** 任一可发布包的构建或类型声明生成失败
 - **THEN** CI 流水线失败，并能在日志中看到失败的包名
+
+#### Scenario: 代码检查失败
+- **WHEN** 任一库包的源码存在 lint 错误或警告
+- **THEN** CI 流水线失败，并能在日志中看到对应的文件路径和规则名
 
 ### Requirement: 发布的 Storybook 不自动执行交互
 静态构建并发布的 Storybook SHALL 只展示 story 的初始状态，MUST NOT 在浏览时自动执行 play 中的拖拽、缩放等模拟操作。开发模式下 SHALL 自动执行 play，便于调试。交互测试 SHALL 始终执行 play，不受这一规则影响。
