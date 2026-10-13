@@ -56,7 +56,7 @@ export class LitMoveable extends LitElement {
 
         EVENTS.forEach(name => {
             moveable.on(name as any, e => {
-                const result = this.dispatchEvent(new CustomEvent(camelize(`lit ${name}`), {
+                const result = this.dispatchEvent(new CustomEvent(camelize(`broken ${name}`), {
                     detail: { ...e },
                 }));
 
