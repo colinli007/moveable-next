@@ -1,6 +1,5 @@
 import getAgent from "@egjs/agent";
 import { IObject } from "@daybrush/utils";
-import { isArray } from "@daybrush/utils";
 import { MoveableInterface } from "./types";
 
 
