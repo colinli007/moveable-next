@@ -9,7 +9,7 @@
 | 1 | 迁移到 pnpm workspace，Node 22 | 已完成 | `archive/2026-10-11-migrate-to-pnpm-monorepo` |
 | 2 | Storybook 10 + Vite 8，测试改为 Vitest 5 | 已完成 | `archive/2026-10-11-upgrade-storybook-10-vitest` |
 | 3 | 库构建工具替换 | 已完成 | `archive/2026-10-12-replace-build-with-tsdown`，`archive/2026-10-13-migrate-eslint-flat-config` |
-| 4 | 框架包装升级 | 进行中 | `archive/2026-10-13-upgrade-lit-3`（已完成），`migrate-vue3-to-tsdown`（进行中），`upgrade-svelte-5`、`bump-dependencies`（未开始） |
+| 4 | 框架包装升级 | 进行中 | `archive/2026-10-13-upgrade-lit-3`、`archive/2026-10-15-migrate-vue3-to-tsdown`（已完成），`upgrade-svelte-5`、`bump-dependencies`（未开始） |
 | 5 | 文档与部署 | 未开始 | |
 | 6 | 以 `@moveable-next` 发布 | 未开始 | |
 
@@ -26,14 +26,15 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 
 `migrate-eslint-flat-config`：ESLint 7 + typescript-eslint 5 的 `.eslintrc`（react-moveable、helper 各一份）换成根目录一份 `eslint.config.mjs`（ESLint 10 flat config + typescript-eslint 8），依赖只在根目录声明，根目录 TypeScript 升到 6.0；检查范围扩大到 6 个库包的 `src`（croact、preact、moveable、lit 第一次被检查）；格式规则等价迁移到 `@stylistic/eslint-plugin`；修正新规则发现的 48 处问题（主要是 38 处无用赋值），不改变行为；lint 从各包的 `build` 中拿出来，CI 增加单独的 Lint 步骤；删除 croact、preact 废弃的 `tslint.json` 和未使用的 `eslint-plugin-import`。
 
-### 4. 框架包装升级（`upgrade-lit-3`）
-lit-moveable 升到 Lit 3，lit 改为 peerDependency（`^3.0.0`），tsdown 自动把它作为外部模块，删除 `neverBundle`；产物除 UMD 内联的 lit 版本外与升级前一致。新增第一组框架包装的浏览器测试（Vitest 浏览器模式，针对 `dist`，由根目录 `pnpm test` 执行），先在 Lit 2 上通过再升级；修正 `litDraggable` 在首次渲染后修改不生效的 bug；README 示例改为可运行。
+### 4. 框架包装升级（已完成部分）
+`upgrade-lit-3`：lit-moveable 升到 Lit 3，lit 改为 peerDependency（`^3.0.0`），tsdown 自动把它作为外部模块，删除 `neverBundle`；产物除 UMD 内联的 lit 版本外与升级前一致。新增第一组框架包装的浏览器测试（Vitest 浏览器模式，针对 `dist`，由根目录 `pnpm test` 执行），先在 Lit 2 上通过再升级；修正 `litDraggable` 在首次渲染后修改不生效的 bug；README 示例改为可运行。
+
+`migrate-vue3-to-tsdown`：vue3-moveable 的 SFC 改为普通 `.ts` 加渲染函数，构建从 Vite 4 换成 tsdown + tsc，删除 vue-tsc、vite-plugin-dts、Vite 演示页面；Vue 升到 3.5 并改为 peerDependency（`^3.5.0`），TS 升到 6.0；导出、外部模块、CJS 形状与迁移前一致，`require("vue3-moveable")` 从报错变为可用。新增浏览器测试（`createApp` + `h`，与 lit 共用 `config/testing/browser.ts`）和类型测试（在 `build` 最后执行），两者都先在迁移前的 Vite 产物上通过；vue3-moveable 纳入 lint。
 
 ## 待进行
 
 ### 4. 框架包装升级（剩余部分）
-按风险从小到大拆成几个 change，已完成 `upgrade-lit-3`。框架包装的 change 照它的做法给对应的包加上针对构建产物的浏览器测试（见 `archive/2026-10-13-upgrade-lit-3` 的 design）：
-- `migrate-vue3-to-tsdown`（原计划名 `upgrade-vue-toolchain`，进行中）：vue3-moveable 的 SFC 改为普通 `.ts` 加渲染函数，构建改为 tsdown + tsc，Vite 4、vue-tsc、vite-plugin-dts 整套删除；Vue 升到 3.5 并改为 peerDependency；TS 升到 6.0；新增浏览器测试和类型测试。
+按风险从小到大拆成几个 change，已完成 `upgrade-lit-3`、`migrate-vue3-to-tsdown`。框架包装的 change 照它的做法给对应的包加上针对构建产物的浏览器测试（见 `archive/2026-10-13-upgrade-lit-3` 的 design）：
 - `upgrade-svelte-5`：Svelte 5 / SvelteKit。现在把方法挂到组件类原型上的做法在 Svelte 5 中失效，需要重新设计方法的暴露方式。svelte-moveable 目前仍声明 TS `^4.8 <4.9`，在这个 change 中升级（它依赖的 `svelte2tsx` 0.6.16 要求 TS `^4.9.4`，`pnpm install` 会报这一条 unmet peer）。
 - `bump-dependencies`（排在 `upgrade-svelte-5` 之后）：把全部依赖升到最新，后续开发都基于新版本。先把补丁和小版本统一升到最新，再逐个评估大版本（@babel/core 8、happy-dom 21、@types/node、keycon、preact 11 等），每次升级都跑全量测试，出问题时能定位到是哪个包。
 - 暂缓升级、有明确触发条件的两项：React 16 → 19 在第 6 步确定 peer 范围时决定（现在开发和测试用的是库支持的最低版本）；TypeScript 7 要等 typescript-eslint 支持（见「已知遗留」），且 croffle 只能处理 TS 4 的 AST。

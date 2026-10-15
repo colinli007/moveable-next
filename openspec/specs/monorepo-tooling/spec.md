@@ -74,11 +74,11 @@
 - **THEN** 满足 `library-build` 中「UMD 产物自包含」的要求：croact 与 react-moveable 的代码已被内联，产物中不存在对外部模块或依赖全局变量的引用
 
 ### Requirement: 代码检查
-仓库 SHALL 提供一条根命令，对 6 个库包（react-moveable、helper、croact-moveable、preact-moveable、moveable、lit-moveable）`src` 下的全部 TypeScript 源码执行静态检查（lint）。检查只在没有错误、也没有警告时通过；检查 MUST NOT 依赖构建产物，也 MUST NOT 被任何包的构建命令隐式执行。
+仓库 SHALL 提供一条根命令，对 7 个库包（react-moveable、helper、croact-moveable、preact-moveable、moveable、lit-moveable、vue3-moveable）`src` 下的全部 TypeScript 源码执行静态检查（lint）。检查只在没有错误、也没有警告时通过；检查 MUST NOT 依赖构建产物，也 MUST NOT 被任何包的构建命令隐式执行。
 
 #### Scenario: 检查范围
 - **WHEN** 开发者在根目录执行代码检查命令
-- **THEN** 6 个库包 `src` 下的 `.ts`、`.tsx` 文件都被检查；`dist`、`declaration`、stories 和其它包的文件不被检查
+- **THEN** 7 个库包 `src` 下的 `.ts`、`.tsx` 文件都被检查；`dist`、`declaration`、stories 和其它包的文件不被检查
 
 #### Scenario: 当前代码通过检查
 - **WHEN** 在没有改动的代码上执行代码检查命令
@@ -160,7 +160,7 @@ CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查
 - **THEN** CI 流水线失败，并能在日志中看到对应的文件路径和规则名
 
 #### Scenario: 框架包装测试失败
-- **WHEN** lit-moveable 的某个浏览器测试失败
+- **WHEN** lit-moveable 或 vue3-moveable 的某个浏览器测试失败
 - **THEN** CI 流水线失败，并能在日志中看到失败的测试名称
 
 ### Requirement: 发布的 Storybook 不自动执行交互

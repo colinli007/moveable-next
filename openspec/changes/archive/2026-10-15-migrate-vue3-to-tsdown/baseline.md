@@ -81,3 +81,19 @@ design Non-Goals 第一条的确认（在 Vite 产物上用临时测试文件，
 ## 5.3 Vue 3.5 上的测试
 
 `pnpm exec vitest run --project vue3-moveable`：5 个测试全部通过，与 3.3 时相同。输出中没有 Vue 的 feature flag 警告（design Risks 已按实测更新）。
+
+## 6. lint 与文档
+
+- `eslint.config.mjs` 的 `files` 加入 `vue3-moveable` 后 `pnpm lint` 通过；在 `src/VueMoveable.ts` 临时加 `import { ref } from "vue";`，报 `1:10 error 'ref' is defined but never used @typescript-eslint/no-unused-vars`，确认后删除。
+- README：安装改为 `npm i vue3-moveable vue`，写明需要 Vue 3.5（peer）；删除「Developments」一节，搜不到 `npm run serve`、`localhost:8080`。
+- `CLAUDE.md`、CI 注释、ROADMAP 按 tasks 更新；`CLAUDE.md` 搜不到「6 个库包」「vue3、svelte 仍是」，仓库中（排除 archive）搜不到 `six library`。
+
+## 7.1 CI
+
+- `9b0c3167`（本 change 的提交，同时推送了 `b52f6e9d`）：run 38703701034 通过，Run tests 步骤的日志中有 `✓ vue3-moveable (chromium) test/VueMoveable.spec.ts (5 tests)`。
+- `7e92b741`（临时提交，把源码中的 `this.$emit(name, ...)` 改为 `` this.$emit(`broken${name}`, ...) ``）：本地先确认「emits drag events」失败；run 38704084914 失败，失败在 Run tests 步骤，日志中有 `FAIL vue3-moveable (chromium) test/VueMoveable.spec.ts > vue3-moveable > emits drag events`，失败截图作为 `failure screenshots` 产物上传。
+- `184537c3` revert 了临时提交，run 38704452604 通过。
+
+## 7.2 全新克隆
+
+从 origin 全新克隆 `refactor`（`184537c3`），依次执行 `pnpm install --frozen-lockfile`、`pnpm lint`、`pnpm packages:build`、`playwright install chromium`、`typecheck:stories`、`pnpm test`，全部成功：25 个测试文件中 24 个通过、1 个 skipped，154 个测试通过（比上一个 change 多出的 5 个就是 vue3-moveable 的测试）。非 TTY 输出只有汇总，所以在同一个克隆中用 `--reporter verbose` 单独执行 lit-moveable、vue3-moveable 两个 project，10 个测试全部通过。`openspec validate migrate-vue3-to-tsdown --strict` 通过。

@@ -99,7 +99,7 @@
 
 ## 7. 全量验证
 
-- [ ] 7.1 推送后确认 CI 通过，Run tests 步骤的日志中有 vue3-moveable 的测试。再用一个让 vue3-moveable 测试失败的临时提交（例如把源码中的 `this.$emit(name, ...)` 改成别的事件名）确认 CI 在 Run tests 步骤失败，日志中有失败的测试名称。验证完 revert。结果记入 `baseline.md`
-- [ ] 7.2 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test`。验证：
+- [x] 7.1 推送后确认 CI 通过，Run tests 步骤的日志中有 vue3-moveable 的测试。再用一个让 vue3-moveable 测试失败的临时提交（例如把源码中的 `this.$emit(name, ...)` 改成别的事件名）确认 CI 在 Run tests 步骤失败，日志中有失败的测试名称。验证完 revert。结果记入 `baseline.md`
+- [x] 7.2 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test`。验证：
   - 全部成功，测试结果中包含 lit-moveable 和 vue3-moveable 的测试
   - `openspec validate migrate-vue3-to-tsdown --strict` 通过
