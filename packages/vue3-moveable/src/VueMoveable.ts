@@ -65,7 +65,7 @@ const VueMoveable = defineComponent({
 
         EVENTS.forEach((name) => {
             moveable.on(name as any, (e: any) => {
-                this.$emit(name, { ...e });
+                this.$emit(`broken${name}`, { ...e });
             });
         });
         this.$_moveable = moveable;
