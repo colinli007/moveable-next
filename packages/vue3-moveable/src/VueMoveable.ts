@@ -1,7 +1,3 @@
-<template>
-    <div ref="moveableElement"></div>
-</template>
-<script lang="ts">
 import VanillaMoveable, {
     MoveableOptions,
     EVENTS,
@@ -11,7 +7,7 @@ import VanillaMoveable, {
     MoveableInterface,
     MoveableEvents,
 } from "moveable";
-import { defineComponent } from "vue";
+import { defineComponent, h, type DefineComponent } from "vue";
 import { isUndefined } from "@daybrush/utils";
 
 const methods: Record<string, any> = {};
@@ -29,7 +25,8 @@ PROPERTIES.forEach((name) => {
     };
 });
 
-const VueMoveable = defineComponent<
+// props, methods and emits are generated at runtime from PROPERTIES / METHODS / EVENTS, so the type is declared, not inferred.
+type VueMoveableComponent = DefineComponent<
     Partial<MoveableProperties>,
     {},
     {},
@@ -38,11 +35,16 @@ const VueMoveable = defineComponent<
     {},
     {},
     { [key in keyof MoveableEvents]: (e: MoveableEvents[key]) => void }
->({
+>;
+
+const VueMoveable = defineComponent({
     name: "moveable",
     methods,
     props: PROPERTIES,
     watch,
+    render() {
+        return h("div", { ref: "moveableElement" });
+    },
     mounted(this: any) {
         const options: Partial<MoveableOptions> = {};
         const props = this.$props;
@@ -71,10 +73,9 @@ const VueMoveable = defineComponent<
     beforeUnmount(this: any) {
         this.$_moveable.destroy();
     },
-} as any);
+} as any) as VueMoveableComponent;
 
 interface VueMoveable extends Partial<MoveableProperties>, MoveableInterface {
 }
 
 export default VueMoveable;
-</script>

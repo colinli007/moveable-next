@@ -10,7 +10,7 @@ export default defineConfig(
     globalIgnores(["**/*.{js,mjs,cjs}"]),
     {
         files: [
-            "packages/{react-moveable,helper,croact-moveable,preact-moveable,moveable,lit-moveable}/src/**/*.{ts,tsx}",
+            "packages/{react-moveable,helper,croact-moveable,preact-moveable,moveable,lit-moveable,vue3-moveable}/src/**/*.{ts,tsx}",
         ],
         // Only the recommended react rules: some others still call context APIs removed in ESLint 10.
         extends: [js.configs.recommended, tseslint.configs.recommended, react.configs.flat.recommended],

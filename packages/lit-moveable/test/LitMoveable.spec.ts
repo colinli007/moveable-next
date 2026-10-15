@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import type { LitMoveable } from "../src";
 import "../dist/moveable.esm.js";
+import { createTarget, drag } from "../../../config/testing/browser";
 
 const created: HTMLElement[] = [];
 
@@ -9,44 +10,18 @@ afterEach(() => {
     created.splice(0).forEach(el => el.isConnected && el.remove());
 });
 
-function createTarget() {
-    const target = document.createElement("div");
-
-    target.style.cssText = "position: absolute; left: 50px; top: 50px; width: 200px; height: 100px;";
-    document.body.appendChild(target);
-    created.push(target);
-    return target;
+function track<T extends HTMLElement>(el: T) {
+    created.push(el);
+    return el;
 }
 
 async function createMoveable(props: Partial<LitMoveable>) {
     const el = document.createElement("lit-moveable");
 
     Object.assign(el, props);
-    document.body.appendChild(el);
-    created.push(el);
+    document.body.appendChild(track(el));
     await el.updateComplete;
     return el;
-}
-
-function mouse(type: string, x: number, y: number) {
-    return new MouseEvent(type, {
-        buttons: 1,
-        clientX: x,
-        clientY: y,
-        screenX: x,
-        screenY: y,
-        bubbles: true,
-        cancelable: true,
-    });
-}
-
-function drag(target: HTMLElement, [distX, distY]: number[]) {
-    const { left, top } = target.getBoundingClientRect();
-    const [x, y] = [left + 10, top + 10];
-
-    target.dispatchEvent(mouse("mousedown", x, y));
-    target.dispatchEvent(mouse("mousemove", x + distX, y + distY));
-    target.dispatchEvent(mouse("mouseup", x + distX, y + distY));
 }
 
 function recordEvents(el: HTMLElement, names: string[]) {
@@ -58,7 +33,7 @@ function recordEvents(el: HTMLElement, names: string[]) {
 
 describe("lit-moveable", () => {
     it("renders the control box for the target", async () => {
-        const target = createTarget();
+        const target = track(createTarget());
         const el = await createMoveable({ target });
 
         // warpSelf: the element itself is the control box, lines and controls are its children
@@ -67,7 +42,7 @@ describe("lit-moveable", () => {
     });
 
     it("passes property changes after the first render to moveable", async () => {
-        const target = createTarget();
+        const target = track(createTarget());
         const el = await createMoveable({ target, litDraggable: true });
 
         expect(el.querySelector(".moveable-rotation")).toBeNull();
@@ -86,7 +61,7 @@ describe("lit-moveable", () => {
     });
 
     it("dispatches lit-prefixed drag events", async () => {
-        const target = createTarget();
+        const target = track(createTarget());
         const el = await createMoveable({ target, litDraggable: true });
         const events = recordEvents(el, ["litDragStart", "litDrag", "litDragEnd"]);
 
@@ -97,7 +72,7 @@ describe("lit-moveable", () => {
     });
 
     it("proxies moveable methods", async () => {
-        const target = createTarget();
+        const target = track(createTarget());
         const el = await createMoveable({ target });
         const rect = el.getRect();
 
@@ -105,7 +80,7 @@ describe("lit-moveable", () => {
     });
 
     it("destroys moveable when removed", async () => {
-        const target = createTarget();
+        const target = track(createTarget());
         const el = await createMoveable({ target });
 
         await expect.poll(() => el.querySelectorAll(".moveable-line").length).toBe(4);

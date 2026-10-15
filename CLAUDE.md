@@ -9,8 +9,8 @@ Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩�
 - 运行时：Node **22.20.0**（根目录 `.nvmrc`，`nvm use` 即可切换；CI 读取同一个文件）。
 - 包管理：**pnpm workspace**（版本见根 `package.json` 的 `packageManager`，corepack 或全局 pnpm 会自动切换），只有一份根目录的 `pnpm-lock.yaml`，内部依赖写成 `workspace:~`。workspace 设置、overrides、`allowBuilds` 都在 `pnpm-workspace.yaml` 中。
 - 依赖布局是 pnpm 默认的严格（isolated）布局，不开任何 hoist：包里用到的模块、脚本调用的可执行文件都必须在**这个包自己的** `package.json` 里声明，不能依赖根目录兜底。依赖的构建脚本默认被拦截，新增需要构建的依赖时要写进 `allowBuilds`。
-- TypeScript 由各包自己声明，不用全局 override：react-moveable、croact、preact、moveable、lit、helper 用 `~6.0.3`（`moduleResolution: bundler`，声明文件的 tsconfig 必须显式写 `rootDir`，否则 TS 6 会把它们输出到 `declaration/src/`）；根目录也是 `~6.0.3`，供 typescript-eslint 解析源码；vue3、svelte 仍是 `^4.8 <4.9`。vue3、svelte 会用 TS 4.8 读取 moveable 的 `declaration/`，所以这几个库的源码不要写会原样进入声明文件的 TS 5+ 语法（如 `export type * from`）。croffle 使用它自己依赖的 TS 4.5，`croffle.config.js` 必须从 croffle 所在目录解析 typescript，与它共用同一个实例。
-- Lint：根目录一份 `eslint.config.mjs`（ESLint 10 flat config + typescript-eslint 8 + `@stylistic/eslint-plugin`），eslint 和插件只在根 `package.json` 中声明。检查范围写在配置的 `files` 中（6 个库包的 `src/**/*.{ts,tsx}`），所以 `pnpm lint` 不带路径，编辑器插件和命令行的范围一致。各包的构建不执行 lint，CI 单独执行。eslint-plugin-react 只启用推荐集：推荐集以外有规则在 ESLint 10 下会报错。
+- TypeScript 由各包自己声明，不用全局 override：react-moveable、croact、preact、moveable、lit、vue3、helper 用 `~6.0.3`（`moduleResolution: bundler`，声明文件的 tsconfig 必须显式写 `rootDir`，否则 TS 6 会把它们输出到 `declaration/src/`）；根目录也是 `~6.0.3`，供 typescript-eslint 解析源码；svelte 仍是 `^4.8 <4.9`，它会用 TS 4.8 读取 moveable 的 `declaration/`，所以 moveable 及其上游库的源码不要写会原样进入声明文件的 TS 5+ 语法（如 `export type * from`）。croffle 使用它自己依赖的 TS 4.5，`croffle.config.js` 必须从 croffle 所在目录解析 typescript，与它共用同一个实例。
+- Lint：根目录一份 `eslint.config.mjs`（ESLint 10 flat config + typescript-eslint 8 + `@stylistic/eslint-plugin`），eslint 和插件只在根 `package.json` 中声明。检查范围写在配置的 `files` 中（7 个库包的 `src/**/*.{ts,tsx}`），所以 `pnpm lint` 不带路径，编辑器插件和命令行的范围一致。各包的构建不执行 lint，CI 单独执行。eslint-plugin-react 只启用推荐集：推荐集以外有规则在 ESLint 10 下会报错。
 - 需求/设计走 OpenSpec 工作流（`openspec/`、`.claude/skills/openspec-*`、`/opsx:*` 命令）。整体的现代化步骤和进度见 `openspec/ROADMAP.md`，每完成一个 change 就更新它。
 
 ## 常用命令
@@ -23,8 +23,8 @@ pnpm install               # 安装依赖（根目录一次装好所有包）
 pnpm storybook             # = react-moveable 的 Storybook（先 bake，端口 6006），主要的开发/调试环境
 pnpm test                  # 先 bake，再跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试 + 框架包装的浏览器测试；后者读构建产物，要先 pnpm packages:build）
 pnpm build                 # 只构建 react-moveable
-pnpm lint                  # ESLint 检查 6 个库包的 src，警告也算失败，不需要先构建
-pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact/preact → moveable → lit/vue3/svelte，helper 独立）
+pnpm lint                  # ESLint 检查 7 个库包的 src，警告也算失败，不需要先构建
+pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact/preact → moveable → lit/vue3/svelte，helper 独立）；vue3-moveable 的构建最后执行类型测试
 pnpm build:storybook       # 先 bake，再构建静态 Storybook 到 demo/storybook
 pnpm doc                   # jsdoc 生成 doc/
 pnpm deploy                # node config/deploy.mjs 复制产物到 demo/，再用 gh-pages 推送到 origin
@@ -38,11 +38,11 @@ pnpm test                  # 先 bake，再跑本包的 Vitest
 pnpm exec vitest run stories/1-Basic    # 只跑某个目录 / 文件的 story 测试
 ```
 
-Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon-vitest`（Vitest 5 浏览器模式，Playwright 驱动 chromium）。Vitest 配置按包分开：根目录 `vitest.config.mts` 只汇总 `packages/*/vitest.config.mts`；react-moveable 有 `storybook`（浏览器）和 `unit`（node，code-preview 的单元测试）两个 project，helper 一个（happy-dom），lit-moveable 一个（浏览器）。配置文件用 `.mts`，因为包的 `package.json` 不是 `"type": "module"`。
+Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon-vitest`（Vitest 5 浏览器模式，Playwright 驱动 chromium）。Vitest 配置按包分开：根目录 `vitest.config.mts` 只汇总 `packages/*/vitest.config.mts`；react-moveable 有 `storybook`（浏览器）和 `unit`（node，code-preview 的单元测试）两个 project，helper 一个（happy-dom），lit-moveable、vue3-moveable 各一个（浏览器）。配置文件用 `.mts`，因为包的 `package.json` 不是 `"type": "module"`。
 
 测试：每个 story 都在 1280×720 视口下真实渲染并算作一个测试，带 `play` 的再执行断言（`stories/**/*.stories.tsx`，用 `stories/utils/testing.tsx` 的 `pan`/`pinch`/`rotate` 模拟手势，再断言 `style.transform`）。失败截图在根目录 `.vitest/attachments/failure-screenshots/`。本地调试单个用例：开着 `pnpm storybook`，在 Interactions 面板看对应 story 的 play 的每一步。
 
-框架包装的浏览器测试（目前是 lit-moveable，`packages/lit-moveable/test/`）：Vitest 浏览器模式，import 的是包的 `dist` 产物而不是源码（检查的就是使用者拿到的代码），所以要先构建。原生 moveable 的属性赋值经 croact 的 `setState` 异步生效，断言内部状态前用 `expect.poll` 等待（如 `getManager().props`）。同一个 `<lit-moveable>` 只能移除一次：再次移除会第二次 `destroy()` 并抛错。
+框架包装的浏览器测试（lit-moveable、vue3-moveable，在各包的 `test/` 下）：Vitest 浏览器模式，import 的是包的 `dist` 产物而不是源码（检查的就是使用者拿到的代码），所以要先构建。原生 moveable 的属性赋值经 croact 的 `setState` 异步生效，断言内部状态前用 `expect.poll` 等待（如 `getManager().props`）。同一个 `<lit-moveable>` 只能移除一次：再次移除会第二次 `destroy()` 并抛错。vue3-moveable 的测试用 `createApp` + `h` 挂载，不依赖 `@vue/test-utils`。创建目标元素和模拟鼠标拖动的辅助函数在根目录 `config/testing/browser.ts`（只用 DOM API），清理逻辑留在各自的测试文件中。vue3-moveable 另有类型测试 `test/types.ts`（`pnpm --filter vue3-moveable test:type`，检查的是 `declaration/`）。
 
 story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
 - 每个 story 文件静态 import 自己的 App，并对**本目录**做两次 `import.meta.glob`（`apps` 和 `?raw` 的 `sources`），交给 `appStory(App, { apps, sources, argTypes, args })` 生成 `render`、`args`、`argTypes` 和代码 tab；`name`、`tags` 必须写成字面量（索引器只读静态值），export 名就是 story id，不要改。
@@ -71,10 +71,10 @@ helper              独立工具包（@moveable/helper）
 
 ### 构建（tsdown）
 
-6 个库包（react-moveable、croact、preact、moveable、lit、helper）用 tsdown（Rolldown）构建，每个包一份 `tsdown.config.mts`，共用选项（`target: "es2022"`、sourcemap、banner、`dts: false`）在根目录 `config/build.mjs`；类型声明由各包的 `declaration` 脚本（tsc）输出到 `declaration/`。产物文件名、CJS 的 `require()` 形状、UMD 全局名对外不变，改动后可以用 `openspec/changes/archive/*replace-build-with-tsdown/baseline.md` 中的方法对比。约束：
+7 个库包（react-moveable、croact、preact、moveable、lit、vue3、helper）用 tsdown（Rolldown）构建，每个包一份 `tsdown.config.mts`，共用选项（`target: "es2022"`、sourcemap、banner、`dts: false`）在根目录 `config/build.mjs`；类型声明由各包的 `declaration` 脚本（tsc）输出到 `declaration/`。产物文件名、CJS 的 `require()` 形状、UMD 全局名对外不变，改动后可以用 `openspec/changes/archive/*replace-build-with-tsdown/baseline.md` 中的方法对比。约束：
 - 产物语法目标是 ES2022，tsconfig 中的 `useDefineForClassFields: false` 不能去掉：`@Properties`、`@withMethods`、Lit 的 `@property` 定义在原型上的访问器会被实例字段遮住。
 - JSX 必须是经典转换（`jsx: react`，输出 `React.createElement`）：croact 没有 `jsx-runtime`。react-moveable 的构建读 `tsconfig.build.json`，因为 `tsconfig.json` 为了 Storybook 是 `jsx: preserve`。
-- 产物运行时 import 的包必须在该包 `package.json` 中声明；ESM/CJS 配置都设了 `deps.onlyBundle: []`，有 node_modules 包被打进产物时构建直接报错。react、preact 暂时在配置中用 `deps.neverBundle` 保持 external，发布步骤再改成 peerDependencies；lit-moveable 的 lit 已经是 peerDependency（Lit 3，`^3.0.0`），tsdown 会自动把 peer 当作外部模块。
+- 产物运行时 import 的包必须在该包 `package.json` 中声明；ESM/CJS 配置都设了 `deps.onlyBundle: []`，有 node_modules 包被打进产物时构建直接报错。react、preact 暂时在配置中用 `deps.neverBundle` 保持 external，发布步骤再改成 peerDependencies；lit-moveable 的 lit（Lit 3，`^3.0.0`）、vue3-moveable 的 vue（`^3.5.0`）已经是 peerDependency，tsdown 会自动把 peer 当作外部模块。
 - croact、preact 内联 react-moveable 的 ESM 产物（`deps.alwaysBundle` + `mainFields: ["module", "main"]`），用 `outputOptions.paths` 把输出中的 `react` / `react-css-styled` 改名为 croact / preact 的对应包；moveable 的 ESM/CJS 同样把 `react-moveable` 改名为 `croact-moveable`。这些是输出改名，不能换成 alias（已声明的依赖会先被判定为 external，alias 不生效）。
 - moveable 的 UMD 要真正内联 croact：alias 指向 moveable 自己 `node_modules/croact` 的绝对路径（被内联的 react-moveable 产物从它自己的位置找不到 croact）。UMD 配置都是 `platform: "browser"`，否则会解析到 `node` 条件下的版本（如 lit 的 SSR 版本）。
 - CJS/UMD 入口（`src/index.umd.ts`）只把具名导出挂到 default 上再 `export default`，由 `outputOptions.exports: "default"` 生成 `module.exports = Moveable`；不要在源码里写 `module.exports`，也不要在这个入口里加 `export *`。

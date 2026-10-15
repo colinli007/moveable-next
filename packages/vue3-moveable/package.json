@@ -2,15 +2,15 @@
     "name": "vue3-moveable",
     "version": "0.28.0",
     "description": "A Vue 3 Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable, Groupable.",
-    "types": "dist/index.d.ts",
+    "types": "declaration/index.d.ts",
     "main": "dist/moveable.cjs.js",
-    "module": "dist/moveable.js",
+    "module": "dist/moveable.esm.js",
     "sideEffects": false,
-    "type": "module",
     "scripts": {
-        "dev": "vite",
-        "build": "vite build && vue-tsc",
-        "preview": "vite preview"
+        "build": "tsdown && pnpm run declaration && pnpm run test:type",
+        "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
+        "test": "vitest run",
+        "test:type": "tsc -p tsconfig.test.json"
     },
     "keywords": [
         "moveable",
@@ -50,7 +50,6 @@
     "homepage": "https://daybrush.com/moveable",
     "dependencies": {
         "@daybrush/utils": "^1.13.0",
-        "framework-utils": "^1.1.0",
         "moveable": "workspace:~"
     },
     "files": [
@@ -60,12 +59,14 @@
         "declaration/*"
     ],
     "devDependencies": {
-        "@vitejs/plugin-vue": "^4.2.3",
-        "tslib": "^2.3.1",
-        "typescript": "^4.8 <4.9",
-        "vite": "^4.3.0",
-        "vite-plugin-dts": "^3.0.0-beta.3",
-        "vue": "^3.3.4",
-        "vue-tsc": "^1.8.1"
+        "@vitest/browser-playwright": "5.0.3",
+        "playwright": "^1.64.0",
+        "tsdown": "~0.23.1",
+        "typescript": "~6.0.3",
+        "vitest": "5.0.3",
+        "vue": "^3.5.44"
+    },
+    "peerDependencies": {
+        "vue": "^3.5.0"
     }
 }

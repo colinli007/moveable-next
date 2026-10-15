@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "noEmit": false,
+    "isolatedModules": false,
+    "removeComments": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "rootDir": "./src",
+    "declarationDir": "declaration"
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}

@@ -87,10 +87,11 @@
 
 ## ⚙️ Installation
 
-* Vue 3
 ```sh
-$ npm i vue3-moveable
+$ npm i vue3-moveable vue
 ```
+
+vue3-moveable requires [Vue](https://vuejs.org) 3.5 or later (`vue` is a peer dependency).
 
 ## 🚀 How to use
 If you want to check the methods and events, please refer to the [**API documentation**](https://daybrush.com/moveable/release/latest/doc/).
@@ -133,17 +134,6 @@ export default {
 }
 </script>
 ```
-
-
-## ⚙️ Developments
-### `npm run serve`
-
-Runs the app in the development mode.<br/>
-Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
-
-The page will reload if you make edits.<br/>
-You will also see any lint errors in the console.
-
 
 
 ## ⭐️ Show Your Support

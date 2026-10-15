@@ -9,7 +9,7 @@
 | 1 | 迁移到 pnpm workspace，Node 22 | 已完成 | `archive/2026-10-11-migrate-to-pnpm-monorepo` |
 | 2 | Storybook 10 + Vite 8，测试改为 Vitest 5 | 已完成 | `archive/2026-10-11-upgrade-storybook-10-vitest` |
 | 3 | 库构建工具替换 | 已完成 | `archive/2026-10-12-replace-build-with-tsdown`，`archive/2026-10-13-migrate-eslint-flat-config` |
-| 4 | 框架包装升级 | 进行中 | `archive/2026-10-13-upgrade-lit-3`（已完成），`upgrade-vue-toolchain`、`upgrade-svelte-5`（未开始） |
+| 4 | 框架包装升级 | 进行中 | `archive/2026-10-13-upgrade-lit-3`（已完成），`migrate-vue3-to-tsdown`（进行中），`upgrade-svelte-5`、`bump-dependencies`（未开始） |
 | 5 | 文档与部署 | 未开始 | |
 | 6 | 以 `@moveable-next` 发布 | 未开始 | |
 
@@ -32,10 +32,11 @@ lit-moveable 升到 Lit 3，lit 改为 peerDependency（`^3.0.0`），tsdown 自
 ## 待进行
 
 ### 4. 框架包装升级（剩余部分）
-按风险从小到大拆成三个 change，已完成 `upgrade-lit-3`。剩下两个照它的做法给对应的包加上针对构建产物的浏览器测试（见 `archive/2026-10-13-upgrade-lit-3` 的 design）：
-- `upgrade-vue-toolchain`：Vue 工具链（vue-tsc 1.8 依赖 TS 4.x，需要随 TS 一起升级；Vite 4 → 8）。
-- `upgrade-svelte-5`：Svelte 5 / SvelteKit。现在把方法挂到组件类原型上的做法在 Svelte 5 中失效，需要重新设计方法的暴露方式。
-- vue3-moveable、svelte-moveable 目前仍声明 TS `^4.8 <4.9`，在各自的 change 中升级（svelte-moveable 依赖的 `svelte2tsx` 0.6.16 要求 TS `^4.9.4`，`pnpm install` 会报这一条 unmet peer）。
+按风险从小到大拆成几个 change，已完成 `upgrade-lit-3`。框架包装的 change 照它的做法给对应的包加上针对构建产物的浏览器测试（见 `archive/2026-10-13-upgrade-lit-3` 的 design）：
+- `migrate-vue3-to-tsdown`（原计划名 `upgrade-vue-toolchain`，进行中）：vue3-moveable 的 SFC 改为普通 `.ts` 加渲染函数，构建改为 tsdown + tsc，Vite 4、vue-tsc、vite-plugin-dts 整套删除；Vue 升到 3.5 并改为 peerDependency；TS 升到 6.0；新增浏览器测试和类型测试。
+- `upgrade-svelte-5`：Svelte 5 / SvelteKit。现在把方法挂到组件类原型上的做法在 Svelte 5 中失效，需要重新设计方法的暴露方式。svelte-moveable 目前仍声明 TS `^4.8 <4.9`，在这个 change 中升级（它依赖的 `svelte2tsx` 0.6.16 要求 TS `^4.9.4`，`pnpm install` 会报这一条 unmet peer）。
+- `bump-dependencies`（排在 `upgrade-svelte-5` 之后）：把全部依赖升到最新，后续开发都基于新版本。先把补丁和小版本统一升到最新，再逐个评估大版本（@babel/core 8、happy-dom 21、@types/node、keycon、preact 11 等），每次升级都跑全量测试，出问题时能定位到是哪个包。
+- 暂缓升级、有明确触发条件的两项：React 16 → 19 在第 6 步确定 peer 范围时决定（现在开发和测试用的是库支持的最低版本）；TypeScript 7 要等 typescript-eslint 支持（见「已知遗留」），且 croffle 只能处理 TS 4 的 AST。
 
 ### 5. 文档与部署
 - TypeDoc 替换 `@daybrush/jsdoc`。

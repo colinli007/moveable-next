@@ -1,4 +1,4 @@
-import Moveable from './Moveable.vue';
+import Moveable from './VueMoveable';
 
 
 export { Moveable as VueMoveable };
