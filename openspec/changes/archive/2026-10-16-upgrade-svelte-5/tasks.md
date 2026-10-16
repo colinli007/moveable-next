@@ -97,7 +97,7 @@
 
 ## 6. 全量验证
 
-- [ ] 6.1 推送后确认 CI 通过，Run tests 步骤的日志中有 svelte-moveable 两个 project 的测试。再用一个让 svelte-moveable 测试失败的临时提交（例如把 `src/index.ts` 中补方法的循环删掉）确认 CI 在 Run tests 步骤失败，日志中有失败的测试名称。验证完 revert。结果记入 `baseline.md`
-- [ ] 6.2 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test`。验证：
+- [x] 6.1 推送后确认 CI 通过，Run tests 步骤的日志中有 svelte-moveable 两个 project 的测试。再用一个让 svelte-moveable 测试失败的临时提交（例如把 `src/index.ts` 中补方法的循环删掉）确认 CI 在 Run tests 步骤失败，日志中有失败的测试名称。验证完 revert。结果记入 `baseline.md`
+- [x] 6.2 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test`。验证：
   - 全部成功，测试结果中包含 lit-moveable、vue3-moveable、svelte-moveable 的测试
   - `openspec validate upgrade-svelte-5 --strict` 通过

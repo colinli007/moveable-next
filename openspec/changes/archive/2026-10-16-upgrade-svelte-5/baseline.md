@@ -133,3 +133,28 @@ Unhandled rejection 的情况：
 ## 本地完整检查
 
 `pnpm lint && pnpm packages:build && pnpm --filter react-moveable typecheck:stories && pnpm test` 全部成功：27 个测试文件中 26 个通过、1 个 skipped，162 个测试通过。比上一个 change 的 154 个多出 8 个，就是 svelte-moveable 的测试。
+
+## 6.1 CI
+
+- `27435bf4`（本 change 的提交）：run 38844574207 通过。Run tests 步骤的日志中有：
+  - `✓ svelte-moveable (browser) (chromium) test/SvelteMoveable.svelte.spec.ts (7 tests)`
+  - `✓ svelte-moveable (ssr) test/SvelteMoveable.ssr.spec.ts (1 test)`
+- `dca71317`（临时提交，把 `src/index.ts` 中补方法的 `METHODS.forEach` 换成 `void METHODS;`）：
+  - 本地先确认构建仍成功（类型声明中仍有这些方法），两个测试失败。
+  - run 38844871209 失败，失败在 Run tests 步骤。日志中有：
+    - `FAIL svelte-moveable (browser) (chromium) test/SvelteMoveable.svelte.spec.ts > svelte-moveable > proxies moveable methods through the component instance`
+    - `... > supports the syntax of the generated Storybook examples`
+  - 失败截图作为 `failure screenshots` 产物上传。
+- `c540829b` revert 了临时提交（与 `27435bf4` 没有差异），run 38845193934 通过。
+
+## 6.2 全新克隆
+
+从 origin 全新克隆 `refactor`（`c540829b`），依次执行以下命令，全部成功：
+- `pnpm install --frozen-lockfile`
+- `pnpm lint`
+- `pnpm packages:build`
+- `playwright install chromium`
+- `typecheck:stories`
+- `pnpm test`
+
+结果：27 个测试文件中 26 个通过、1 个 skipped，162 个测试通过。在同一个克隆中用 `--reporter verbose` 单独执行 lit-moveable、vue3-moveable、`svelte-moveable (*)`，4 个测试文件、18 个测试全部通过（5 + 5 + 8）。`openspec validate upgrade-svelte-5 --strict` 通过。
