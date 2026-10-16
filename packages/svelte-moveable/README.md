@@ -87,8 +87,10 @@
 
 ## ⚙️ Installation
 ```sh
-$ npm i svelte-moveable
+$ npm i svelte-moveable svelte
 ```
+
+svelte-moveable requires [Svelte](https://svelte.dev) 5 (`svelte` is a peer dependency).
 
 ## 📄 Documents
 
@@ -99,77 +101,50 @@ $ npm i svelte-moveable
 * [API Documentation](https://daybrush.com/moveable/release/latest/doc/)
 
 ## 🚀 How to use
-> If you don't want to use detail, use camelcase props instead of `on:event`
->
-> ```
-> on:dragStart={({ detail: e}) => {}}
-> onDragStart={e => {}}
-> ```
+If you want to check the methods and events, please refer to the [**API documentation**](https://daybrush.com/moveable/release/latest/doc/).
 
-```html
+* Options are props. Events are callback props named `on` + the event name (`onDrag`, `onResizeStart`), called with moveable's event object.
+* Object and array options (`renderDirections`, `bounds`, ...) are passed to moveable when they are reassigned. Changing them in place (`bounds.left = 100`, `renderDirections.push("e")`) has no effect.
+* Moveable's methods are on the component reference from `bind:this` (or the return value of `mount()`), e.g. `moveable.updateRect()`. `getInstance()` returns the vanilla Moveable instance.
+* `on:drag={({ detail: e }) => {}}` still works (the Storybook examples use it), but the `on:` directive is deprecated in Svelte 5 and `detail` is not typed. Prefer callback props.
+
+```svelte
 <script>
     import Moveable from "svelte-moveable";
-    let target;
+
+    let target = $state();
+    let moveable = $state();
+    let renderDirections = $state(["nw", "ne", "sw", "se"]);
+
+    function showAllDirections() {
+        // Reassign instead of push(): only reassigned options reach moveable.
+        renderDirections = ["nw", "n", "ne", "w", "e", "sw", "s", "se"];
+    }
 </script>
-```
-```jsx
+
 <div class="target" bind:this={target}>Target</div>
+<button onclick={showAllDirections}>All directions</button>
+<button onclick={() => moveable.updateRect()}>Update rect</button>
 <Moveable
-  target={target}
-  origin={true}
-  edge={false}
-
-  draggable={true}
-  throttleDrag={0}
-  on:dragStart={({ detail }) => onDragStart(detail)}
-  on:drag={({ detail }) => onDrag(detail)}
-  on:dragEnd={({ detail }) => onDragEnd(detail)}
-
-  keepRatio={false}
-  renderDirections={["nw", "ne", "sw", "se", "n", "w", "s", "e"]}
-
-  resizable={false}
-  throttleResize={0}
-  on:resizeStart={({ detail }) => onResizeStart(detail)}
-  on:resize={({ detail }) => onResize(detail)}
-  on:resizeEnd={({ detail }) => onResizeEnd(detail)}
-
-  scalable={false}
-  throttleScale={0}
-  on:scaleStart={({ detail }) => onScaleStart(detail)}
-  on:scale={({ detail }) => onScale(detail)}
-  on:scaleEnd={({ detail }) => onScaleEnd(detail)}
-
-
-  rotatable={false}
-  throttleRotate={0}
-  on:rotateStart={({ detail }) => onRotateStart(detail)}
-  on:rotate={({ detail }) => onRotate(detail)}
-  on:rotateEnd={({ detail }) => onRotateEnd(detail)}
-
-  warpable={false}
-  on:warpStart={({ detail }) => onWarpStart(detail)}
-  on:warp={({ detail }) => onWarp(detail)}
-  on:warpEnd={({ detail }) => onWarpEnd(detail)}
-
-  pinchable="false"
-  on:pinchStart={({ detail }) => onPinchStart(detail)}
-  on:pinch={({ detail }) => onPinch(detail)}
-  on:pinchEnd={({ detail }) => onPinchEnd(detail)}
+    bind:this={moveable}
+    {target}
+    draggable={true}
+    resizable={true}
+    rotatable={true}
+    {renderDirections}
+    onDrag={e => {
+        e.target.style.transform = e.transform;
+    }}
+    onResize={e => {
+        e.target.style.width = `${e.width}px`;
+        e.target.style.height = `${e.height}px`;
+        e.target.style.transform = e.drag.transform;
+    }}
+    onRotate={e => {
+        e.target.style.transform = e.drag.transform;
+    }}
 />
-
 ```
-
-
-## ⚙️ Developments
-### `npm run dev`
-
-Runs the app in the development mode.<br/>
-Open [http://localhost:5000](http://localhost:5000) to view it in the browser.
-
-The page will reload if you make edits.<br/>
-You will also see any lint errors in the console.
-
 
 
 ## ⭐️ Show Your Support

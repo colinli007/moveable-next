@@ -34,14 +34,11 @@ peerDependencyRules:
     eslint-plugin-react>eslint: "10"
 
 # Only esbuild needs its install script (prepares the platform binary used by vite).
-# The rest only print banners, compile an optional fsevents@1, download Playwright browsers
-# (installed explicitly with `playwright install` instead) or run `svelte-kit sync`
-# (already part of svelte-moveable's `package` script).
+# The rest only print banners, compile an optional fsevents@1 or download Playwright browsers
+# (installed explicitly with `playwright install` instead).
 allowBuilds:
   esbuild: true
-  "@sveltejs/kit": false
   core-js: false
   fsevents: false
   playwright: false
   preact: false
-  svelte-preprocess: false

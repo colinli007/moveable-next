@@ -1,9 +1,8 @@
 .DS_Store
 node_modules
-/build
 /dist
+# svelte-package writes its intermediate files here and leaves them behind
 /.svelte-kit
-/package
 .env
 .env.*
 !.env.example

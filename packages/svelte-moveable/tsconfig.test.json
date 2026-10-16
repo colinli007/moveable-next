@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig",
+  "include": [
+    "./test/types.ts",
+    "./test/TypesUsage.svelte"
+  ]
+}

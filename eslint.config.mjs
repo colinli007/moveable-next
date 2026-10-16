@@ -11,6 +11,8 @@ export default defineConfig(
     {
         files: [
             "packages/{react-moveable,helper,croact-moveable,preact-moveable,moveable,lit-moveable,vue3-moveable}/src/**/*.{ts,tsx}",
+            // .svelte files are not linted; svelte-check checks their TypeScript during the build.
+            "packages/svelte-moveable/src/**/*.ts",
         ],
         // Only the recommended react rules: some others still call context APIs removed in ESLint 10.
         extends: [js.configs.recommended, tseslint.configs.recommended, react.configs.flat.recommended],
