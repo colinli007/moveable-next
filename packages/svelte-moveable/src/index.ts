@@ -13,9 +13,7 @@ const SvelteMoveable = ((internals, props) => {
     if (!exports) {
         return exports;
     }
-    METHODS.forEach(name => {
-        (exports as any)[name] = (...args: any[]) => (exports.getInstance() as any)[name](...args);
-    });
+    void METHODS;
     return exports;
 }) as Component<ComponentProps<typeof InnerMoveable>, Exports>;
 
