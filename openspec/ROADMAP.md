@@ -10,7 +10,7 @@
 | 2 | Storybook 10 + Vite 8，测试改为 Vitest 5 | 已完成 | `archive/2026-10-11-upgrade-storybook-10-vitest` |
 | 3 | 库构建工具替换 | 已完成 | `archive/2026-10-12-replace-build-with-tsdown`，`archive/2026-10-13-migrate-eslint-flat-config` |
 | 4 | 框架包装升级与依赖升级 | 已完成 | `archive/2026-10-13-upgrade-lit-3`、`archive/2026-10-15-migrate-vue3-to-tsdown`、`archive/2026-10-16-upgrade-svelte-5`、`archive/2026-10-18-bump-dependencies` |
-| 5 | 文档与部署 | 进行中 | `archive/2026-10-18-deploy-demo-with-actions`、`replace-jsdoc-with-typedoc` |
+| 5 | 文档与部署 | 进行中 | `archive/2026-10-18-deploy-demo-with-actions`、`archive/2026-10-18-replace-jsdoc-with-typedoc` |
 | 6 | 以 `@moveable-next` 发布 | 未开始 | |
 
 ## 已完成
