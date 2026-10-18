@@ -17,7 +17,7 @@
 
 #### Scenario: 注释错误使生成失败
 - **WHEN** 源码注释中有指向不存在的符号的 `{@link}`、未声明的标签，或同一个参数名在签名中不存在的 `@param`
-- **THEN** `pnpm doc` 失败，并指出文件位置
+- **THEN** `pnpm doc` 失败，并指出出错的声明（如 `DraggableOptions.draggable`）或文件位置
 
 #### Scenario: 文档到 Storybook 的链接
 - **WHEN** 文档部署在 demo 站点的 `release/latest/doc/` 中，点击某个选项说明中指向示例的链接
@@ -76,4 +76,4 @@ CI SHALL 在每次推送和 pull request 时执行仓库中全部自动化检查
 
 #### Scenario: API 文档生成失败
 - **WHEN** 源码注释使 `pnpm doc` 产生警告或错误
-- **THEN** CI 流水线失败，并能在日志中看到对应的文件位置和原因
+- **THEN** CI 流水线失败，并能在日志中看到出错的声明或文件位置，以及原因

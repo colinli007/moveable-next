@@ -343,3 +343,16 @@ OriginDraggable 的 request 说明在 4.2 中放进了它的 `@categoryDescripti
   - 共 12 个 Storybook 链接。
 - 点击第一个 Storybook 链接，打开 `storybook/?path=/story/options--options-control-padding`，story 渲染出控制框；它的「See API」指向 `release/latest/doc/classes/Moveable.html#controlpadding`，打开后定位到 `controlPadding` 的说明。
 - `interfaces/DraggableEvents.html` 中，`onDrag` 有说明「When dragging, the drag event is called.」和示例。
+
+## 7.3 CI
+
+- 提交与推送：
+  - 第一次提交时，`git add` 因为 `jsdoc.json` 已经用 `git rm` 暂存而报 pathspec 错误，整条命令失败；用 `;` 连接的 `git commit` 照常执行，于是 `d9f9f757` 只包含 `jsdoc.json` 的删除，却带着整个 change 的提交说明，并且已经推送。
+  - 没有改写远程分支：其余改动作为 `76ae1660` 追加提交，说明中写明了 `d9f9f757` 的情况。
+  - 两个提交的 `Tests` 都通过。
+- `76ae1660` 的 CI 日志中有「API docs」一步：`$ typedoc`，`html generated at ./doc`，用时约 10 秒。
+- 临时提交 `5ea418f3` 在 `draggable` 的说明中写入 `{@link NotAMoveableSymbol}`，run 39104706754 在「API docs」一步失败（exit code 4）：
+  - 日志列出 5 个「Failed to resolve link to "NotAMoveableSymbol" in comment for …」：`MoveableProps.draggable`、`MoveableOptions.draggable`、`DraggableOptions.draggable`、`DraggableProps.draggable`、`Moveable.draggable`；
+  - 后面的构建和测试步骤都被跳过。
+- 警告给出的是出错的声明，不是文件和行号。spec 中两个场景的「文件位置」已改为「出错的声明或文件位置」。
+- revert 后推送。
