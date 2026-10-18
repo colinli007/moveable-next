@@ -1892,7 +1892,7 @@ export interface OnRenderGroupEnd extends OnRenderEnd {
  */
 export interface DraggableOptions {
     /**
-     * Whether or not target can be dragged. See {@link NotAMoveableSymbol}.
+     * Whether or not target can be dragged.
      * @default false
      * @example
      * import Moveable from "moveable";
