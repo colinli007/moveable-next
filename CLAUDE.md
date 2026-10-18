@@ -30,7 +30,7 @@ pnpm lint                  # ESLint 检查库包的 src（警告也算失败）�
 pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact/preact → moveable → lit/vue3/svelte，helper 独立）；vue3-moveable 的构建最后执行类型测试；svelte-moveable 的构建依次执行 svelte-check（警告也算失败）、svelte-package、publint 和类型测试
 pnpm build:storybook       # 先 bake，再构建静态 Storybook 到 demo/storybook
 pnpm doc                   # jsdoc 生成 doc/
-pnpm deploy                # node config/deploy.mjs 复制产物到 demo/，再用 gh-pages 推送到 origin
+pnpm demo:build            # 构建所有包、文档和 Storybook，再由 config/copy-demo-files.mjs 把 moveable/helper 的 dist 和 doc/ 复制进 demo/；完成后 demo/ 就是站点根目录
 
 # packages/react-moveable（或在根目录用 pnpm --filter react-moveable <script>）
 pnpm test:type             # tsc -p tsconfig.test.json，对 tests/types.ts 做类型断言检查
@@ -40,6 +40,8 @@ pnpm exec playwright install chromium   # 首次跑测试前安装浏览器（�
 pnpm test                  # 先 bake，再跑本包的 Vitest
 pnpm exec vitest run stories/1-Basic    # 只跑某个目录 / 文件的 story 测试
 ```
+
+demo 站点只能在 GitHub Actions 中手动运行 `Deploy demo`（`.github/workflows/deploy-demo.yml`）发布：CI 从干净检出执行 `pnpm demo:build`，把 `demo/` 整体发布到本仓库的 GitHub Pages（来源设为「GitHub Actions」，不使用 gh-pages 分支）。本地没有发布命令。在 pnpm 11 中 `pnpm deploy` 执行的是根目录的同名脚本（不是 pnpm 内置命令，加 `--help` 也照样执行），所以根目录不要定义会写远程的 `deploy` 脚本。
 
 Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon-vitest`（Vitest 5 浏览器模式，Playwright 驱动 chromium）。Vitest 配置按包分开：根目录 `vitest.config.mts` 只汇总 `packages/*/vitest.config.mts`；react-moveable 有 `storybook`（浏览器）和 `unit`（node，code-preview 的单元测试）两个 project，helper 一个（happy-dom），lit-moveable、vue3-moveable 各一个（浏览器），svelte-moveable 有 `browser`（浏览器）和 `ssr`（node，服务端渲染）两个 project（显示为 `svelte-moveable (browser)` 等，`--project "svelte-moveable (*)"` 同时选中）。配置文件用 `.mts`，因为包的 `package.json` 不是 `"type": "module"`。
 
