@@ -78,7 +78,7 @@
         "storybook-dark-mode": "^5.0.0",
         "tsdown": "catalog:",
         "typescript": "catalog:",
-        "vite": "catalog:",
+        "vite": "^8.3.4",
         "vitest": "catalog:"
     },
     "dependencies": {

@@ -11,7 +11,7 @@
 | 3 | 库构建工具替换 | 已完成 | `archive/2026-10-12-replace-build-with-tsdown`，`archive/2026-10-13-migrate-eslint-flat-config` |
 | 4 | 框架包装升级与依赖升级 | 已完成 | `archive/2026-10-13-upgrade-lit-3`、`archive/2026-10-15-migrate-vue3-to-tsdown`、`archive/2026-10-16-upgrade-svelte-5`、`archive/2026-10-18-bump-dependencies` |
 | 5 | 文档与部署 | 进行中 | `archive/2026-10-18-deploy-demo-with-actions`、`archive/2026-10-18-replace-jsdoc-with-typedoc`、`archive/2026-10-18-remove-croffle-examples` |
-| 6 | 以 `@moveable-next` 发布 | 未开始 | |
+| 6 | 以 `@moveable-next` 发布 | 进行中 | `archive/2026-10-18-remove-preact-lit-svelte-packages` |
 | 7 | Storybook 加入 Vue3 示例 | 未开始 | |
 
 ## 已完成
@@ -46,9 +46,9 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 - 示例代码：原计划是改 croffle 的输出，让生成的 Svelte 示例使用 Svelte 5 写法。调研发现生成的示例没有任何检查：用各框架的编译器检查，Svelte 133 个中 3 个编译失败、Vue3 1 个、Lit 1 个、Script 2 个；用到 svelte-selecto、svelte-infinite-viewer（只支持 Svelte 3）的 6 个 Svelte 示例在 Svelte 5 下运行时一定出错；croffle 本身 2023 年 6 月后停更，仓库已无法访问。`remove-croffle-examples` 因此删除 croffle 和 Script / Vue3 / Svelte / Lit 四个代码 tab，只保留 React 和 CSS：React tab 就是被渲染、被测试的 App 源码，删除前后 137 个 story 的 React tab 逐字相同；CSS tab 补上 App import 的样式文件（`snap.css`、`safari.css`）。croffle 带来的 TypeScript 4.5.5、glob 8、inflight 随之移除，仓库中不再有已弃用的依赖，TypeScript 只剩一个版本，`storybook`、`test`、`build:storybook` 不再先执行 bake。svelte-moveable 去掉 `on:` 指令（`createEventDispatcher`），事件只用回调 prop；原来按生成示例写法的测试改为测试 runes 组件中 `bind:this` 得到的引用。
 
 ### 6. 以 `@moveable-next` 发布
+- 精简包的范围：`remove-preact-lit-svelte-packages` 删除 preact-moveable、lit-moveable、svelte-moveable，只支持 React、原生 JS 和 Vue 3（上游一周下载量：preact 201、lit 31、svelte 843，react 30.6 万、原生 4.9 万、vue3 7114）。仓库剩下 react-moveable、croact-moveable、moveable、vue3-moveable、@moveable/helper 5 个包；只为这三个包存在的依赖（preact、preact-css-styled、lit、svelte 及其工具链）和 preact-css-styled 的 `packageExtensions` 一并删除，`vite` 只剩 react-moveable 使用，移出 catalog。剩下 5 个包的产物逐字节不变。后面各项只需覆盖这 5 个包。
 - 包名改为 `@moveable-next/*`，补齐 `exports`。
 - 确定 React peer 范围（当前 story 和测试仍用 React 16，是库支持的最低版本），同时决定开发依赖是否升到 React 19 和 @types/react、@types/react-dom 19。
-- 确定 preact peer 范围，同时决定是否升到 preact 11（现在是 10.29.8）。preact-moveable 没有运行时测试，升级前要先补上。
 - 引入 changesets 管理版本和发布。
 - Storybook React tab 中的包名（`convertPath` 把内部路径换成 `react-moveable`）随包名一起修改。
 
@@ -56,7 +56,6 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 第 5 步删除了 croffle 翻译生成的多框架示例。以后加入 Vue3 示例时，要满足「展示的代码经过测试」：示例要在测试中真实渲染（或至少经过 Vue 编译器检查并挂载），不能再是没有检查的翻译结果。具体方式由那个 change 设计。
 
 ## 已知遗留
-- preact-css-styled 1.1.9 import 了 `preact/compat`，但没有声明 preact，从它自己的位置解析不到 preact（pnpm 默认的私有提升会掩盖这个问题，`--config.hoist=false` 时加载失败）；`pnpm-workspace.yaml` 中用 `packageExtensions` 给它补上 preact 的 peer 声明，上游修复后可删除。
 - react-keycon 0.3.0 的依赖声明会装出两份 `@cfcs/core`，目前用 `pnpm-workspace.yaml` 中限定范围的 override 让它们共用一份；上游修复后可删除。
 - eslint-plugin-react 7.37.5 的 peer 范围还不包含 ESLint 10，`pnpm-workspace.yaml` 中用 `peerDependencyRules.allowedVersions` 只对它放行；它的推荐集在 ESLint 10 下能正常运行，但推荐集以外有规则（如 `jsx-filename-extension`、`forward-ref-uses-ref`）调用了 ESLint 10 已删除的 API，所以配置只启用推荐集，额外启用 react 规则前要先确认它在 ESLint 10 下能运行。上游发布支持 ESLint 10 的版本后删除放行。
 - typescript-eslint 8 支持的 TypeScript 是 `<6.1`，以后升级到 TS 7 需要等它支持（npm 上已有 7.0.2）。

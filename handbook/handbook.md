@@ -139,9 +139,9 @@ window.addEventListener("mousedown", e => {
 });
 ```
 
-### React, Preact Example
+### React Example
 ```tsx
-import Moveable from "react-moveable"; // preact-moveable
+import Moveable from "react-moveable";
 
 <div onMouseDown={onMouseDown}></div>
 <Moveable ref={e => { this.moveable = e; }} target={this.state.target} />
@@ -157,35 +157,6 @@ onMouseDown(e) {
     });
 }
 ```
-
-### Svelte Example
-```html
-<script>
-    import Moveable from "svelte-moveable";
-    import { onMount } from "svelte";
-
-    let moveable;
-    let target;
-
-    function onMouseDown(e) {
-        target = e.target;
-
-        setTimeout(() => {
-            moveable.dragStart(e);
-        });
-    }
-</script>
-```
-```jsx
-<div class="target" on:mousedown={onMouseDown}>Target1</div>
-<div class="target" on:mousedown={onMouseDown}>Target2</div>
-<div class="target" on:mousedown={onMouseDown}>Target3</div>
-<Moveable
-    bind:this={moveable}
-    target={target}
-    />
-```
-
 
 # <a id="toc-custom-css"></a>✨ How to use custom CSS
 

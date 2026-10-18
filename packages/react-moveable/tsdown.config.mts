@@ -3,7 +3,7 @@ import { sharedOptions } from "../../config/build.mjs";
 
 const common: UserConfig = {
     ...sharedOptions(import.meta.dirname),
-    // `jsx: react`: croact / preact-moveable replace the `react` module, and croact has no jsx-runtime.
+    // `jsx: react`: croact-moveable replaces the `react` module with croact, which has no jsx-runtime.
     tsconfig: "tsconfig.build.json",
     deps: {
         // React is not declared as a dependency yet; it becomes a peerDependency

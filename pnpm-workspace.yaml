@@ -10,7 +10,6 @@ catalog:
   playwright: ^1.64.1
   tsdown: ~0.23.1
   typescript: ~6.0.3
-  vite: ^8.3.4
   # Must be the same exact version. `pnpm update -r` leaves exact versions alone: bump both by hand.
   vitest: 5.0.4
   "@vitest/browser-playwright": 5.0.4
@@ -33,14 +32,6 @@ overrides:
   # Two copies of @cfcs/core break useKeycon's result type (typecheck:stories fails); 0.0.6 is within
   # both ranges. Remove once react-keycon's dependencies agree on one @cfcs/core.
   "@cfcs/react>@cfcs/core": "0.0.6"
-
-packageExtensions:
-  # preact-css-styled imports preact/compat but does not declare preact, so it cannot resolve it from
-  # its own location (pnpm's default private hoisting into node_modules/.pnpm/node_modules only hides
-  # this; with `hoist=false` requiring it fails). Remove once fixed upstream.
-  preact-css-styled:
-    peerDependencies:
-      preact: "*"
 
 peerDependencyRules:
   allowedVersions:
