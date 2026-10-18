@@ -15,7 +15,7 @@ import ReactSVGForeignObjectApp from "./ReactSVGForeignObjectApp";
 import ReactSVGForeignObjectInnerApp from "./ReactSVGForeignObjectInnerApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,script/**,vue3/**,svelte/**,lit/**}", {
+const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,

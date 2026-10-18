@@ -14,12 +14,11 @@
         "types/*"
     ],
     "scripts": {
-        "storybook": "pnpm bake && storybook dev -p 6006",
-        "bake": "bake",
-        "test": "pnpm bake && vitest run",
+        "storybook": "storybook dev -p 6006",
+        "test": "vitest run",
         "test:type": "tsc -p tsconfig.test.json",
         "build": "pnpm run test:type && tsdown && pnpm run declaration",
-        "build:storybook": "pnpm bake && storybook build -o ../../demo/storybook",
+        "build:storybook": "storybook build -o ../../demo/storybook",
         "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
         "typecheck:stories": "tsc -p stories"
     },
@@ -61,7 +60,6 @@
     },
     "homepage": "https://daybrush.com/moveable",
     "devDependencies": {
-        "@croffle/bakery": "^0.0.25",
         "@storybook/addon-docs": "^10.6.2",
         "@storybook/addon-vitest": "^10.6.2",
         "@storybook/react-vite": "^10.6.2",
@@ -70,7 +68,6 @@
         "@types/react-dom": "^16.9.25",
         "@vitejs/plugin-react": "^6.1.2",
         "@vitest/browser-playwright": "catalog:",
-        "croffle": "^0.0.21",
         "keycon": "^1.4.0",
         "playwright": "catalog:",
         "react": "^16.14.0",

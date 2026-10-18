@@ -12,7 +12,7 @@ Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩�
 - 依赖版本：被两个及以上的包声明的第三方依赖（dependencies / devDependencies）只在 `pnpm-workspace.yaml` 的 `catalog` 中写版本，各包写 `catalog:`；只有一个包用的依赖写在那个包里；第二个包开始用某个依赖时，把它移进 catalog。`pnpm lint` 会执行 `config/check-dependency-ranges.mjs`，出现重复的版本范围时失败。peerDependencies 不进 catalog。升级用 `pnpm update -r`，它会改 catalog 和各包的范围下限；vitest 和 @vitest/browser-playwright 在 catalog 中写的是同一个确切版本，`pnpm update -r` 不会动它们，要手动同时改。要让间接依赖也按现在的声明重新解析，删除锁文件时要连根目录和各包的 `node_modules` 一起删，否则 pnpm 会沿用 `node_modules/.pnpm/lock.yaml`。pnpm 默认不选发布不满一天的版本。
 - overrides、packageExtensions、peerDependencyRules 只用来修正上游包的错误声明，每条都要有注释，写明针对哪个包、什么问题、什么时候可以删除。
 - `@types/node` 与 Node 运行时同一个大版本（22.x），目前只有 react-moveable 的 stories 用到（`stories/tsconfig.json` 的 `types`）；间接依赖中 `@types/node: *` 的声明也会复用这个版本，所以没有包声明它时，`*` 会解析到最新的大版本。
-- TypeScript 由 catalog 统一声明，不用全局 override：全部包（react-moveable、croact、preact、moveable、lit、vue3、svelte、helper）和根目录都用 `~6.0.3`（`moduleResolution: bundler`，声明文件的 tsconfig 必须显式写 `rootDir`，否则 TS 6 会把它们输出到 `declaration/src/`；TS 6 的 `types` 默认是 `[]`，不会自动加载 `@types/*`）；根目录的 TS 供 typescript-eslint 解析源码。svelte-moveable 的 `Moveable.svelte` 以 `<script lang="ts">` 源码发布，由使用者的 Svelte 5 直接编译，而 Svelte 只支持类型标注一类的 TS 语法，所以其中不能写 `enum`、装饰器等需要转换的语法。croffle 使用它自己依赖的 TS 4.5，`croffle.config.js` 必须从 croffle 所在目录解析 typescript，与它共用同一个实例。
+- TypeScript 由 catalog 统一声明，不用全局 override：全部包（react-moveable、croact、preact、moveable、lit、vue3、svelte、helper）和根目录都用 `~6.0.3`（`moduleResolution: bundler`，声明文件的 tsconfig 必须显式写 `rootDir`，否则 TS 6 会把它们输出到 `declaration/src/`；TS 6 的 `types` 默认是 `[]`，不会自动加载 `@types/*`）；根目录的 TS 供 typescript-eslint 解析源码。svelte-moveable 的 `Moveable.svelte` 以 `<script lang="ts">` 源码发布，由使用者的 Svelte 5 直接编译，而 Svelte 只支持类型标注一类的 TS 语法，所以其中不能写 `enum`、装饰器等需要转换的语法。
 - Lint：根目录一份 `eslint.config.mjs`（ESLint 10 flat config + typescript-eslint 8 + `@stylistic/eslint-plugin`），eslint 和插件只在根 `package.json` 中声明。检查范围写在配置的 `files` 中（7 个库包的 `src/**/*.{ts,tsx}`，以及 svelte-moveable 的 `src/**/*.ts`；`.svelte` 文件不在范围内，其中的 TS 由构建中的 svelte-check 检查），所以 `pnpm lint` 不带路径，编辑器插件和命令行的范围一致。各包的构建不执行 lint，CI 单独执行。eslint-plugin-react 只启用推荐集：推荐集以外有规则在 ESLint 10 下会报错。
 - 需求/设计走 OpenSpec 工作流（`openspec/`、`.claude/skills/openspec-*`、`/opsx:*` 命令）。整体的现代化步骤和进度见 `openspec/ROADMAP.md`，每完成一个 change 就更新它。
 
@@ -23,12 +23,12 @@ Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩�
 ```bash
 # 根目录
 pnpm install               # 安装依赖（根目录一次装好所有包）
-pnpm storybook             # = react-moveable 的 Storybook（先 bake，端口 6006），主要的开发/调试环境
-pnpm test                  # 先 bake，再跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试 + 框架包装的浏览器测试；后者读构建产物，要先 pnpm packages:build）
+pnpm storybook             # = react-moveable 的 Storybook（端口 6006），主要的开发/调试环境
+pnpm test                  # 跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试 + 框架包装的浏览器测试；后者读构建产物，要先 pnpm packages:build）
 pnpm build                 # 只构建 react-moveable
 pnpm lint                  # ESLint 检查库包的 src（警告也算失败），再检查各包有没有重复的依赖版本范围；不需要先构建
 pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact/preact → moveable → lit/vue3/svelte，helper 独立）；vue3-moveable 的构建最后执行类型测试；svelte-moveable 的构建依次执行 svelte-check（警告也算失败）、svelte-package、publint 和类型测试
-pnpm build:storybook       # 先 bake，再构建静态 Storybook 到 demo/storybook
+pnpm build:storybook       # 构建静态 Storybook 到 demo/storybook
 pnpm doc                   # TypeDoc 从源码生成 moveable 的 API 文档到 doc/（typedoc.json + config/typedoc/，警告视为错误；不需要先构建，CI 会跑）
 pnpm demo:build            # 构建所有包、文档和 Storybook，再由 config/copy-demo-files.mjs 把 moveable/helper 的 dist 和 doc/ 复制进 demo/；完成后 demo/ 就是站点根目录
 
@@ -37,7 +37,7 @@ pnpm test:type             # tsc -p tsconfig.test.json，对 tests/types.ts 做�
 pnpm typecheck:stories     # tsc -p stories：stories 和 .storybook 的类型检查（CI 会跑）
 pnpm build                 # test:type + tsdown + declaration（不含 lint）
 pnpm exec playwright install chromium   # 首次跑测试前安装浏览器（不靠 postinstall）
-pnpm test                  # 先 bake，再跑本包的 Vitest
+pnpm test                  # 跑本包的 Vitest
 pnpm exec vitest run stories/1-Basic    # 只跑某个目录 / 文件的 story 测试
 ```
 
@@ -50,19 +50,17 @@ Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon
 框架包装的浏览器测试（lit-moveable、vue3-moveable、svelte-moveable，在各包的 `test/` 下）：Vitest 浏览器模式，import 的是包的 `dist` 产物而不是源码（检查的就是使用者拿到的代码），所以要先构建。原生 moveable 的属性赋值经 croact 的 `setState` 异步生效，断言内部状态前用 `expect.poll` 等待（如 `getManager().props`）。同一个 `<lit-moveable>` 只能移除一次：再次移除会第二次 `destroy()` 并抛错。vue3-moveable 的测试用 `createApp` + `h` 挂载，不依赖 `@vue/test-utils`。创建目标元素和模拟鼠标拖动的辅助函数在根目录 `config/testing/browser.ts`（只用 DOM API），清理逻辑留在各自的测试文件中。vue3-moveable 另有类型测试 `test/types.ts`（`pnpm --filter vue3-moveable test:type`，检查的是 `declaration/`）。svelte-moveable：
 - `dist/` 中的 `.svelte` 由 vite-plugin-svelte 编译，与使用者的打包方式相同。
 - 测试文件名带 `.svelte.`（`SvelteMoveable.svelte.spec.ts`），可以用 `$state` 作为 prop、修改后组件随之更新；`$state` 会深层代理传入的数组和对象，组件写入的是代理，所以要让组件把数据交回测试时用回调 prop。
-- `test/LegacyUsage.svelte` 按 Storybook 生成的 Svelte 示例的写法（不用 runes、`bind:this`、`on:drag`）使用组件。
+- `test/BindThisUsage.svelte` 在 runes 组件中用 `bind:this` 取得组件引用、用回调 prop 监听事件；`bind:this` 得到的引用上能调用方法，只有它覆盖。组件只支持回调 prop，不支持 `on:` 指令。
 - `*.ssr.spec.ts` 在 node 中用 `svelte/server` 渲染。
 - 类型测试用 svelte-check 检查 `test/types.ts` 和 `test/TypesUsage.svelte`（`pnpm --filter svelte-moveable test:type`，检查的是 `dist/`）。
 
 story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
-- 每个 story 文件静态 import 自己的 App，并对**本目录**做两次 `import.meta.glob`（`apps` 和 `?raw` 的 `sources`），交给 `appStory(App, { apps, sources, argTypes, args })` 生成 `render`、`args`、`argTypes` 和代码 tab；`name`、`tags` 必须写成字面量（索引器只读静态值），export 名就是 story id，不要改。
+- 每个 story 文件静态 import 自己的 App，并对**本目录**做两次 `import.meta.glob`（`apps`，以及 `?raw` 的 `sources`：`./{*App.tsx,*.css}`，即 App 源码和 App import 的样式文件），交给 `appStory(App, { apps, sources, argTypes, args })` 生成 `render`、`args`、`argTypes` 和代码 tab；`name`、`tags` 必须写成字面量（索引器只读静态值），export 名就是 story id，不要改。
 - `play` 用 `devPlay(...)` 包一层：开发模式和测试中执行，发布的 Storybook 中不执行。`userEvent` 等来自 `storybook/test`，是异步的，要 `await`。
 - 只为测试存在的 story 打 `tags: ["hidden-test"]`：侧边栏默认隐藏（可在标签筛选中显示），照常参与测试。
 - 公共样式 `stories/common.css`、`stories/templates/default.css` 在 `.storybook/preview.tsx` 中全局引入；`.storybook/vitest.setup.ts` 给测试页面补上 Storybook 默认的 padded 布局。
-- 代码 tab（React / CSS / Script / Vue3 / Svelte / Lit，随 Controls 实时替换参数）是本地 addon `.storybook/addons/code-preview/`，读取 story 的 `parameters.preview`。
+- 代码 tab 只有 React 和 CSS（随 Controls 实时替换参数），由本地 addon `.storybook/addons/code-preview/` 读取 story 的 `parameters.preview`。React tab 就是 App 源码本身，只做三处转换（`@/react-moveable` 换成 `react-moveable`、`props.xxx` 换成当前参数值、`App(props)` 变成 `App()`），所以展示的代码就是被渲染、被测试的代码；CSS tab 是默认样式，加上 App 从自己目录 import 的样式文件（`import "./xxx.css"`，单双引号、有无分号都认，`sources` 中找不到时直接报错）。不要再加入翻译生成的其他框架示例。
 - 控件说明中的「See API」用 `stories/utils.ts` 的 `makeLink(属性名)`（`Moveable` 类页面的锚点）或 `makeTypeLink(类型名, 成员名)` 生成，是指向同一站点 `release/latest/doc/` 的相对链接：部署后和本地 `demo/` 中可用，单独运行 `pnpm storybook` 时是 404。
-
-`pnpm bake`（croffle）会把 React story 自动转译成 script（vanilla）/vue3/svelte/lit 版本的示例代码，生成在各 story 目录的子文件夹里（已 git 忽略），不要手改这些生成目录；`storybook`、`build:storybook`、`test` 都会先执行它。
 
 ## 架构
 

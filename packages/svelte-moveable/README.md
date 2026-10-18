@@ -106,7 +106,6 @@ If you want to check the methods and events, please refer to the [**API document
 * Options are props. Events are callback props named `on` + the event name (`onDrag`, `onResizeStart`), called with moveable's event object.
 * Object and array options (`renderDirections`, `bounds`, ...) are passed to moveable when they are reassigned. Changing them in place (`bounds.left = 100`, `renderDirections.push("e")`) has no effect.
 * Moveable's methods are on the component reference from `bind:this` (or the return value of `mount()`), e.g. `moveable.updateRect()`. `getInstance()` returns the vanilla Moveable instance.
-* `on:drag={({ detail: e }) => {}}` still works (the Storybook examples use it), but the `on:` directive is deprecated in Svelte 5 and `detail` is not typed. Prefer callback props.
 
 ```svelte
 <script>

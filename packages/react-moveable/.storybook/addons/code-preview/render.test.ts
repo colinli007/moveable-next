@@ -23,11 +23,6 @@ describe("renderTemplate", () => {
     renderDirections={["n","s"]}
 />`);
     });
-    it("replaces the quoted placeholders croffle generates", () => {
-        const template = convertTemplate(`draggable: "$preview_draggable",`, /"\$preview_([^"]+)"/g);
-
-        expect(renderTemplate(template, { draggable: true })).toBe("draggable: true,");
-    });
     it("keeps the name of a value that is not an arg", () => {
         expect(renderTemplate([["a ", " b"], ["unknown"]], {})).toBe("a unknown b");
     });
@@ -37,17 +32,17 @@ describe("renderTabs", () => {
     it("groups templates by tab in order", () => {
         const previews: Preview[] = [
             { tab: "React", template: "react", language: "tsx", copy: true },
-            { tab: "Script", template: "html", language: "html", description: "HTML" },
-            { tab: "Script", template: [["const a = ", ";"], ["value"]], language: "tsx", description: "JavaScript" },
+            { tab: "CSS", template: ".target {}", language: "css" },
+            { tab: "CSS", template: [[".snap { width: ", "px; }"], ["value"]], language: "css", description: "snap.css" },
         ];
 
         expect(renderTabs(previews, { value: 1 })).toEqual([
             { tab: "React", codes: [{ description: undefined, language: "tsx", copy: true, text: "react" }] },
             {
-                tab: "Script",
+                tab: "CSS",
                 codes: [
-                    { description: "HTML", language: "html", copy: undefined, text: "html" },
-                    { description: "JavaScript", language: "tsx", copy: undefined, text: "const a = 1;" },
+                    { description: undefined, language: "css", copy: undefined, text: ".target {}" },
+                    { description: "snap.css", language: "css", copy: undefined, text: ".snap { width: 1px; }" },
                 ],
             },
         ]);

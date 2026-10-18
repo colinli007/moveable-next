@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { flushSync, mount, unmount, type Component } from "svelte";
 import Moveable from "../dist/index.js";
-import LegacyUsage from "./LegacyUsage.svelte";
+import BindThisUsage from "./BindThisUsage.svelte";
 import { createTarget, drag } from "../../../config/testing/browser";
 
 const cleanups: Array<() => void> = [];
@@ -110,11 +110,11 @@ describe("svelte-moveable", () => {
         await new Promise(resolve => setTimeout(resolve));
     });
 
-    it("supports the syntax of the generated Storybook examples", () => {
+    it("works through a component reference from bind:this", () => {
         const events: any[] = [];
         const dragTarget = target();
         // A callback, not the array itself: $state would proxy the array and keep pushes off `events`.
-        const { instance } = render(LegacyUsage, { target: dragTarget, record: (e: any) => events.push(e) });
+        const { instance } = render(BindThisUsage, { target: dragTarget, record: (e: any) => events.push(e) });
 
         drag(dragTarget, [50, 30]);
         expect(events.at(-1).transform).toContain("translate(50px, 30px)");

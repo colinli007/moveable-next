@@ -2,7 +2,7 @@
   import VanillaMoveable, { PROPERTIES as PROPERTY_NAMES, EVENTS as EVENT_NAMES } from "moveable";
   import type { MoveableEvents, MoveableOptions } from "moveable";
   import { camelize } from "@daybrush/utils";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { onMount } from "svelte";
 
   type Props = MoveableOptions & {
     [K in keyof MoveableEvents as `on${Capitalize<K>}`]?: (e: MoveableEvents[K]) => void;
@@ -13,8 +13,6 @@
   const EVENTS = EVENT_NAMES as Array<keyof MoveableEvents>;
 
   const props: Props = $props();
-  // Deprecated in Svelte 5; kept for `on:` directives, which the generated Storybook examples use.
-  const dispatch = createEventDispatcher<MoveableEvents>();
   let moveableElement: HTMLDivElement;
   let moveable: VanillaMoveable;
 
@@ -33,7 +31,6 @@
 
       moveable.on(name, (e: any) => {
         (props[onName] as ((e: any) => void) | undefined)?.(e);
-        dispatch(name, e);
       });
     });
     return () => moveable.destroy();

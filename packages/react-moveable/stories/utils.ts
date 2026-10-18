@@ -47,43 +47,15 @@ export function convertPath(text: string, findName: string = "react-moveable", m
     return nextText;
 }
 
-export function convertVanillaTemplate(text: string) {
-    let previewText = text.replace(/\n^export[^\n]*$/mg, "");
-
-    previewText = previewText.replace(/\s*return grid;\n\}$/mg, "");
-    previewText = previewText.replace(/^[ ]{2}/mg, "");
-
-    return convertTemplate(previewText);
-}
-export function convertVueTemplate(text: string) {
-    let previewText = text.replace("props:", "data:");
-
-    previewText = previewText.replace(/\[(\s*"([^"]+)",\s*)+\]/g, (...args) => {
-        return args[0].replace("[", "{").replace("]", "}").replace(/"([^"]+)"/g, (_, name) => {
-            return `${name}: ${name}`;
-        });
-    });
-    return convertTemplate(previewText, /([a-zA-Z_0-9]+):\s([a-zA-Z_0-9]+),/g, true);
-}
-
-export function convertSvelteTemplate(text: string) {
-    const previewText = text.replace(/export let ([a-zA-Z_0-9]+);/g, "const $1 = $1;");
-
-    return convertTemplate(previewText, /([a-zA-Z_0-9]+) = ([a-zA-Z_0-9]+);/g, true);
-}
-
 export function convertReactTemplate(text: string) {
     const previewText = text.replace(/@\//g, "");
 
     return convertTemplate(previewText);
 }
 
-export function convertTemplate(
-    text: string,
-    regex = /props\.([a-zA-Z0-9_]+)/g,
-    includePrefix = false,
-): [string[], string[]] {
+export function convertTemplate(text: string): [string[], string[]] {
     const previewText = text.replace(/App\([^)]*\)/g, "App()");
+    const regex = /props\.([a-zA-Z0-9_]+)/g;
     let result: RegExpExecArray | null;
     let index = 0;
 
@@ -92,11 +64,9 @@ export function convertTemplate(
 
     // eslint-disable-next-line no-cond-assign
     while (result = regex.exec(previewText)) {
-        const nextIndex = result.index + (includePrefix ? result[0].lastIndexOf(result[2]) : 0);
-
-        strings.push(previewText.slice(index, nextIndex));
+        strings.push(previewText.slice(index, result.index));
         values.push(result[1]);
-        index = nextIndex + (includePrefix ? result[2].length : result[0].length);
+        index = result.index + result[0].length;
     }
 
     strings.push(previewText.slice(index));

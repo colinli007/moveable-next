@@ -47,10 +47,9 @@
     "packageManager": "pnpm@11.28.2",
     "scripts": {
         "storybook": "pnpm --filter react-moveable storybook",
-        "bake": "pnpm --filter react-moveable bake",
         "build": "pnpm --filter react-moveable build",
         "packages:build": "pnpm -r build",
-        "test": "pnpm bake && vitest run",
+        "test": "vitest run",
         "lint": "eslint --max-warnings 0 && node config/check-dependency-ranges.mjs",
         "doc": "typedoc",
         "build:storybook": "pnpm --filter react-moveable build:storybook",

@@ -21,10 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-stories/**/vue3/
-stories/**/svelte/
-stories/**/script/
-stories/**/lit/
 .nyc_output
 test-static
 __snapshots__

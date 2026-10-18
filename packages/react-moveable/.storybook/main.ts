@@ -14,7 +14,7 @@ const config: StorybookConfig = {
         "@storybook/addon-docs",
         "@storybook/addon-vitest",
         "storybook-dark-mode",
-        // The code tabs (React / CSS / Script / Vue3 / Svelte / Lit) of `parameters.preview`.
+        // The code tabs (React / CSS) of `parameters.preview`.
         fileURLToPath(import.meta.resolve("./addons/code-preview/preset.ts")),
     ],
     tags: {

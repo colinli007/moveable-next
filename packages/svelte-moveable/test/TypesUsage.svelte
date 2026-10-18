@@ -18,7 +18,4 @@
     const transform: string = e.transform;
 
     e.target.style.transform = transform;
-  }}
-  on:dragEnd={({ detail }) => {
-    detail.target.style.transform = "";
   }}/>
