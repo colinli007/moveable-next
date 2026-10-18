@@ -28,7 +28,7 @@
             "@/react-moveable": [
                 "./src/"
             ],
-            "@moveable/helper": [
+            "@moveable-next/helper": [
                 "../helper/src/"
             ]
         }

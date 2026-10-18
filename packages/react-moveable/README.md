@@ -3,7 +3,7 @@
 <p align="middle" ><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/logo.png"/></p>
 <h2 align="middle">React Moveable</h2>
 <p align="middle">
-<a href="https://www.npmjs.com/package/react-moveable" target="_blank"><img src="https://img.shields.io/npm/v/react-moveable.svg?style=flat-square&color=007acc&label=version" alt="npm version" /></a>
+<a href="https://www.npmjs.com/package/@moveable-next/react" target="_blank"><img src="https://img.shields.io/npm/v/@moveable-next/react.svg?style=flat-square&color=007acc&label=version" alt="npm version" /></a>
 <img src="https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square"/>
 <a href="https://github.com/daybrush/moveable/blob/master/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/daybrush/moveable.svg?style=flat-square&label=license&color=08CE5D"/></a>
 </p>
@@ -86,7 +86,7 @@
 
 ## ⚙️ Installation
 ```sh
-$ npm i react-moveable
+$ npm i @moveable-next/react
 ```
 
 ## 📄 Documents
@@ -100,7 +100,7 @@ $ npm i react-moveable
 ## 🚀 How to use
 
 ```tsx
-import Moveable from "react-moveable";
+import Moveable from "@moveable-next/react";
 
 render() {
     return (
@@ -225,7 +225,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { flushSync } from "react-dom";
 
-import Moveable from "react-moveable";
+import Moveable from "@moveable-next/react";
 
 
 function App() {

@@ -25,7 +25,7 @@
 
 
 ```tsx
-import Moveable from "react-moveable";
+import Moveable from "@moveable-next/react";
 
 render() {
     return (

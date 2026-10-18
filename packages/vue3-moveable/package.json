@@ -1,8 +1,16 @@
 {
-    "name": "vue3-moveable",
+    "name": "@moveable-next/vue3",
     "version": "0.28.0",
     "description": "A Vue 3 Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable, Groupable.",
     "types": "declaration/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./declaration/index.d.ts",
+            "module": "./dist/moveable.esm.js",
+            "default": "./dist/moveable.cjs.js"
+        },
+        "./package.json": "./package.json"
+    },
     "main": "dist/moveable.cjs.js",
     "module": "dist/moveable.esm.js",
     "sideEffects": false,
@@ -40,23 +48,23 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/daybrush/moveable/blob/master/packages/vue3-moveable"
+        "url": "git+https://github.com/colinli007/moveable-next.git",
+        "directory": "packages/vue3-moveable"
     },
     "author": "Daybrush",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/daybrush/moveable/issues"
+        "url": "https://github.com/colinli007/moveable-next/issues"
     },
-    "homepage": "https://daybrush.com/moveable",
+    "homepage": "https://github.com/colinli007/moveable-next/tree/main/packages/vue3-moveable#readme",
     "dependencies": {
         "@daybrush/utils": "catalog:",
-        "moveable": "workspace:~"
+        "@moveable-next/vanilla": "workspace:~"
     },
     "files": [
-        "./*",
-        "src/*",
-        "dist/*",
-        "declaration/*"
+        "dist",
+        "declaration",
+        "src"
     ],
     "devDependencies": {
         "@vitest/browser-playwright": "catalog:",

@@ -1,12 +1,12 @@
 import { defineConfig, type UserConfig } from "tsdown";
 import { sharedOptions } from "../../config/build.mjs";
 
-// Bundles react-moveable's ESM build and renames its React imports to croact.
+// Bundles @moveable-next/react's ESM build and renames its React imports to croact.
 // The renamed modules stay external, so this is an output rename, not an alias.
 const common: UserConfig = {
     ...sharedOptions(import.meta.dirname),
     deps: {
-        alwaysBundle: ["react-moveable"],
+        alwaysBundle: ["@moveable-next/react"],
         neverBundle: ["react", "react-dom", "react-css-styled"],
         onlyBundle: [],
     },

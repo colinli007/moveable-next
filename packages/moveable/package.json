@@ -1,11 +1,23 @@
 {
-  "name": "moveable",
+  "name": "@moveable-next/vanilla",
   "version": "0.53.0",
   "description": "Moveable is Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable, Groupable, Snappable.",
   "main": "./dist/moveable.cjs.js",
   "module": "./dist/moveable.esm.js",
   "sideEffects": false,
   "types": "declaration/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./declaration/index.d.ts",
+      "module": "./dist/moveable.esm.js",
+      "default": "./dist/moveable.cjs.js"
+    },
+    "./dist/moveable.js": "./dist/moveable.js",
+    "./dist/moveable.min.js": "./dist/moveable.min.js",
+    "./package.json": "./package.json"
+  },
+  "unpkg": "./dist/moveable.min.js",
+  "jsdelivr": "./dist/moveable.min.js",
   "scripts": {
     "start": "tsdown --watch",
     "build": "tsdown && pnpm run declaration",
@@ -41,27 +53,27 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/daybrush/moveable/blob/master/packages/moveable"
+    "url": "git+https://github.com/colinli007/moveable-next.git",
+    "directory": "packages/moveable"
   },
   "author": "Daybrush",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/daybrush/moveable/issues"
+    "url": "https://github.com/colinli007/moveable-next/issues"
   },
-  "homepage": "https://daybrush.com/moveable/",
+  "homepage": "https://github.com/colinli007/moveable-next/tree/main/packages/moveable#readme",
   "files": [
-    "./*",
-    "src/*",
-    "dist/*",
-    "declaration/*"
+    "dist",
+    "declaration",
+    "src"
   ],
   "dependencies": {
     "@daybrush/utils": "catalog:",
+    "@moveable-next/croact": "workspace:~",
+    "@moveable-next/react": "workspace:~",
     "@scena/event-emitter": "catalog:",
     "croact": "catalog:",
-    "croact-moveable": "workspace:~",
-    "framework-utils": "catalog:",
-    "react-moveable": "workspace:~"
+    "framework-utils": "catalog:"
   },
   "devDependencies": {
     "@types/react": "catalog:",

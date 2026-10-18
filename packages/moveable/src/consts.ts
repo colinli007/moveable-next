@@ -2,7 +2,7 @@ import {
     MOVEABLE_PROPS,
     MOVEABLE_METHODS,
     MOVEABLE_EVENTS,
-} from "react-moveable";
+} from "@moveable-next/react";
 
 export const PROPERTIES: string[] = MOVEABLE_PROPS;
 export const METHODS: string[] = MOVEABLE_METHODS;

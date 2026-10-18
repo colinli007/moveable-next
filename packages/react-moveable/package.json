@@ -1,17 +1,28 @@
 {
-    "name": "react-moveable",
+    "name": "@moveable-next/react",
     "version": "0.56.0",
     "description": "A React Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable, Groupable.",
     "main": "./dist/moveable.cjs.js",
     "module": "./dist/moveable.esm.js",
     "sideEffects": false,
     "types": "declaration/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./declaration/index.d.ts",
+            "module": "./dist/moveable.esm.js",
+            "default": "./dist/moveable.cjs.js"
+        },
+        "./types": {
+            "types": "./declaration/externalTypes.d.ts",
+            "default": "./types/index.js"
+        },
+        "./package.json": "./package.json"
+    },
     "files": [
-        "./*",
-        "src/*",
-        "dist/*",
-        "declaration/*",
-        "types/*"
+        "dist",
+        "declaration",
+        "src",
+        "types"
     ],
     "scripts": {
         "storybook": "storybook dev -p 6006",
@@ -51,14 +62,15 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/daybrush/moveable/blob/master/packages/react-moveable"
+        "url": "git+https://github.com/colinli007/moveable-next.git",
+        "directory": "packages/react-moveable"
     },
     "author": "Daybrush",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/daybrush/moveable/issues"
+        "url": "https://github.com/colinli007/moveable-next/issues"
     },
-    "homepage": "https://daybrush.com/moveable",
+    "homepage": "https://github.com/colinli007/moveable-next/tree/main/packages/react-moveable#readme",
     "devDependencies": {
         "@storybook/addon-docs": "^10.6.2",
         "@storybook/addon-vitest": "^10.6.2",

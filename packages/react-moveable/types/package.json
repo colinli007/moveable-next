@@ -1,5 +1,5 @@
 {
-    "name": "react-moveable/types",
+    "name": "@moveable-next/react/types",
     "private": true,
     "main": "./index.js",
     "module": "./index.js",

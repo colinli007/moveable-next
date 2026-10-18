@@ -45,13 +45,13 @@
     },
     "packageManager": "pnpm@11.28.2",
     "scripts": {
-        "storybook": "pnpm --filter react-moveable storybook",
-        "build": "pnpm --filter react-moveable build",
+        "storybook": "pnpm --filter @moveable-next/react storybook",
+        "build": "pnpm --filter @moveable-next/react build",
         "packages:build": "pnpm -r build",
         "test": "vitest run",
         "lint": "eslint --max-warnings 0 && node config/check-dependency-ranges.mjs",
         "doc": "typedoc",
-        "build:storybook": "pnpm --filter react-moveable build:storybook",
+        "build:storybook": "pnpm --filter @moveable-next/react build:storybook",
         "demo:build": "pnpm packages:build && pnpm doc && pnpm build:storybook && node config/copy-demo-files.mjs"
     },
     "devDependencies": {

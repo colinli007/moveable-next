@@ -37,7 +37,7 @@ const config: StorybookConfig = {
     viteFinal: config => mergeConfig(config, {
         // The react-vite framework expects the project to bring the React plugin.
         plugins: [react()],
-        // `@/stories`, `@/react-moveable` and `@moveable/helper` come from the `paths` of tsconfig.json.
+        // `@/stories`, `@/react-moveable` and `@moveable-next/helper` come from the `paths` of tsconfig.json.
         resolve: { tsconfigPaths: true },
     }),
 };

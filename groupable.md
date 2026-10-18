@@ -25,7 +25,7 @@
 
 
 ```tsx
-import Moveable from "moveable";
+import Moveable from "@moveable-next/vanilla";
 
 const moveable = new Moveable(document.body, {
     target: document.querySelector(".target"),

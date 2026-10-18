@@ -1,16 +1,27 @@
 {
-    "name": "@moveable/helper",
+    "name": "@moveable-next/helper",
     "version": "0.1.3",
     "description": "Helper for demo of Moveable",
     "main": "./dist/helper.cjs.js",
     "module": "./dist/helper.esm.js",
     "sideEffects": false,
     "types": "declaration/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./declaration/index.d.ts",
+            "module": "./dist/helper.esm.js",
+            "default": "./dist/helper.cjs.js"
+        },
+        "./dist/helper.js": "./dist/helper.js",
+        "./dist/helper.min.js": "./dist/helper.min.js",
+        "./package.json": "./package.json"
+    },
+    "unpkg": "./dist/helper.min.js",
+    "jsdelivr": "./dist/helper.min.js",
     "files": [
-        "./*",
-        "src/*",
-        "dist/*",
-        "declaration/*"
+        "dist",
+        "declaration",
+        "src"
     ],
     "scripts": {
         "start": "tsdown --watch",
@@ -46,14 +57,15 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/daybrush/moveable/blob/master/packages/helper"
+        "url": "git+https://github.com/colinli007/moveable-next.git",
+        "directory": "packages/helper"
     },
     "author": "Daybrush",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/daybrush/moveable/issues"
+        "url": "https://github.com/colinli007/moveable-next/issues"
     },
-    "homepage": "https://daybrush.com/moveable",
+    "homepage": "https://github.com/colinli007/moveable-next/tree/main/packages/helper#readme",
     "devDependencies": {
         "happy-dom": "^21.0.1",
         "tsdown": "catalog:",

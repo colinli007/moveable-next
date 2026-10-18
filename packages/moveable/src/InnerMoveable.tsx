@@ -1,5 +1,5 @@
 import * as React from "react";
-import Moveable from "react-moveable";
+import Moveable from "@moveable-next/react";
 import { ref } from "framework-utils";
 
 export default class InnerMoveable extends React.Component<any> {

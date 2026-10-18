@@ -2,7 +2,7 @@ import * as React from "react";
 import type { StoryObj } from "@storybook/react-vite";
 import type { Preview } from "../../.storybook/addons/code-preview/render";
 
-import { convertReactTemplate, convertPath, makeArgs } from "../utils";
+import { convertReactTemplate, makeArgs } from "../utils";
 import { DEFAULT_CSS_TEMPLATE } from "../templates/default";
 
 type AppComponent = React.ComponentType<any>;
@@ -46,7 +46,7 @@ export function appStory(App: AppComponent, { apps, sources, argTypes = {}, args
     const previews: Preview[] = [
         {
             tab: "React",
-            template: convertReactTemplate(convertPath(reactCode)),
+            template: convertReactTemplate(reactCode),
             copy: true,
             language: "tsx",
         },

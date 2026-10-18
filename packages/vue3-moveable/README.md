@@ -3,7 +3,7 @@
 <p align="middle" ><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/logo.png"/></p>
 <h2 align="middle">Vue 3 Moveable</h2>
 <p align="middle">
-<a href="https://www.npmjs.com/package/vue3-moveable" target="_blank"><img src="https://img.shields.io/npm/v/vue3-moveable.svg?style=flat-square&color=007acc&label=version" alt="npm version" /></a>
+<a href="https://www.npmjs.com/package/@moveable-next/vue3" target="_blank"><img src="https://img.shields.io/npm/v/@moveable-next/vue3.svg?style=flat-square&color=007acc&label=version" alt="npm version" /></a>
 <img src="https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square"/>
 <a href="https://github.com/daybrush/moveable/blob/master/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/daybrush/moveable.svg?style=flat-square&label=license&color=08CE5D"/></a>
 </p>
@@ -88,10 +88,10 @@
 ## ⚙️ Installation
 
 ```sh
-$ npm i vue3-moveable vue
+$ npm i @moveable-next/vue3 vue
 ```
 
-vue3-moveable requires [Vue](https://vuejs.org) 3.5 or later (`vue` is a peer dependency).
+@moveable-next/vue3 requires [Vue](https://vuejs.org) 3.5 or later (`vue` is a peer dependency).
 
 ## 🚀 How to use
 If you want to check the methods and events, please refer to the [**API documentation**](https://daybrush.com/moveable/release/latest/doc/).
@@ -113,7 +113,7 @@ If you want to check the methods and events, please refer to the [**API document
 </div>
 </template>
 <script>
-import Moveable from "vue3-moveable";
+import Moveable from "@moveable-next/vue3";
 
 export default {
   name: "app",

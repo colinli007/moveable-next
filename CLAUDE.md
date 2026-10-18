@@ -6,6 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩放、旋转、变形、吸附、分组等交互的库，同一套核心逻辑发布为 React / 原生 JS / Vue 3 三种用法的包。仓库不支持 Preact、Lit、Svelte（相应的包已删除，不要再加回来）。
 
+包以 `@moveable-next` 作用域发布，目录名保持上游的写法。本文件和 spec 中用目录名指代各包，写模块名、import 路径、`pnpm --filter` 或 npm 包名时用包名：
+
+| 目录 | 包名 |
+|---|---|
+| `packages/react-moveable` | `@moveable-next/react` |
+| `packages/croact-moveable` | `@moveable-next/croact` |
+| `packages/moveable` | `@moveable-next/vanilla` |
+| `packages/vue3-moveable` | `@moveable-next/vue3` |
+| `packages/helper` | `@moveable-next/helper` |
+
+入口写在各包的 `exports` 中：`types` → `declaration/`，`module` 条件 → ESM（给打包工具），`default` → CJS（Node 的 `import` 和 `require` 都走这里：包没有 `"type": "module"`，`.esm.js` 在 Node 中会被当作 CommonJS）。react-moveable 另导出 `./types`（`types/package.json` 保留给 `moduleResolution: node`），moveable 和 helper 另导出两个 UMD 文件（`./dist/moveable.js`、`./dist/moveable.min.js`，helper 同理；不用通配，否则会把 Node 会误当成 CJS 的 `.esm.js` 也暴露出去）。不在 `exports` 中的路径不能被 import；`files` 只发布 `dist`、`declaration`、`src`（react-moveable 另加 `types`）。
+
 - 运行时：Node **22.20.0**（根目录 `.nvmrc`，`nvm use` 即可切换；CI 读取同一个文件）。
 - 包管理：**pnpm workspace**（版本见根 `package.json` 的 `packageManager`，corepack 或全局 pnpm 会自动切换），只有一份根目录的 `pnpm-lock.yaml`，内部依赖写成 `workspace:~`。workspace 设置、catalog、overrides、`allowBuilds` 都在 `pnpm-workspace.yaml` 中。
 - 依赖布局是 pnpm 默认的严格（isolated）布局，不开公开提升：包里用到的模块、脚本调用的可执行文件都必须在**这个包自己的** `package.json` 里声明，不能依赖根目录兜底；也不声明没有用到的依赖（被使用的包要求的 peer、包自己 peer 的开发版本除外）。pnpm 默认的私有提升（`node_modules/.pnpm/node_modules`）会让第三方包漏声明的依赖碰巧也能解析，所以判断第三方包的声明是否有问题时要用 `--config.hoist=false` 干净安装。依赖的构建脚本默认被拦截，新增需要构建的依赖时要写进 `allowBuilds`（目前只有 esbuild）。
@@ -32,7 +44,7 @@ pnpm build:storybook       # 构建静态 Storybook 到 demo/storybook
 pnpm doc                   # TypeDoc 从源码生成 moveable 的 API 文档到 doc/（typedoc.json + config/typedoc/，警告视为错误；不需要先构建，CI 会跑）
 pnpm demo:build            # 构建所有包、文档和 Storybook，再由 config/copy-demo-files.mjs 把 moveable/helper 的 dist 和 doc/ 复制进 demo/；完成后 demo/ 就是站点根目录
 
-# packages/react-moveable（或在根目录用 pnpm --filter react-moveable <script>）
+# packages/react-moveable（或在根目录用 pnpm --filter @moveable-next/react <script>）
 pnpm test:type             # tsc -p tsconfig.test.json，对 tests/types.ts 做类型断言检查
 pnpm typecheck:stories     # tsc -p stories：stories 和 .storybook 的类型检查（CI 会跑）
 pnpm build                 # test:type + tsdown + declaration（不含 lint）
@@ -47,14 +59,14 @@ Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon
 
 测试：每个 story 都在 1280×720 视口下真实渲染并算作一个测试，带 `play` 的再执行断言（`stories/**/*.stories.tsx`，用 `stories/utils/testing.tsx` 的 `pan`/`pinch`/`rotate` 模拟手势，再断言 `style.transform`）。失败截图在根目录 `.vitest/attachments/failure-screenshots/`。本地调试单个用例：开着 `pnpm storybook`，在 Interactions 面板看对应 story 的 play 的每一步。
 
-框架包装的浏览器测试（vue3-moveable，在 `test/` 下）：Vitest 浏览器模式，import 的是包的 `dist` 产物而不是源码（检查的就是使用者拿到的代码），所以要先构建。原生 moveable 的属性赋值经 croact 的 `setState` 异步生效，断言内部状态前用 `expect.poll` 等待（如 `getManager().props`）。vue3-moveable 的测试用 `createApp` + `h` 挂载，不依赖 `@vue/test-utils`。创建目标元素和模拟鼠标拖动的辅助函数在根目录 `config/testing/browser.ts`（只用 DOM API），清理逻辑留在测试文件中。vue3-moveable 另有类型测试 `test/types.ts`（`pnpm --filter vue3-moveable test:type`，检查的是 `declaration/`）。
+框架包装的浏览器测试（vue3-moveable，在 `test/` 下）：Vitest 浏览器模式，import 的是包的 `dist` 产物而不是源码（检查的就是使用者拿到的代码），所以要先构建。原生 moveable 的属性赋值经 croact 的 `setState` 异步生效，断言内部状态前用 `expect.poll` 等待（如 `getManager().props`）。vue3-moveable 的测试用 `createApp` + `h` 挂载，不依赖 `@vue/test-utils`。创建目标元素和模拟鼠标拖动的辅助函数在根目录 `config/testing/browser.ts`（只用 DOM API），清理逻辑留在测试文件中。vue3-moveable 另有类型测试 `test/types.ts`（`pnpm --filter @moveable-next/vue3 test:type`，检查的是 `declaration/`）。
 
 story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
 - 每个 story 文件静态 import 自己的 App，并对**本目录**做两次 `import.meta.glob`（`apps`，以及 `?raw` 的 `sources`：`./{*App.tsx,*.css}`，即 App 源码和 App import 的样式文件），交给 `appStory(App, { apps, sources, argTypes, args })` 生成 `render`、`args`、`argTypes` 和代码 tab；`name`、`tags` 必须写成字面量（索引器只读静态值），export 名就是 story id，不要改。
 - `play` 用 `devPlay(...)` 包一层：开发模式和测试中执行，发布的 Storybook 中不执行。`userEvent` 等来自 `storybook/test`，是异步的，要 `await`。
 - 只为测试存在的 story 打 `tags: ["hidden-test"]`：侧边栏默认隐藏（可在标签筛选中显示），照常参与测试。
 - 公共样式 `stories/common.css`、`stories/templates/default.css` 在 `.storybook/preview.tsx` 中全局引入；`.storybook/vitest.setup.ts` 给测试页面补上 Storybook 默认的 padded 布局。
-- 代码 tab 只有 React 和 CSS（随 Controls 实时替换参数），由本地 addon `.storybook/addons/code-preview/` 读取 story 的 `parameters.preview`。React tab 就是 App 源码本身，只做三处转换（`@/react-moveable` 换成 `react-moveable`、`props.xxx` 换成当前参数值、`App(props)` 变成 `App()`），所以展示的代码就是被渲染、被测试的代码；CSS tab 是默认样式，加上 App 从自己目录 import 的样式文件（`import "./xxx.css"`，单双引号、有无分号都认，`sources` 中找不到时直接报错）。不要再加入翻译生成的其他框架示例。
+- 代码 tab 只有 React 和 CSS（随 Controls 实时替换参数），由本地 addon `.storybook/addons/code-preview/` 读取 story 的 `parameters.preview`。React tab 就是 App 源码本身，只做三处转换（`@/react-moveable` 换成 `@moveable-next/react`、`props.xxx` 换成当前参数值、`App(props)` 变成 `App()`），所以展示的代码就是被渲染、被测试的代码；CSS tab 是默认样式，加上 App 从自己目录 import 的样式文件（`import "./xxx.css"`，单双引号、有无分号都认，`sources` 中找不到时直接报错）。不要再加入翻译生成的其他框架示例。
 - 控件说明中的「See API」用 `stories/utils.ts` 的 `makeLink(属性名)`（`Moveable` 类页面的锚点）或 `makeTypeLink(类型名, 成员名)` 生成，是指向同一站点 `release/latest/doc/` 的相对链接：部署后和本地 `demo/` 中可用，单独运行 `pnpm storybook` 时是 404。
 
 ## 架构
@@ -67,7 +79,7 @@ react-moveable  ← 全部核心逻辑（React class 组件）
  │    └─ moveable     原生 JS 版：croact 的 renderSelf 渲染 InnerMoveable，
  │         │          @Properties 装饰器按 MOVEABLE_PROPS / EVENTS / METHODS 自动生成 getter/setter/方法代理
  │         └─ vue3-moveable   包装原生 moveable
-helper              独立工具包（@moveable/helper）
+helper              独立工具包
 ```
 
 因此：**改行为只改 `react-moveable`**，其它包自动继承；新增 prop/事件必须登记在对应 able 的 `props` / `events` 数组里，才会进入 `MOVEABLE_PROPS` / `MOVEABLE_EVENTS`，进而被原生版和各框架包装自动暴露。
@@ -78,7 +90,7 @@ helper              独立工具包（@moveable/helper）
 - 产物语法目标是 ES2022，tsconfig 中的 `useDefineForClassFields: false` 不能去掉：`@Properties`、`@withMethods` 定义在原型上的访问器会被实例字段遮住。
 - JSX 必须是经典转换（`jsx: react`，输出 `React.createElement`）：croact 没有 `jsx-runtime`。react-moveable 的构建读 `tsconfig.build.json`，因为 `tsconfig.json` 为了 Storybook 是 `jsx: preserve`。
 - 产物运行时 import 的包必须在该包 `package.json` 中声明；ESM/CJS 配置都设了 `deps.onlyBundle: []`，有 node_modules 包被打进产物时构建直接报错。react 暂时在配置中用 `deps.neverBundle` 保持 external，发布步骤再改成 peerDependency；vue3-moveable 的 vue（`^3.5.0`）已经是 peerDependency，tsdown 会自动把 peer 当作外部模块。
-- croact-moveable 内联 react-moveable 的 ESM 产物（`deps.alwaysBundle` + `mainFields: ["module", "main"]`），用 `outputOptions.paths` 把输出中的 `react` / `react-css-styled` 改名为 `croact` / `croact-css-styled`；moveable 的 ESM/CJS 同样把 `react-moveable` 改名为 `croact-moveable`。这些是输出改名，不能换成 alias（已声明的依赖会先被判定为 external，alias 不生效）。
+- croact-moveable 内联 react-moveable 的 ESM 产物（`deps.alwaysBundle` + `mainFields: ["module", "main"]`），用 `outputOptions.paths` 把输出中的 `react` / `react-css-styled` 改名为 `croact` / `croact-css-styled`；moveable 的 ESM/CJS 同样把 `@moveable-next/react` 改名为 `@moveable-next/croact`。这些是输出改名，不能换成 alias（已声明的依赖会先被判定为 external，alias 不生效）。
 - moveable 的 UMD 要真正内联 croact：alias 指向 moveable 自己 `node_modules/croact` 的绝对路径（被内联的 react-moveable 产物从它自己的位置找不到 croact）。UMD 配置都是 `platform: "browser"`，否则会解析到依赖中 `node` 条件下的版本。
 - CJS/UMD 入口（`src/index.umd.ts`）只把具名导出挂到 default 上再 `export default`，由 `outputOptions.exports: "default"` 生成 `module.exports = Moveable`；不要在源码里写 `module.exports`，也不要在这个入口里加 `export *`。
 

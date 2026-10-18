@@ -1,5 +1,5 @@
-import { Able } from "react-moveable/types";
-import { getElementInfo as getElementInfoFunction, makeAble as makeAbleFunction } from "react-moveable";
+import { Able } from "@moveable-next/react/types";
+import { getElementInfo as getElementInfoFunction, makeAble as makeAbleFunction } from "@moveable-next/react";
 
 export function getElementInfo(
     target: SVGElement | HTMLElement,

@@ -107,6 +107,9 @@ importers:
       '@egjs/list-differ':
         specifier: 'catalog:'
         version: 1.0.1
+      '@moveable-next/react':
+        specifier: workspace:~
+        version: link:../react-moveable
       '@scena/dragscroll':
         specifier: 'catalog:'
         version: 1.4.0
@@ -131,9 +134,6 @@ importers:
       overlap-area:
         specifier: 'catalog:'
         version: 1.1.0
-      react-moveable:
-        specifier: workspace:~
-        version: link:../react-moveable
     devDependencies:
       '@types/react':
         specifier: 'catalog:'
@@ -172,21 +172,21 @@ importers:
       '@daybrush/utils':
         specifier: 'catalog:'
         version: 1.13.0
+      '@moveable-next/croact':
+        specifier: workspace:~
+        version: link:../croact-moveable
+      '@moveable-next/react':
+        specifier: workspace:~
+        version: link:../react-moveable
       '@scena/event-emitter':
         specifier: 'catalog:'
         version: 1.0.5
       croact:
         specifier: 'catalog:'
         version: 1.0.4
-      croact-moveable:
-        specifier: workspace:~
-        version: link:../croact-moveable
       framework-utils:
         specifier: 'catalog:'
         version: 1.1.0
-      react-moveable:
-        specifier: workspace:~
-        version: link:../react-moveable
     devDependencies:
       '@types/react':
         specifier: 'catalog:'
@@ -306,7 +306,7 @@ importers:
       '@daybrush/utils':
         specifier: 'catalog:'
         version: 1.13.0
-      moveable:
+      '@moveable-next/vanilla':
         specifier: workspace:~
         version: link:../moveable
     devDependencies:

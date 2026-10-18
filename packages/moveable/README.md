@@ -3,7 +3,7 @@
 <h2 align="middle">Moveable</h2>
 <p align="middle">
 <a href="https://opencollective.com/moveable" alt="Financial Contributors on Open Collective"><img src="https://opencollective.com/moveable/all/badge.svg?label=financial+contributors" /></a>
-<a href="https://www.npmjs.com/package/moveable" target="_blank"><img src="https://img.shields.io/npm/v/moveable.svg?style=flat-square&color=007acc&label=version" alt="npm version" /></a>
+<a href="https://www.npmjs.com/package/@moveable-next/vanilla" target="_blank"><img src="https://img.shields.io/npm/v/@moveable-next/vanilla.svg?style=flat-square&color=007acc&label=version" alt="npm version" /></a>
 <img src="https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square"/>
 <a href="https://github.com/daybrush/moveable/blob/master/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/daybrush/moveable.svg?style=flat-square&label=license&color=08CE5D"/></a>
 <a href="https://github.com/daybrush/moveable/tree/master/packages/react-moveable" target="_blank"><img alt="React" src="https://img.shields.io/static/v1.svg?label=&message=React&style=flat-square&color=61daeb"></a>
@@ -90,12 +90,12 @@
 ## ⚙️ Installation
 ### npm
 ```sh
-$ npm i moveable
+$ npm i @moveable-next/vanilla
 ```
 
 ### scripts
 ```html
-<script src="//daybrush.com/moveable/release/latest/dist/moveable.min.js"></script>
+<script src="https://unpkg.com/@moveable-next/vanilla/dist/moveable.min.js"></script>
 ```
 
 ## 📄 Documents
@@ -108,7 +108,7 @@ $ npm i moveable
 
 ## 🚀 How to use
 ```ts
-import Moveable from "moveable";
+import Moveable from "@moveable-next/vanilla";
 
 const moveable = new Moveable(document.body, {
     target: document.querySelector(".target"),
@@ -225,9 +225,9 @@ moveable.on("pinchStart", ({ target, clientX, clientY }) => {
 
 
 ## 📦 Packages
-* [**moveable**](https://github.com/daybrush/moveable/blob/master/packages/moveable): A Vanilla Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
-* [**react-moveable**](https://github.com/daybrush/moveable/blob/master/packages/react-moveable): A React Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
-* [**vue3-moveable**](https://github.com/daybrush/moveable/blob/master/packages/vue-moveable): A Vue 3 Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
+* [**@moveable-next/vanilla**](https://github.com/daybrush/moveable/blob/master/packages/moveable): A Vanilla Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
+* [**@moveable-next/react**](https://github.com/daybrush/moveable/blob/master/packages/react-moveable): A React Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
+* [**@moveable-next/vue3**](https://github.com/daybrush/moveable/blob/master/packages/vue-moveable): A Vue 3 Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
 
 ## ⚙️ Developments
 The `moveable` repo is managed as a [monorepo](https://github.com/lerna/lerna) with `yarn`.

@@ -6,7 +6,7 @@ import VanillaMoveable, {
     MoveableProperties,
     MoveableInterface,
     MoveableEvents,
-} from "moveable";
+} from "@moveable-next/vanilla";
 import { defineComponent, h, type DefineComponent } from "vue";
 import { isUndefined } from "@daybrush/utils";
 

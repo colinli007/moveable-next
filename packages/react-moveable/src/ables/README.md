@@ -62,7 +62,7 @@ export interface Able<Props extends IObject<any> = IObject<any>, Events extends 
 ## Example
 
 ```ts
-import Moveable, { MoveableManagerInterface, Renderer } from "react-moveable";
+import Moveable, { MoveableManagerInterface, Renderer } from "@moveable-next/react";
 
 interface CustomAbleProps {
     customAble: boolean;

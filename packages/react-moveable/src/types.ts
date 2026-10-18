@@ -57,7 +57,7 @@ export interface DefaultOptions {
      * The external target(s) to drag Moveable target(s)
      * @default target
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      * moveable.target = document.querySelector(".target");
@@ -105,7 +105,7 @@ export interface DefaultOptions {
      * @default false
      * @see [Storybook](../../../../storybook/?path=/story/options--options-resize-observer)
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      * moveable.useResizeObserver = true;
@@ -122,7 +122,7 @@ export interface DefaultOptions {
      * Zooms in the elements of a moveable.
      * @default 1
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      * moveable.zoom = 2;
@@ -142,7 +142,7 @@ export interface DefaultOptions {
      * You can specify the className of the moveable controlbox.
      * @default ""
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   className: "",
@@ -502,7 +502,7 @@ export interface MoveableInitalOptions extends ExcludeKeys<MoveableDefaultOption
     /**
      * The target to indicate Moveable Control Box.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      * moveable.target = document.querySelector(".target");
@@ -1895,7 +1895,7 @@ export interface DraggableOptions {
      * Whether or not target can be dragged.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -1906,7 +1906,7 @@ export interface DraggableOptions {
      * throttle of x, y when drag.
      * @default 0
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -1917,7 +1917,7 @@ export interface DraggableOptions {
      * throttle of angle(degree) of x,y when drag.
      * @default 0
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -1933,7 +1933,7 @@ export interface DraggableOptions {
      * start angle(degree) of x,y for throttleDragRotate when drag.
      * @default 0
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -1946,7 +1946,7 @@ export interface DraggableOptions {
      * Whether to move by dragging the edge line
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *  draggable: true,
@@ -1964,7 +1964,7 @@ export interface DraggableEvents {
     /**
      * When the drag starts, the dragStart event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { draggable: true });
      * moveable.on("dragStart", ({ target }) => {
@@ -1975,7 +1975,7 @@ export interface DraggableEvents {
     /**
      * When dragging, the drag event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { draggable: true });
      * moveable.on("drag", ({ target, transform }) => {
@@ -1986,7 +1986,7 @@ export interface DraggableEvents {
     /**
      * When the drag finishes, the dragEnd event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { draggable: true });
      * moveable.on("dragEnd", ({ target, isDrag }) => {
@@ -1998,7 +1998,7 @@ export interface DraggableEvents {
     /**
      * When the group drag starts, the `dragGroupStart` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -2012,7 +2012,7 @@ export interface DraggableEvents {
     /**
      * When the group drag, the `dragGroup` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -2034,7 +2034,7 @@ export interface DraggableEvents {
     /**
      * When the group drag finishes, the `dragGroupEnd` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -2065,7 +2065,7 @@ export interface PaddingOptions {
      * Add padding around the target to increase the drag area.
      * @default null
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *  target: document.querySelector(".target"),
@@ -2081,7 +2081,7 @@ export interface OriginOptions {
      * Whether or not the origin control box will be visible or not.
      * @default true
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -2137,7 +2137,7 @@ export interface OriginDraggableOptions {
      * Whether to drag origin.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     originDraggable: true,
@@ -2159,7 +2159,7 @@ export interface OriginDraggableOptions {
      * % Can be used instead of the absolute px.
      * @default true
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     originDraggable: true,
@@ -2176,7 +2176,7 @@ export interface OriginDraggableEvents {
     /**
      * When drag start the origin, the `dragOriginStart` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     originDraggable: true,
@@ -2197,7 +2197,7 @@ export interface OriginDraggableEvents {
     /**
      * When drag the origin, the `dragOrigin` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     originDraggable: true,
@@ -2218,7 +2218,7 @@ export interface OriginDraggableEvents {
     /**
      * When drag end the origin, the `dragOriginEnd` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     originDraggable: true,
@@ -2248,7 +2248,7 @@ export interface RoundableOptions {
      * Whether to show and drag or double click border-radius.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     roundable: true,
@@ -2267,7 +2267,7 @@ export interface RoundableOptions {
      * % Can be used instead of the absolute px
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     roundable: true,
@@ -2286,7 +2286,7 @@ export interface RoundableOptions {
      * Minimum number of round controls. It moves in proportion by control. [horizontal, vertical]
      * @default [0, 0]
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     roundable: true,
@@ -2300,7 +2300,7 @@ export interface RoundableOptions {
      * Maximum number of round controls. It moves in proportion by control. [horizontal, vertical]
      * @default [4, 4]
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     roundable: true,
@@ -2314,7 +2314,7 @@ export interface RoundableOptions {
      * Whether you can add/delete round controls by double-clicking a line or control.
      * @default true
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     roundable: true,
@@ -2328,7 +2328,7 @@ export interface RoundableOptions {
      * Whether to show a round control that does not actually exist as a shadow
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     roundable: true,
@@ -2341,7 +2341,7 @@ export interface RoundableOptions {
      * The padding value of the position of the round control
      * @default 0
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     roundable: true,
@@ -2359,7 +2359,7 @@ export interface RoundableEvents {
     /**
      * When drag start the clip area or controls, the `roundStart` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     roundable: true,
@@ -2377,7 +2377,7 @@ export interface RoundableEvents {
     /**
      * When drag or double click the border area or controls, the `round` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     roundable: true,
@@ -2395,7 +2395,7 @@ export interface RoundableEvents {
     /**
      * When drag end the border area or controls, the `roundEnd` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     roundable: true,
@@ -2413,7 +2413,7 @@ export interface RoundableEvents {
     /**
      * When drag start the clip area or controls, the `roundGroupStart` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     targets: [target1, target2, target3],
@@ -2433,7 +2433,7 @@ export interface RoundableEvents {
     /**
      * When drag or double click the border area or controls, the `roundGroup` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     targets: [target1, target2, target3],
@@ -2453,7 +2453,7 @@ export interface RoundableEvents {
     /**
      * When drag end the border area or controls, the `roundGroupEnd` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     targets: [target1, target2, target3],
@@ -2488,7 +2488,7 @@ export interface ResizableOptions extends RenderDirections {
      * Whether or not target can be resized.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     resizable: false,
@@ -2502,7 +2502,7 @@ export interface ResizableOptions extends RenderDirections {
      * If throttleResize is set to less than 1, the target may shake.
      * @default 1
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   resizable: true,
@@ -2516,7 +2516,7 @@ export interface ResizableOptions extends RenderDirections {
      * When resize or scale, keeps a ratio of the width, height.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     scalable: true,
@@ -2524,7 +2524,7 @@ export interface ResizableOptions extends RenderDirections {
      *
      * moveable.keepRatio = true;
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   resizable: true,
@@ -2542,7 +2542,7 @@ export interface ResizableOptions extends RenderDirections {
      * Function to convert size for resize.
      * @default oneself
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   resizable: true,
@@ -2692,7 +2692,7 @@ export interface ResizableEvents {
     /**
      * When the resize starts, the resizeStart event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { resizable: true });
      * moveable.on("resizeStart", ({ target }) => {
@@ -2703,7 +2703,7 @@ export interface ResizableEvents {
     /**
      * When resizing, `beforeResize` is called before `resize` occurs. In `beforeResize`, you can get and set the pre-value before resizing.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { resizable: true });
      * moveable.on("beforeResize", ({ setFixedDirection }) => {
@@ -2721,7 +2721,7 @@ export interface ResizableEvents {
     /**
      * When resizing, the resize event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { resizable: true });
      * moveable.on("resize", ({ target, width, height }) => {
@@ -2733,7 +2733,7 @@ export interface ResizableEvents {
     /**
      * When the resize finishes, the resizeEnd event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { resizable: true });
      * moveable.on("resizeEnd", ({ target, isDrag }) => {
@@ -2745,7 +2745,7 @@ export interface ResizableEvents {
     /**
      * When the group resize starts, the `resizeGroupStart` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -2763,7 +2763,7 @@ export interface ResizableEvents {
     /**
      * When the group resize, the `resizeGroup` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -2788,7 +2788,7 @@ export interface ResizableEvents {
     /**
      * When the group resize finishes, the `resizeGroupEnd` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -2813,7 +2813,7 @@ export interface ScalableOptions extends RenderDirections {
      * Whether or not target can be scaled.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -2824,7 +2824,7 @@ export interface ScalableOptions extends RenderDirections {
      * throttle of scaleX, scaleY when scale.
      * @default 0
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -2935,7 +2935,7 @@ export interface ScalableEvents {
     /**
      * When the scale starts, the scaleStart event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { scalable: true });
      * moveable.on("scaleStart", ({ target }) => {
@@ -2946,7 +2946,7 @@ export interface ScalableEvents {
     /**
      * When scaling, `beforeScale` is called before `scale` occurs. In `beforeScale`, you can get and set the pre-value before scaling.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { scalable: true });
      * moveable.on("beforeScale", ({ setFixedDirection }) => {
@@ -2962,7 +2962,7 @@ export interface ScalableEvents {
     /**
      * When scaling, the `scale` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { scalable: true });
      * moveable.on("scale", ({ target, transform, dist }) => {
@@ -2973,7 +2973,7 @@ export interface ScalableEvents {
     /**
      * When the scale finishes, the `scaleEnd` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { scalable: true });
      * moveable.on("scaleEnd", ({ target, isDrag }) => {
@@ -2985,7 +2985,7 @@ export interface ScalableEvents {
     /**
      * When the group scale starts, the `scaleGroupStart` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -3003,7 +3003,7 @@ export interface ScalableEvents {
     /**
      * When the group scale, the `scaleGroup` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -3025,7 +3025,7 @@ export interface ScalableEvents {
     /**
      * When the group scale finishes, the `scaleGroupEnd` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -3052,7 +3052,7 @@ export interface RenderDirections {
      * Set directions to show the control box.
      * @default false if rotatable, ["n", "nw", "ne", "s", "se", "sw", "e", "w"] otherwise
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     warpable: true,
@@ -3061,7 +3061,7 @@ export interface RenderDirections {
      *
      * moveable.renderDirections = ["nw", "ne", "sw", "se"];
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     scalable: true,
@@ -3070,7 +3070,7 @@ export interface RenderDirections {
      *
      * moveable.renderDirections = ["nw", "ne", "sw", "se"];
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   resizable: true,
@@ -3085,7 +3085,7 @@ export interface RenderDirections {
      * You can use "n", "w", "s", "e" in LineDirection array.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      * moveable.edge = true;
@@ -3122,7 +3122,7 @@ export interface RotatableOptions extends RenderDirections {
      * Whether or not target can be rotated.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3133,7 +3133,7 @@ export interface RotatableOptions extends RenderDirections {
      * You can specify the position of the rotation.
      * @default "top"
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   rotationPosition: "top",
@@ -3157,7 +3157,7 @@ export interface RotatableOptions extends RenderDirections {
      * throttle of angle(degree) when rotate.
      * @default 0
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3178,7 +3178,7 @@ export interface RotatableEvents {
     /**
      * When the rotate starts, the rotateStart event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { rotatable: true });
      * moveable.on("rotateStart", ({ target }) => {
@@ -3193,7 +3193,7 @@ export interface RotatableEvents {
     /**
      * When rotating, the rotate event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { rotatable: true });
      * moveable.on("rotate", ({ target, transform, dist }) => {
@@ -3204,7 +3204,7 @@ export interface RotatableEvents {
     /**
      * When the rotate finishes, the rotateEnd event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { rotatable: true });
      * moveable.on("rotateEnd", ({ target, isDrag }) => {
@@ -3216,7 +3216,7 @@ export interface RotatableEvents {
     /**
      * When the group rotate starts, the `rotateGroupStart` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -3234,7 +3234,7 @@ export interface RotatableEvents {
     /**
      * When the group rotate, the `rotateGroup` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -3255,7 +3255,7 @@ export interface RotatableEvents {
     /**
      * When the group rotate finishes, the `rotateGroupEnd` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -3277,7 +3277,7 @@ export interface WarpableOptions extends RenderDirections {
      * Whether or not target can be warped.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3293,7 +3293,7 @@ export interface WarpableEvents {
     /**
      * When the warp starts, the warpStart event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { warpable: true });
      * moveable.on("warpStart", ({ target }) => {
@@ -3304,7 +3304,7 @@ export interface WarpableEvents {
     /**
      * When warping, the warp event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      * let matrix = [
      *  1, 0, 0, 0,
      *  0, 1, 0, 0,
@@ -3322,7 +3322,7 @@ export interface WarpableEvents {
     /**
      * When the warp finishes, the warpEnd event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, { warpable: true });
      * moveable.on("warpEnd", ({ target, isDrag }) => {
@@ -3342,7 +3342,7 @@ export interface PinchableOptions {
      * Whether or not target can be pinched with draggable, resizable, scalable, rotatable.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3357,7 +3357,7 @@ export interface PinchableEvents {
     /**
      * When the pinch starts, the pinchStart event is called with part of scaleStart, rotateStart, resizeStart
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     rotatable: true,
@@ -3378,7 +3378,7 @@ export interface PinchableEvents {
     /**
      * When pinching, the pinch event is called with part of scale, rotate, resize
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     rotatable: true,
@@ -3399,7 +3399,7 @@ export interface PinchableEvents {
     /**
      * When the pinch finishes, the pinchEnd event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     rotatable: true,
@@ -3421,7 +3421,7 @@ export interface PinchableEvents {
     /**
      * When the group pinch starts, the `pinchGroupStart` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -3435,7 +3435,7 @@ export interface PinchableEvents {
     /**
      * When the group pinch, the `pinchGroup` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -3449,7 +3449,7 @@ export interface PinchableEvents {
     /**
      * When the group pinch finishes, the `pinchGroupEnd` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -3474,7 +3474,7 @@ export interface GroupableOptions {
      * Sets the initial rotation of the group.
      * @default 0
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   target: [].slice.call(document.querySelectorAll(".target")),
@@ -3493,7 +3493,7 @@ export interface GroupableOptions {
      * Sets the initial transform origin of the group.
      * @default  "50% 50%"
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   target: [].slice.call(document.querySelectorAll(".target")),
@@ -3516,7 +3516,7 @@ export interface GroupableOptions {
      * Whether to hide the line in child moveable for group corresponding to the rect of the target.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   target: [].slice.call(document.querySelectorAll(".target")),
@@ -3552,7 +3552,7 @@ export interface IndividualGroupableOptions {
      * Create targets individually, not as a group.
      * @see [Storybook](../../../../storybook/?path=/story/individual-group--individual-group-draggable-scalable-rotatable)
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   target: [].slice.call(document.querySelectorAll(".target")),
@@ -3588,7 +3588,7 @@ export interface SnappableOptions {
      * @default false
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3600,7 +3600,7 @@ export interface SnappableOptions {
      * @default null
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.querySelector(".container"));
      *
@@ -3612,7 +3612,7 @@ export interface SnappableOptions {
      * @default true (true is all directions)
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   snappable: true,
@@ -3627,7 +3627,7 @@ export interface SnappableOptions {
      * @default true (true is all directions)
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   snappable: true,
@@ -3642,7 +3642,7 @@ export interface SnappableOptions {
      * @default true
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *   snappable: true,
@@ -3661,7 +3661,7 @@ export interface SnappableOptions {
      * @deprecated
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3688,7 +3688,7 @@ export interface SnappableOptions {
      * @default 0
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3715,7 +3715,7 @@ export interface SnappableOptions {
      * @default 0 (0 is not used)
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3727,7 +3727,7 @@ export interface SnappableOptions {
      * @default 0 (0 is not used)
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3745,7 +3745,7 @@ export interface SnappableOptions {
      * @default true
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3757,7 +3757,7 @@ export interface SnappableOptions {
      * @default false
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3769,7 +3769,7 @@ export interface SnappableOptions {
      * @default []
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3781,7 +3781,7 @@ export interface SnappableOptions {
      * @default []
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3793,7 +3793,7 @@ export interface SnappableOptions {
      * @default []
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3817,7 +3817,7 @@ export interface SnappableOptions {
      * @default null
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3829,7 +3829,7 @@ export interface SnappableOptions {
      * @default null
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -3841,7 +3841,7 @@ export interface SnappableOptions {
      * @default oneself
      * @see {@link SnappableOptions}
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *  snappable: true,
@@ -3977,7 +3977,7 @@ export interface SnappableEvents {
     /**
      * When you drag or dragControl, the `snap` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     snappable: true
@@ -4154,7 +4154,7 @@ export interface ScrollableEvents {
     /**
      * When the drag cursor leaves the scrollContainer, the `scroll` event occur to scroll.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: document.querySelector(".target"),
@@ -4168,7 +4168,7 @@ export interface ScrollableEvents {
     /**
      * When the drag cursor leaves the scrollContainer, the `scrollGroup` event occur to scroll in group.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -4189,7 +4189,7 @@ export interface DragAreaOptions {
      * Add an event to the moveable area instead of the target for stopPropagation.
      * @default if group, true, else fals
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *  dragArea: false,
@@ -4200,7 +4200,7 @@ export interface DragAreaOptions {
      * Set `pointerEvents: none;` css to pass events in dragArea.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *  dragArea: false,
@@ -4217,7 +4217,7 @@ export interface ClickableEvents {
     /**
      * When you click on the element, the `click` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: document.querySelector(".target"),
@@ -4231,7 +4231,7 @@ export interface ClickableEvents {
     /**
      * When you click on the element inside the group, the `clickGroup` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -4295,7 +4295,7 @@ export interface RenderableEvents {
     /**
      * `renderStart` event occurs at the first start of all events.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: document.querySelector(".target"),
@@ -4308,7 +4308,7 @@ export interface RenderableEvents {
     /**
      * `render` event occurs before the target is drawn on the screen.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: document.querySelector(".target"),
@@ -4321,7 +4321,7 @@ export interface RenderableEvents {
     /**
      * `renderEnd` event occurs at the end of all events.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: document.querySelector(".target"),
@@ -4334,7 +4334,7 @@ export interface RenderableEvents {
     /**
      * `renderGroupStart` event occurs at the first start of all events in group.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -4347,7 +4347,7 @@ export interface RenderableEvents {
     /**
      * `renderGroup` event occurs before the target is drawn on the screen in group.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -4360,7 +4360,7 @@ export interface RenderableEvents {
     /**
      * `renderGroupEnd` event occurs at the end of all events in group.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     target: [].slice.call(document.querySelectorAll(".target")),
@@ -4382,7 +4382,7 @@ export interface ClippableOptions {
      * Whether to clip the target.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4413,7 +4413,7 @@ export interface ClippableOptions {
     /**
      * You can force the custom clipPath. (defaultClipPath < style < customClipPath < dragging clipPath)
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4439,7 +4439,7 @@ export interface ClippableOptions {
     /**
      * If clippath is not set, the default value can be set. (defaultClipPath < style < customClipPath < dragging clipPath)
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4466,7 +4466,7 @@ export interface ClippableOptions {
      * % Can be used instead of the absolute px (`rect` not possible)
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4493,7 +4493,7 @@ export interface ClippableOptions {
      * When dragging the target, the clip also moves.
      * @default true
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4520,7 +4520,7 @@ export interface ClippableOptions {
      * You can drag the clip by setting clipArea.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4547,7 +4547,7 @@ export interface ClippableOptions {
      * Whether the clip is bound to the target.
      * @default false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4575,7 +4575,7 @@ export interface ClippableOptions {
      * Add clip guidelines in the vertical direction.
      * @default []
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4594,7 +4594,7 @@ export interface ClippableOptions {
      * Add clip guidelines in the horizontal direction.
      * @default []
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4613,7 +4613,7 @@ export interface ClippableOptions {
      * Distance value that can snap to clip guidelines.
      * @default 5
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4636,7 +4636,7 @@ export interface ClippableEvents {
     /**
      * When drag start the clip area or controls, the `clipStart` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4662,7 +4662,7 @@ export interface ClippableEvents {
     /**
      * When drag the clip area or controls, the `clip` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4688,7 +4688,7 @@ export interface ClippableEvents {
     /**
      * When drag end the clip area or controls, the `clipEnd` event is called.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *     clippable: true,
@@ -4925,7 +4925,7 @@ export interface MoveableInterface {
      * Get a manager that manages the moveable's state and props.
      * @returns The Rect Info
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -4936,7 +4936,7 @@ export interface MoveableInterface {
      * You can get the vertex information, position and offset size information of the target based on the container.
      * @returns The Rect Info
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -4952,7 +4952,7 @@ export interface MoveableInterface {
      * Check if the target is an element included in the moveable.
      * @param target - the target
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -4969,7 +4969,7 @@ export interface MoveableInterface {
      *
      * If the width, height, left, and top of all elements change, update the shape of the moveable.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -4984,7 +4984,7 @@ export interface MoveableInterface {
      * @deprecated
      * Use `.updateRect()` method
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -5005,7 +5005,7 @@ export interface MoveableInterface {
      * @param isInstant - If isInstant is true, request and requestEnd are executed immediately.
      * @returns Able Requester. If there is no request in able, nothing will work.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -5042,7 +5042,7 @@ export interface MoveableInterface {
     /**
      * Remove the Moveable object and the events.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -5053,7 +5053,7 @@ export interface MoveableInterface {
      * You can drag start the Moveable through the external `MouseEvent`or `TouchEvent`. (Angular: ngDragStart)
      * @param e - external `MouseEvent`or `TouchEvent`
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -5070,7 +5070,7 @@ export interface MoveableInterface {
      * @param clientY - y coordinate
      * @returns True if the coordinate is in moveable or false
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -5085,7 +5085,7 @@ export interface MoveableInterface {
      * Check if the moveable state is being dragged.
      * @param ableName - If you want to check if able is dragging, specify ableName.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -5104,7 +5104,7 @@ export interface MoveableInterface {
      * @param el - element or rect to test
      * @returns Get hit test rate (rate > 0 is hitted)
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *
@@ -5132,7 +5132,7 @@ export interface MoveableInterface {
     /**
      * If the element list corresponding to the selector among the targets is changed, it is updated.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *    target: ".target",
@@ -5144,7 +5144,7 @@ export interface MoveableInterface {
     /**
      * Get targets set in moveable through target or targets of props.
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body, {
      *    target: [targetRef, ".target", document.querySelectorAll(".target")],
@@ -5157,7 +5157,7 @@ export interface MoveableInterface {
      * You can stop the dragging currently in progress through a method from outside.
      * @returns The Rect Info
      * @example
-     * import Moveable from "moveable";
+     * import Moveable from "@moveable-next/vanilla";
      *
      * const moveable = new Moveable(document.body);
      *

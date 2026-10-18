@@ -29,9 +29,9 @@ jobs:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install Playwright browsers
-        run: pnpm --filter react-moveable exec playwright install chromium
+        run: pnpm --filter @moveable-next/react exec playwright install chromium
       - name: Type-check stories
-        run: pnpm --filter react-moveable typecheck:stories
+        run: pnpm --filter @moveable-next/react typecheck:stories
       # Story tests of react-moveable, unit tests of every package and browser tests of the
       # framework wrappers against their dist (root vitest.config.mts)
       - name: Run tests

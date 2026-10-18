@@ -11,7 +11,7 @@
 | 3 | 库构建工具替换 | 已完成 | `archive/2026-10-12-replace-build-with-tsdown`，`archive/2026-10-13-migrate-eslint-flat-config` |
 | 4 | 框架包装升级与依赖升级 | 已完成 | `archive/2026-10-13-upgrade-lit-3`、`archive/2026-10-15-migrate-vue3-to-tsdown`、`archive/2026-10-16-upgrade-svelte-5`、`archive/2026-10-18-bump-dependencies` |
 | 5 | 文档与部署 | 进行中 | `archive/2026-10-18-deploy-demo-with-actions`、`archive/2026-10-18-replace-jsdoc-with-typedoc`、`archive/2026-10-18-remove-croffle-examples` |
-| 6 | 以 `@moveable-next` 发布 | 进行中 | `archive/2026-10-18-remove-preact-lit-svelte-packages` |
+| 6 | 以 `@moveable-next` 发布 | 进行中 | `archive/2026-10-18-remove-preact-lit-svelte-packages`、`archive/2026-10-18-rename-to-moveable-next-scope` |
 | 7 | Storybook 加入 Vue3 示例 | 未开始 | |
 
 ## 已完成
@@ -47,10 +47,9 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 
 ### 6. 以 `@moveable-next` 发布
 - 精简包的范围：`remove-preact-lit-svelte-packages` 删除 preact-moveable、lit-moveable、svelte-moveable，只支持 React、原生 JS 和 Vue 3（上游一周下载量：preact 201、lit 31、svelte 843，react 30.6 万、原生 4.9 万、vue3 7114）。仓库剩下 react-moveable、croact-moveable、moveable、vue3-moveable、@moveable/helper 5 个包；只为这三个包存在的依赖（preact、preact-css-styled、lit、svelte 及其工具链）和 preact-css-styled 的 `packageExtensions` 一并删除，`vite` 只剩 react-moveable 使用，移出 catalog。剩下 5 个包的产物逐字节不变。后面各项只需覆盖这 5 个包。
-- 包名改为 `@moveable-next/*`，补齐 `exports`。
+- 包名与入口：`rename-to-moveable-next-scope` 把包名改为 `@moveable-next/react`、`@moveable-next/croact`、`@moveable-next/vanilla`、`@moveable-next/vue3`、`@moveable-next/helper`（目录名不变，CLAUDE.md 和 spec 中有对照表）；包之间的依赖、源码 import、构建中的内联和改名规则、TypeDoc 和 Storybook 的别名、`pnpm --filter` 都改用新包名。每个包增加 `exports`（`types` / `module` → ESM 给打包工具 / `default` → CJS，Node 的 `import` 和 `require` 都走 CJS），`files` 只发布 `dist`、`declaration`、`src`；`repository`、`homepage`、`bugs` 指向本仓库。产物除头部注释、对其他工作区包的 import 名外与改名前一致。Storybook React tab 显示新包名（顺带删除了从未生效的 `convertPath`）；README 的安装命令、import 和 npm 徽章、文档注释中的 142 处示例改为新包名。版本号未动。
 - 确定 React peer 范围（当前 story 和测试仍用 React 16，是库支持的最低版本），同时决定开发依赖是否升到 React 19 和 @types/react、@types/react-dom 19。
-- 引入 changesets 管理版本和发布。
-- Storybook React tab 中的包名（`convertPath` 把内部路径换成 `react-moveable`）随包名一起修改。
+- 引入 changesets 管理版本和发布。npm 上的 `moveable-next` 组织已由用户创建（2026-10-18，registry 的组织接口返回空的包列表），还没有发布过任何包。
 
 ### 7. Storybook 加入 Vue3 示例
 第 5 步删除了 croffle 翻译生成的多框架示例。以后加入 Vue3 示例时，要满足「展示的代码经过测试」：示例要在测试中真实渲染（或至少经过 Vue 编译器检查并挂载），不能再是没有检查的翻译结果。具体方式由那个 change 设计。
@@ -60,7 +59,8 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 - eslint-plugin-react 7.37.5 的 peer 范围还不包含 ESLint 10，`pnpm-workspace.yaml` 中用 `peerDependencyRules.allowedVersions` 只对它放行；它的推荐集在 ESLint 10 下能正常运行，但推荐集以外有规则（如 `jsx-filename-extension`、`forward-ref-uses-ref`）调用了 ESLint 10 已删除的 API，所以配置只启用推荐集，额外启用 react 规则前要先确认它在 ESLint 10 下能运行。上游发布支持 ESLint 10 的版本后删除放行。
 - typescript-eslint 8 支持的 TypeScript 是 `<6.1`，以后升级到 TS 7 需要等它支持（npm 上已有 7.0.2）。
 - origin 上的 gh-pages 分支（上游 2023 年的内容，加上一次误操作推送的提交）已经不再使用：Pages 的来源是 Actions。是否删除由用户决定。
-- 落地页（`demo/index.html` 等，上游预先构建好的页面，源码不在仓库中）和 README 中的链接都指向上游的 `daybrush.com`，随第 6 步的包名、站点地址一起调整。
+- 落地页（`demo/index.html` 等，上游预先构建好的页面，源码不在仓库中）和 README 中指向上游 `daybrush.com`、`github.com/daybrush/moveable` 的链接（文档、Storybook、源码链接）还没改：包名已经改好，这些链接随站点地址一起调整。
 - Storybook 控件说明中的「See API」是指向同一站点 `release/latest/doc/` 的相对链接，单独运行 `pnpm storybook` 开发时会是 404，部署后和本地 `demo/` 中可用。
 - README 中「Contribute」链接的 `CONTRIBUTING.md` 不存在（API 文档首页也会显示这个链接）；TypeDoc 关掉了相对路径检查（`validation.invalidPath`，为了指向 Storybook 的相对链接），所以不会报警。
 - Storybook 10 在 React 16 下测试时会打印 `act(...)` 警告，不影响结果；升级 React 后会消失。
+- 包不支持 Node 原生 ESM 双格式：`exports` 让 Node 的 `import` 和 `require` 都加载 CJS 产物。在 `moduleResolution: node16` 的 ESM 项目中，`import Moveable from "@moveable-next/react"` 的类型与运行时不符（类型是 `export default`，运行时是 CJS 的 `module.exports`）。要彻底解决，需要把 ESM 产物改为 `.mjs` 并提供 `.d.mts` / `.d.cts` 两套声明，需要时单独评估。

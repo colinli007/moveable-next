@@ -40,15 +40,9 @@ export function makeArgs(argTypes: any) {
     }, {} as Record<string, any>);
 }
 
-export function convertPath(text: string, findName: string = "react-moveable", moduleName = findName) {
-    let nextText = text.replace(new RegExp(`"[a-zA-Z0-9./_-]*${findName}[a-zA-Z0-9./_-]*"`, "g"), `"${moduleName}"`);
-    nextText = nextText.replace(new RegExp(`'[a-zA-Z0-9./_-]*${findName}[a-zA-Z0-9./_-]*'`, "g"), `'${moduleName}'`);
-
-    return nextText;
-}
-
 export function convertReactTemplate(text: string) {
-    const previewText = text.replace(/@\//g, "");
+    // `@/react-moveable` is the stories' alias of the package source (`paths` in tsconfig.json).
+    const previewText = text.replace(/"@\/react-moveable"/g, "\"@moveable-next/react\"");
 
     return convertTemplate(previewText);
 }

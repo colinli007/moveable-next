@@ -5,8 +5,8 @@
     "compilerOptions": {
         "rootDir": "../..",
         "paths": {
-            "react-moveable": ["../../packages/react-moveable/src/index.ts"],
-            "react-moveable/types": ["../../packages/react-moveable/src/externalTypes.ts"]
+            "@moveable-next/react": ["../../packages/react-moveable/src/index.ts"],
+            "@moveable-next/react/types": ["../../packages/react-moveable/src/externalTypes.ts"]
         }
     },
     "include": ["index.ts"]

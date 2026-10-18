@@ -123,7 +123,7 @@ In a group, Pinchable and Snappable are the same as they used to be. But warpabl
 
 ### Vanilla Exmaple
 ```js
-import Moveable from "moveable";
+import Moveable from "@moveable-next/vanilla";
 
 
 const moveable = new Moveable(document.body, {
@@ -141,7 +141,7 @@ window.addEventListener("mousedown", e => {
 
 ### React Example
 ```tsx
-import Moveable from "react-moveable";
+import Moveable from "@moveable-next/react";
 
 <div onMouseDown={onMouseDown}></div>
 <Moveable ref={e => { this.moveable = e; }} target={this.state.target} />
@@ -167,7 +167,7 @@ onMouseDown(e) {
 
 ### Vanilla Example
 ```ts
-import Moveable from "moveable";
+import Moveable from "@moveable-next/vanilla";
 
 const moveable = new Moveable(document.body, {
     renderDirections: ["n", "nw", "ne", "s", "se", "sw", "e", "w"],
@@ -182,7 +182,7 @@ moveable.renderDirections = ["nw", "ne", "sw", "se"];
 
 ### Vanilla Example
 ```ts
-import Moveable from "moveable";
+import Moveable from "@moveable-next/vanilla";
 
 const moveable = new Moveable(document.body, {
     className: "moveable1",

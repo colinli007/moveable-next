@@ -5,20 +5,20 @@ import { sharedOptions } from "../../config/build.mjs";
 const shared = sharedOptions(import.meta.dirname);
 
 // ESM / CJS: dependencies stay external; React imports are renamed to croact and
-// react-moveable to its croact build, croact-moveable.
+// @moveable-next/react to its croact build, @moveable-next/croact.
 const library: UserConfig = {
     ...shared,
     deps: {
-        // Types-only subpath (`export * from "react-moveable/types"`): its runtime entry is
+        // Types-only subpath (`export * from "@moveable-next/react/types"`): its runtime entry is
         // an empty file, so bundling it drops the re-export instead of importing a stub.
-        alwaysBundle: ["react-moveable/types"],
+        alwaysBundle: ["@moveable-next/react/types"],
         neverBundle: ["react"],
         onlyBundle: [],
     },
 };
 const paths = {
     "react": "croact",
-    "react-moveable": "croact-moveable",
+    "@moveable-next/react": "@moveable-next/croact",
 };
 // UMD: self-contained, with croact in place of React. The bundled react-moveable build
 // imports react from its own location, where croact is not installed, so the alias
