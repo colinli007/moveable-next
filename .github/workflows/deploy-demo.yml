@@ -3,6 +3,8 @@ name: Deploy demo
 # decides when to publish. Run it from the Actions tab once Pages is set to "GitHub Actions".
 on:
   workflow_dispatch:
+  push:
+    branches: [refactor]
 # A running deployment is never cancelled; a later run waits for it.
 concurrency:
   group: pages
