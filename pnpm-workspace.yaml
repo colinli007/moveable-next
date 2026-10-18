@@ -6,7 +6,7 @@ packages:
 # `pnpm lint` fails when a dependency listed in several packages is not on the catalog.
 catalog:
   # Tooling
-  "@types/react": ^16.14.70
+  "@types/react": ^19.3.0
   playwright: ^1.64.1
   tsdown: ~0.23.1
   typescript: ~6.0.3

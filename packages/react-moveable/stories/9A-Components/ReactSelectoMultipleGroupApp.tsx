@@ -8,7 +8,7 @@ import { GroupManager, TargetList } from "@moveable-next/helper";
 export default function App() {
     const { isKeydown: isCommand } = useKeycon({ keys: "meta" });
     const { isKeydown: isShift } = useKeycon({ keys: "shift" });
-    const groupManagerRef = React.useRef<GroupManager>();
+    const groupManagerRef = React.useRef<GroupManager>(null);
     const [targets, setTargets] = React.useState<MoveableTargetGroupsType>([]);
     const moveableRef = React.useRef<Moveable>(null);
     const selectoRef = React.useRef<Selecto>(null);

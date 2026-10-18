@@ -5,12 +5,7 @@ const common: UserConfig = {
     ...sharedOptions(import.meta.dirname),
     // `jsx: react`: croact-moveable replaces the `react` module with croact, which has no jsx-runtime.
     tsconfig: "tsconfig.build.json",
-    deps: {
-        // React is not declared as a dependency yet; it becomes a peerDependency
-        // once the published React range is decided (ROADMAP step 6).
-        neverBundle: ["react", "react-dom"],
-        onlyBundle: [],
-    },
+    deps: { onlyBundle: [] },
 };
 
 export default defineConfig([

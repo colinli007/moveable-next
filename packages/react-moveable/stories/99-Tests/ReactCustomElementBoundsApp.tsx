@@ -57,6 +57,8 @@ declare global {
     interface HTMLElementTagNameMap {
         "custom-element": HTMLElement;
     }
+}
+declare module "react" {
     namespace JSX {
         interface IntrinsicElements {
             // HTML
