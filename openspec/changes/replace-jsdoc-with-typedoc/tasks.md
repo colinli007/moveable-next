@@ -109,5 +109,5 @@
   - Storybook 中某个控件的「See API」能打开对应的文档锚点。
 
   验证：脚本和浏览器检查全部通过，结果写入 `baseline.md`
-- [ ] 7.3 提交并推送后，确认 CI 通过，日志中有 `pnpm doc` 步骤。再推送一个临时提交，在某个注释中写入指向不存在符号的 `{@link}`，确认 CI 在 `pnpm doc` 步骤失败，日志中有文件位置；验证完 revert 并推送。结果写入 `baseline.md`
-- [ ] 7.4 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint && pnpm doc && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test && pnpm demo:build`。验证：全部成功；`openspec validate replace-jsdoc-with-typedoc --strict` 通过
+- [x] 7.3 提交并推送后，确认 CI 通过，日志中有 `pnpm doc` 步骤。再推送一个临时提交，在某个注释中写入指向不存在符号的 `{@link}`，确认 CI 在 `pnpm doc` 步骤失败，日志中有文件位置；验证完 revert 并推送。结果写入 `baseline.md`
+- [x] 7.4 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint && pnpm doc && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test && pnpm demo:build`。验证：全部成功；`openspec validate replace-jsdoc-with-typedoc --strict` 通过

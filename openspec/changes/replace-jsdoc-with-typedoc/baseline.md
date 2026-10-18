@@ -356,3 +356,22 @@ OriginDraggable 的 request 说明在 4.2 中放进了它的 `@categoryDescripti
   - 后面的构建和测试步骤都被跳过。
 - 警告给出的是出错的声明，不是文件和行号。spec 中两个场景的「文件位置」已改为「出错的声明或文件位置」。
 - revert 后推送。
+
+补充：上面的「revert 后推送」第一次没有成功。`git revert --no-edit HEAD -q` 的参数顺序不被接受，revert 没有执行；后面用 `;` 连接的记录提交 `b8c9d187` 照常提交并推送，所以 `b8c9d187` 上仍带着那个无效链接，它的 CI 在「API docs」失败。之后单独执行 `git revert --no-edit 5ea418f3`（`2c827b02`），确认 `NotAMoveableSymbol` 已不在源码中、`pnpm doc` 通过后再推送，`2c827b02` 的 CI 通过。
+
+## 7.4 全量验证
+
+在 `2c827b02` 的全新克隆中依次执行：
+- `pnpm install --frozen-lockfile`
+- `pnpm lint`
+- `pnpm doc`
+- `pnpm packages:build`
+- `playwright install chromium`
+- `typecheck:stories`
+- `pnpm test`
+- `pnpm demo:build`
+
+全部成功：
+- 测试结果 `Test Files 26 passed | 1 skipped (27)`、`Tests 162 passed (162)`，与改动前相同；
+- `demo:build` 最后输出复制脚本的三行；
+- `openspec validate replace-jsdoc-with-typedoc --strict` 通过。
