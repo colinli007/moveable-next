@@ -35,14 +35,14 @@
   - 注释风格与 `run-e2e.yml` 一致：说明为什么只手动触发、为什么权限按 job 分开。
 
   验证：用 `actionlint` 检查没有错误（如果本地没有安装，用 `pnpm dlx` 或 `brew` 临时运行，不加入仓库依赖）；文件中没有 `push`、`pull_request` 触发
-- [ ] 3.2 按决策 6 用 CI 验证：
+- [x] 3.2 按决策 6 用 CI 验证：
   - 先推送 3.1 的提交；
   - 再推送一个临时提交，给 workflow 加上 `push: { branches: [refactor] }`；
   - 观察这次运行：build job 成功，产物 `github-pages` 已上传；deploy job 失败，原因是 Pages 未开启；
   - 验证完 revert 临时提交并推送。
 
   验证：两个 job 的结果和 deploy job 的失败信息记入 `baseline.md`；revert 后 workflow 中又只有 `workflow_dispatch`
-- [ ] 3.3 用 `gh run download` 下载 3.2 的产物，在 scratchpad 中解开（产物是 zip 里的 `artifact.tar`）。放在 `moveable-next/` 子目录下，用静态服务器提供，按决策 6 的清单在浏览器中检查：
+- [x] 3.3 用 `gh run download` 下载 3.2 的产物，在 scratchpad 中解开（产物是 zip 里的 `artifact.tar`）。放在 `moveable-next/` 子目录下，用静态服务器提供，按决策 6 的清单在浏览器中检查：
   - 落地页；
   - Storybook 首页和任意一个 story 的渲染；
   - `release/latest/doc/` 首页及其中一个 able 的页面；
@@ -70,7 +70,7 @@
 
 ## 5. 全量验证
 
-- [ ] 5.1 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test && pnpm demo:build`。验证：
+- [x] 5.1 在全新克隆中执行 `pnpm install --frozen-lockfile && pnpm lint && pnpm packages:build && pnpm --filter react-moveable exec playwright install chromium && pnpm --filter react-moveable typecheck:stories && pnpm test && pnpm demo:build`。验证：
   - 全部成功；
   - 推送后 `run-e2e.yml` 通过；
   - `openspec validate deploy-demo-with-actions --strict` 通过
