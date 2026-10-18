@@ -1,28 +1,43 @@
 packages:
   - packages/*
 
+# Third-party dependencies declared by two or more packages; those packages use `catalog:`.
+# Dependencies used by a single package keep their range in that package.json.
+# `pnpm lint` fails when a dependency listed in several packages is not on the catalog.
+catalog:
+  # Tooling
+  "@types/react": ^16.14.70
+  playwright: ^1.64.1
+  tsdown: ~0.23.1
+  typescript: ~6.0.3
+  vite: ^8.3.4
+  # Must be the same exact version. `pnpm update -r` leaves exact versions alone: bump both by hand.
+  vitest: 5.0.4
+  "@vitest/browser-playwright": 5.0.4
+  # Runtime dependencies
+  "@daybrush/utils": ^1.13.0
+  "@egjs/agent": ^2.4.4
+  "@egjs/children-differ": ^1.0.1
+  "@egjs/list-differ": ^1.0.1
+  "@scena/dragscroll": ^1.4.0
+  "@scena/event-emitter": ^1.0.5
+  "@scena/matrix": ^1.1.1
+  croact: ^1.0.4
+  css-to-mat: ^1.1.1
+  framework-utils: ^1.1.0
+  gesto: ^1.19.4
+  overlap-area: ^1.1.0
+
 overrides:
-  "@daybrush/utils": "^1.13.0"
-  "@types/react": "^16.9.17"
-  "@egjs/agent": "^2.2.1"
-  "@egjs/children-differ": "^1.0.1"
-  "@egjs/list-differ": "^1.0.0"
-  "@scena/dragscroll": "^1.4.0"
-  "@scena/matrix": "^1.1.1"
-  "css-to-mat": "^1.1.1"
-  "framework-utils": "^1.1.0"
-  "gesto": "^1.19.3"
-  "overlap-area": "^1.1.0"
-  "croact-css-styled": "^1.1.9"
-  "react-css-styled": "^1.1.9"
-  "tslib": "^2.3.1"
   # react-keycon pulls @cfcs/react (core ~0.0.6, resolves to 0.0.26) and keycon (core ^0.0.6 = 0.0.6).
-  # Two copies of @cfcs/core break useKeycon's result type; 0.0.6 is within both ranges.
+  # Two copies of @cfcs/core break useKeycon's result type (typecheck:stories fails); 0.0.6 is within
+  # both ranges. Remove once react-keycon's dependencies agree on one @cfcs/core.
   "@cfcs/react>@cfcs/core": "0.0.6"
 
 packageExtensions:
-  # preact-css-styled imports preact/compat but does not declare preact; under the
-  # isolated layout it cannot resolve preact. Remove once fixed upstream.
+  # preact-css-styled imports preact/compat but does not declare preact, so it cannot resolve it from
+  # its own location (pnpm's default private hoisting into node_modules/.pnpm/node_modules only hides
+  # this; with `hoist=false` requiring it fails). Remove once fixed upstream.
   preact-css-styled:
     peerDependencies:
       preact: "*"
@@ -33,12 +48,6 @@ peerDependencyRules:
     # Remove once a release declares ESLint 10.
     eslint-plugin-react>eslint: "10"
 
-# Only esbuild needs its install script (prepares the platform binary used by vite).
-# The rest only print banners, compile an optional fsevents@1 or download Playwright browsers
-# (installed explicitly with `playwright install` instead).
+# Only esbuild has an install script (prepares the platform binary used by vite).
 allowBuilds:
   esbuild: true
-  core-js: false
-  fsevents: false
-  playwright: false
-  preact: false

@@ -63,17 +63,17 @@
     "devDependencies": {
         "@sveltejs/package": "^3.0.1",
         "@sveltejs/vite-plugin-svelte": "^7.3.1",
-        "@vitest/browser-playwright": "5.0.3",
-        "playwright": "^1.64.0",
+        "@vitest/browser-playwright": "catalog:",
+        "playwright": "catalog:",
         "publint": "^0.3.25",
         "svelte": "^5.57.2",
         "svelte-check": "^4.7.6",
-        "typescript": "~6.0.3",
-        "vite": "^8.3.4",
-        "vitest": "5.0.3"
+        "typescript": "catalog:",
+        "vite": "catalog:",
+        "vitest": "catalog:"
     },
     "dependencies": {
-        "@daybrush/utils": "^1.13.0",
+        "@daybrush/utils": "catalog:",
         "moveable": "workspace:~"
     }
 }

@@ -7,9 +7,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩放、旋转、变形、吸附、分组等交互的库，同一套核心逻辑发布为 React / Preact / 原生 JS / Vue 3 / Svelte / Lit 多个包。
 
 - 运行时：Node **22.20.0**（根目录 `.nvmrc`，`nvm use` 即可切换；CI 读取同一个文件）。
-- 包管理：**pnpm workspace**（版本见根 `package.json` 的 `packageManager`，corepack 或全局 pnpm 会自动切换），只有一份根目录的 `pnpm-lock.yaml`，内部依赖写成 `workspace:~`。workspace 设置、overrides、`allowBuilds` 都在 `pnpm-workspace.yaml` 中。
-- 依赖布局是 pnpm 默认的严格（isolated）布局，不开任何 hoist：包里用到的模块、脚本调用的可执行文件都必须在**这个包自己的** `package.json` 里声明，不能依赖根目录兜底。依赖的构建脚本默认被拦截，新增需要构建的依赖时要写进 `allowBuilds`。
-- TypeScript 由各包自己声明，不用全局 override：全部包（react-moveable、croact、preact、moveable、lit、vue3、svelte、helper）都用 `~6.0.3`（`moduleResolution: bundler`，声明文件的 tsconfig 必须显式写 `rootDir`，否则 TS 6 会把它们输出到 `declaration/src/`）；根目录也是 `~6.0.3`，供 typescript-eslint 解析源码。svelte-moveable 的 `Moveable.svelte` 以 `<script lang="ts">` 源码发布，由使用者的 Svelte 5 直接编译，而 Svelte 只支持类型标注一类的 TS 语法，所以其中不能写 `enum`、装饰器等需要转换的语法。croffle 使用它自己依赖的 TS 4.5，`croffle.config.js` 必须从 croffle 所在目录解析 typescript，与它共用同一个实例。
+- 包管理：**pnpm workspace**（版本见根 `package.json` 的 `packageManager`，corepack 或全局 pnpm 会自动切换），只有一份根目录的 `pnpm-lock.yaml`，内部依赖写成 `workspace:~`。workspace 设置、catalog、overrides、`allowBuilds` 都在 `pnpm-workspace.yaml` 中。
+- 依赖布局是 pnpm 默认的严格（isolated）布局，不开公开提升：包里用到的模块、脚本调用的可执行文件都必须在**这个包自己的** `package.json` 里声明，不能依赖根目录兜底；也不声明没有用到的依赖（被使用的包要求的 peer、包自己 peer 的开发版本除外）。pnpm 默认的私有提升（`node_modules/.pnpm/node_modules`）会让第三方包漏声明的依赖碰巧也能解析，所以判断第三方包的声明是否有问题时要用 `--config.hoist=false` 干净安装。依赖的构建脚本默认被拦截，新增需要构建的依赖时要写进 `allowBuilds`（目前只有 esbuild）。
+- 依赖版本：被两个及以上的包声明的第三方依赖（dependencies / devDependencies）只在 `pnpm-workspace.yaml` 的 `catalog` 中写版本，各包写 `catalog:`；只有一个包用的依赖写在那个包里；第二个包开始用某个依赖时，把它移进 catalog。`pnpm lint` 会执行 `config/check-dependency-ranges.mjs`，出现重复的版本范围时失败。peerDependencies 不进 catalog。升级用 `pnpm update -r`，它会改 catalog 和各包的范围下限；vitest 和 @vitest/browser-playwright 在 catalog 中写的是同一个确切版本，`pnpm update -r` 不会动它们，要手动同时改。要让间接依赖也按现在的声明重新解析，删除锁文件时要连根目录和各包的 `node_modules` 一起删，否则 pnpm 会沿用 `node_modules/.pnpm/lock.yaml`。pnpm 默认不选发布不满一天的版本。
+- overrides、packageExtensions、peerDependencyRules 只用来修正上游包的错误声明，每条都要有注释，写明针对哪个包、什么问题、什么时候可以删除。
+- `@types/node` 与 Node 运行时同一个大版本（22.x），目前只有 react-moveable 的 stories 用到（`stories/tsconfig.json` 的 `types`）；间接依赖中 `@types/node: *` 的声明也会复用这个版本，所以没有包声明它时，`*` 会解析到最新的大版本。
+- TypeScript 由 catalog 统一声明，不用全局 override：全部包（react-moveable、croact、preact、moveable、lit、vue3、svelte、helper）和根目录都用 `~6.0.3`（`moduleResolution: bundler`，声明文件的 tsconfig 必须显式写 `rootDir`，否则 TS 6 会把它们输出到 `declaration/src/`；TS 6 的 `types` 默认是 `[]`，不会自动加载 `@types/*`）；根目录的 TS 供 typescript-eslint 解析源码。svelte-moveable 的 `Moveable.svelte` 以 `<script lang="ts">` 源码发布，由使用者的 Svelte 5 直接编译，而 Svelte 只支持类型标注一类的 TS 语法，所以其中不能写 `enum`、装饰器等需要转换的语法。croffle 使用它自己依赖的 TS 4.5，`croffle.config.js` 必须从 croffle 所在目录解析 typescript，与它共用同一个实例。
 - Lint：根目录一份 `eslint.config.mjs`（ESLint 10 flat config + typescript-eslint 8 + `@stylistic/eslint-plugin`），eslint 和插件只在根 `package.json` 中声明。检查范围写在配置的 `files` 中（7 个库包的 `src/**/*.{ts,tsx}`，以及 svelte-moveable 的 `src/**/*.ts`；`.svelte` 文件不在范围内，其中的 TS 由构建中的 svelte-check 检查），所以 `pnpm lint` 不带路径，编辑器插件和命令行的范围一致。各包的构建不执行 lint，CI 单独执行。eslint-plugin-react 只启用推荐集：推荐集以外有规则在 ESLint 10 下会报错。
 - 需求/设计走 OpenSpec 工作流（`openspec/`、`.claude/skills/openspec-*`、`/opsx:*` 命令）。整体的现代化步骤和进度见 `openspec/ROADMAP.md`，每完成一个 change 就更新它。
 
@@ -23,7 +26,7 @@ pnpm install               # 安装依赖（根目录一次装好所有包）
 pnpm storybook             # = react-moveable 的 Storybook（先 bake，端口 6006），主要的开发/调试环境
 pnpm test                  # 先 bake，再跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试 + 框架包装的浏览器测试；后者读构建产物，要先 pnpm packages:build）
 pnpm build                 # 只构建 react-moveable
-pnpm lint                  # ESLint 检查 7 个库包的 src，警告也算失败，不需要先构建
+pnpm lint                  # ESLint 检查库包的 src（警告也算失败），再检查各包有没有重复的依赖版本范围；不需要先构建
 pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact/preact → moveable → lit/vue3/svelte，helper 独立）；vue3-moveable 的构建最后执行类型测试；svelte-moveable 的构建依次执行 svelte-check（警告也算失败）、svelte-package、publint 和类型测试
 pnpm build:storybook       # 先 bake，再构建静态 Storybook 到 demo/storybook
 pnpm doc                   # jsdoc 生成 doc/

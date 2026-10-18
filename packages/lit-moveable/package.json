@@ -57,16 +57,16 @@
         "test": "vitest run"
     },
     "devDependencies": {
-        "@vitest/browser-playwright": "5.0.3",
+        "@vitest/browser-playwright": "catalog:",
         "lit": "^3.3.3",
-        "playwright": "^1.64.0",
-        "tsdown": "~0.23.1",
-        "typescript": "~6.0.3",
-        "vitest": "5.0.3"
+        "playwright": "catalog:",
+        "tsdown": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
     },
     "dependencies": {
-        "@daybrush/utils": "^1.13.0",
-        "framework-utils": "^1.1.0",
+        "@daybrush/utils": "catalog:",
+        "framework-utils": "catalog:",
         "moveable": "workspace:~"
     },
     "peerDependencies": {

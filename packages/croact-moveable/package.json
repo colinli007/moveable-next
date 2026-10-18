@@ -52,29 +52,27 @@
     },
     "homepage": "https://daybrush.com/moveable",
     "devDependencies": {
-        "@types/node": "^18.11.3",
-        "@types/react": "^16.9.17",
-        "croact": "^1.0.4",
-        "keycon": "^0.3.0",
-        "tsdown": "~0.23.1",
-        "typescript": "~6.0.3"
+        "@types/react": "catalog:",
+        "croact": "catalog:",
+        "tsdown": "catalog:",
+        "typescript": "catalog:"
     },
     "peerDependencies": {
         "croact": "^1.0.4"
     },
     "dependencies": {
-        "@daybrush/utils": "^1.13.0",
-        "@egjs/agent": "^2.2.1",
-        "@egjs/children-differ": "^1.0.1",
-        "@egjs/list-differ": "^1.0.0",
-        "@scena/dragscroll": "^1.4.0",
-        "@scena/event-emitter": "^1.0.5",
-        "@scena/matrix": "^1.1.1",
+        "@daybrush/utils": "catalog:",
+        "@egjs/agent": "catalog:",
+        "@egjs/children-differ": "catalog:",
+        "@egjs/list-differ": "catalog:",
+        "@scena/dragscroll": "catalog:",
+        "@scena/event-emitter": "catalog:",
+        "@scena/matrix": "catalog:",
         "croact-css-styled": "^1.1.9",
-        "css-to-mat": "^1.1.1",
-        "framework-utils": "^1.1.0",
-        "gesto": "^1.19.3",
-        "overlap-area": "^1.1.0",
+        "css-to-mat": "catalog:",
+        "framework-utils": "catalog:",
+        "gesto": "catalog:",
+        "overlap-area": "catalog:",
         "react-moveable": "workspace:~"
     }
 }
