@@ -2,7 +2,7 @@
 
 ## Purpose
 
-定义本仓库对外提供哪些框架包，以及 Storybook 中示例代码覆盖哪些框架，作为后续新增或下线框架支持时的依据。
+定义本仓库对外提供哪些框架包、各框架包的行为，以及 Storybook 代码面板展示哪些示例代码，作为后续新增或下线框架支持时的依据。
 
 ## Requirements
 
@@ -24,20 +24,30 @@
 - **WHEN** 检查锁文件
 - **THEN** 不存在 `@angular/*`、`@vue/cli-service`、`ng-packagr`、`vue-template-compiler` 等仅为 Vue 2 / Angular 服务的依赖
 
-### Requirement: Storybook 示例代码只覆盖受支持框架
-由 React story 自动转译生成的多框架示例代码，以及 Storybook 中展示的代码 tab，SHALL 只覆盖 React、原生 Script、Vue 3、Svelte、Lit（外加 CSS tab）。代码 tab 中展示的参数值 SHALL 与 story 当前的参数（controls）保持一致。
+### Requirement: Storybook 代码面板展示经过测试的 React 示例
+Storybook 中 story 的代码面板 SHALL 只有 React 和 CSS 两个 tab。React tab 的代码 SHALL 就是这个 story 实际渲染、参与交互测试的 App 源码，只做三处转换：仓库内部的路径别名（如 `@/react-moveable`）换成发布的包名，`props.xxx` 换成 story 当前的参数值，App 函数的 props 参数去掉（参数已经换成具体的值）。CSS tab SHALL 包含示例的默认样式，以及 App 从自己目录中 import 的样式文件。代码 tab 中展示的参数值 SHALL 与 story 当前的参数（controls）保持一致。
 
-#### Scenario: 生成示例代码
-- **WHEN** 开发者执行示例代码转译命令（bake）
-- **THEN** 只生成 script、vue3、svelte、lit 目录，不生成 vue2 或 angular 目录
+仓库 MUST NOT 把 React story 自动翻译成其他框架的示例代码：启动 Storybook、构建 Storybook 和执行测试之前都不需要生成步骤，story 目录中也不存在生成出来的代码。
 
 #### Scenario: 查看 story 的代码面板
 - **WHEN** 在 Storybook 中打开任意带代码预览的 story
-- **THEN** 代码 tab 中没有 "Vue2" 或 "Angular"，且其余 tab 正常显示
+- **THEN** 代码面板中只有 React 和 CSS 两个 tab，没有 Script、Vue3、Svelte、Lit、Vue2、Angular
+
+#### Scenario: React 代码就是渲染的代码
+- **WHEN** 对比某个 story 的 React tab 和这个 story 渲染的 App 源文件
+- **THEN** 两者只在三处不同：仓库内部的路径别名（如 `@/react-moveable`）换成了发布的包名（如 `react-moveable`），`props.xxx` 换成了当前的参数值，`App(props: Record<string, any>)` 变成了 `App()`
+
+#### Scenario: 示例引用的样式
+- **WHEN** 打开一个 App 从自己目录中 import 了样式文件（如 `import "./snap.css"`）的 story
+- **THEN** CSS tab 中除了默认样式，还有这个样式文件的内容
 
 #### Scenario: 代码随参数更新
 - **WHEN** 在 controls 中修改某个 story 的参数（例如切换 `draggable`、修改 `throttleDrag`）
-- **THEN** React、Script、Vue3、Svelte、Lit 各个代码 tab 中对应的参数值同步变为新值，复制得到的代码也是新值
+- **THEN** React 代码 tab 中对应的参数值同步变为新值，复制得到的代码也是新值
+
+#### Scenario: 不生成其他框架的示例
+- **WHEN** 在干净检出上执行 Storybook 启动、Storybook 静态构建或测试命令
+- **THEN** 这些命令不执行代码翻译，执行后 story 目录中没有 script、vue3、svelte、lit 子目录；依赖树中没有代码翻译工具及其独有的依赖
 
 ### Requirement: lit-moveable 的行为
 lit-moveable SHALL 提供 `<lit-moveable>` 自定义元素，把原生 moveable 的选项、事件和方法暴露给 Lit：选项是元素的属性（`draggable` 与 HTML 自带的特性同名，改用 `litDraggable`，`mvDraggable` 是已弃用的别名）；事件以 `lit` 前缀加事件名的 `CustomEvent` 派发（如 `litDrag`），事件参数放在 `detail` 中；moveable 的方法可以直接在元素上调用。lit-moveable SHALL 把 Lit 3 声明为 peerDependency。
@@ -102,12 +112,10 @@ vue3-moveable SHALL 以默认导出（以及具名导出 `VueMoveable`）提供�
 - **WHEN** 查看 vue3-moveable 的 `package.json`
 - **THEN** `peerDependencies` 中声明了 `vue: ^3.5.0`，测试运行在 Vue 3.5 上
 
-### Requirement: svelte-moveable 的行为
+### Requirement: svelte-moveable 的组件行为
 svelte-moveable SHALL 以默认导出提供一个 Svelte 组件，把原生 moveable 的选项、事件和方法暴露给 Svelte：
 - 选项是组件的 prop（如 `draggable={true}`、`target={el}`）。
-- 事件有两种监听方式：
-  - 回调 prop，名字是 `on` 加首字母大写的事件名（如 `onDrag`），参数是 moveable 的事件参数。
-  - `on:` 指令（如 `on:drag`），moveable 的事件参数在 `detail` 中。
+- 事件 SHALL 只通过回调 prop 监听：名字是 `on` 加首字母大写的事件名（如 `onDrag`），参数是 moveable 的事件参数。组件 MUST NOT 派发组件事件，`on:` 指令（如 `on:drag`）不再收到事件。
 - 组件引用上可以直接调用 moveable 的方法，`bind:this` 得到的引用和 `mount()` 的返回值都是这样；另有 `getInstance()` 返回内部的原生 moveable 实例。
 
 组件的根元素就是 moveable 的控制框。svelte-moveable SHALL 同时重新导出原生 moveable 的全部具名导出，SHALL 把 Svelte 5 声明为 peerDependency，它的类型声明 SHALL 让使用者对 prop、回调 prop 的参数和组件引用上的方法得到类型检查。组件 SHALL 能在服务端渲染中正常渲染。
@@ -124,9 +132,9 @@ svelte-moveable SHALL 以默认导出提供一个 Svelte 组件，把原生 move
 - **WHEN** `draggable` 为 `true`、传入了 `onDragStart`、`onDrag`、`onDragEnd` 时用鼠标拖动目标
 - **THEN** 三个回调依次被调用，`onDrag` 的参数中有表示新位置的 `transform`
 
-#### Scenario: Storybook 示例的写法
-- **WHEN** 在不使用 runes 的组件中，像 Storybook 生成的 Svelte 示例那样使用组件：用 `bind:this` 绑定组件引用，用 `on:drag` 监听事件，然后拖动目标
-- **THEN** `on:drag` 的监听函数收到事件，`detail` 中有表示新位置的 `transform`；绑定得到的组件引用上可以调用 `getRect()`
+#### Scenario: 在组件中通过 bind:this 使用
+- **WHEN** 在一个使用 runes 的组件中用 `bind:this` 绑定组件引用、用 `onDrag` 监听事件，然后拖动目标
+- **THEN** `onDrag` 收到的参数中有表示新位置的 `transform`；绑定得到的组件引用上可以调用 `getRect()`
 
 #### Scenario: 调用方法
 - **WHEN** 目标没有 transform 时，在 `mount()` 返回的组件引用上调用 moveable 的方法 `getRect()`，以及调用 `getInstance()`
