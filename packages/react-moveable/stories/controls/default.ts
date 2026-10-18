@@ -1,4 +1,4 @@
-import { makeArgType, makeLink, makeOptionLink } from "../utils";
+import { makeArgType, makeLink, makeTypeLink } from "../utils";
 
 export const SCALE_CONTROLS = {
     "containerScale": makeArgType({
@@ -11,12 +11,12 @@ export const SCALE_CONTROLS = {
 export const DEFAULT_CONTROLS = {
     padding: makeArgType({
         type: "object",
-        description: makeLink("Moveable", "padding"),
+        description: makeLink("padding"),
         defaultValue: { left: 0, top: 0, right: 0, bottom: 0 },
     }),
     hideDefaultLines: makeArgType({
         type: "boolean",
-        description: makeLink("Moveable", "hideDefaultLines"),
+        description: makeLink("hideDefaultLines"),
         defaultValue: false,
     }),
 };
@@ -25,17 +25,17 @@ export const DEFAULT_CONTROLS = {
 export const DEFAULT_SCROLLABLE_CONTROLS = {
     threshold: makeArgType({
         type: "number",
-        description: makeOptionLink("Scrollable", "ScrollableOptions", "threshold"),
+        description: makeLink("scrollOptions"),
         defaultValue: 30,
     }),
     throttleTime: makeArgType({
         type: "number",
-        description: makeOptionLink("Scrollable", "ScrollableOptions", "throttleTime"),
+        description: makeLink("scrollOptions"),
         defaultValue: 0,
     }),
     checkScrollEvent: makeArgType({
         type: "boolean",
-        description: makeOptionLink("Scrollable", "ScrollableOptions", "checkScrollEvent"),
+        description: makeLink("scrollOptions"),
         defaultValue: false,
     }),
 };
@@ -43,27 +43,27 @@ export const DEFAULT_SCROLLABLE_CONTROLS = {
 export const DEFAULT_DRAGGABLE_CONTROLS = {
     draggable: makeArgType({
         type: "boolean",
-        description: makeLink("Draggable", "draggable"),
+        description: makeLink("draggable"),
         defaultValue: true,
     }),
     throttleDrag: makeArgType({
         type: "number",
-        description: makeLink("Draggable", "throttleDrag"),
+        description: makeLink("throttleDrag"),
         defaultValue: 1,
     }),
     edgeDraggable: makeArgType({
         type: "boolean",
-        description: makeLink("Draggable", "edgeDraggable"),
+        description: makeLink("edgeDraggable"),
         defaultValue: false,
     }),
     throttleDragRotate: makeArgType({
         type: "number",
-        description: makeLink("Draggable", "throttleDragRotate"),
+        description: makeLink("throttleDragRotate"),
         defaultValue: 0,
     }),
     startDragRotate: makeArgType({
         type: "number",
-        description: makeLink("Draggable", "startDragRotate"),
+        description: makeLink("startDragRotate"),
         defaultValue: 0,
     }),
 };
@@ -71,47 +71,47 @@ export const DEFAULT_DRAGGABLE_CONTROLS = {
 export const DEFAULT_RESIZABLE_CONTROLS = {
     resizable: makeArgType({
         type: "boolean",
-        description: makeLink("Resizable", "resizable"),
+        description: makeLink("resizable"),
         defaultValue: true,
     }),
     edge: makeArgType({
         type: "object",
-        description: makeLink("Resizable", "edge"),
+        description: makeLink("edge"),
         defaultValue: [],
     }),
     maxWidth: makeArgType({
         type: "text",
-        description: makeLink("Resizable", "OnResizeStart"),
+        description: makeTypeLink("OnResizeStart", "setMax"),
         defaultValue: "auto",
     }),
     maxHeight: makeArgType({
         type: "text",
-        description: makeLink("Resizable", "OnResizeStart"),
+        description: makeTypeLink("OnResizeStart", "setMax"),
         defaultValue: "auto",
     }),
     minWidth: makeArgType({
         type: "text",
-        description: makeLink("Resizable", "OnResizeStart"),
+        description: makeTypeLink("OnResizeStart", "setMin"),
         defaultValue: "auto",
     }),
     minHeight: makeArgType({
         type: "text",
-        description: makeLink("Resizable", "OnResizeStart"),
+        description: makeTypeLink("OnResizeStart", "setMin"),
         defaultValue: "auto",
     }),
     keepRatio: makeArgType({
         type: "boolean",
-        description: makeLink("Resizable", "keepRatio"),
+        description: makeLink("keepRatio"),
         defaultValue: false,
     }),
     throttleResize: makeArgType({
         type: "number",
-        description: makeLink("Resizable", "throttleResize"),
+        description: makeLink("throttleResize"),
         defaultValue: 1,
     }),
     renderDirections: makeArgType({
         type: "object",
-        description: makeLink("Resizable", "renderDirections"),
+        description: makeLink("renderDirections"),
         defaultValue: ["nw", "n", "ne", "w", "e", "sw", "s", "se"],
     }),
 };
@@ -119,22 +119,22 @@ export const DEFAULT_RESIZABLE_CONTROLS = {
 export const DEFAULT_SCALABLE_CONTROLS = {
     scalable: makeArgType({
         type: "boolean",
-        description: makeLink("Scalable", "scalable"),
+        description: makeLink("scalable"),
         defaultValue: true,
     }),
     keepRatio: makeArgType({
         type: "boolean",
-        description: makeLink("Scalable", "keepRatio"),
+        description: makeLink("keepRatio"),
         defaultValue: false,
     }),
     throttleScale: makeArgType({
         type: "number",
-        description: makeLink("Scalable", "throttleScale"),
+        description: makeLink("throttleScale"),
         defaultValue: 0,
     }),
     renderDirections: makeArgType({
         type: "object",
-        description: makeLink("Scalable", "renderDirections"),
+        description: makeLink("renderDirections"),
         defaultValue: ["nw", "n", "ne", "w", "e", "sw", "s", "se"],
     }),
 };
@@ -142,17 +142,17 @@ export const DEFAULT_SCALABLE_CONTROLS = {
 export const DEFAULT_ROTATABLE_CONTROLS = {
     rotatable: makeArgType({
         type: "boolean",
-        description: makeLink("Rotatable", "rotatable"),
+        description: makeLink("rotatable"),
         defaultValue: true,
     }),
     throttleRotate: makeArgType({
         type: "number",
-        description: makeLink("Rotatable", "throttleRotate"),
+        description: makeLink("throttleRotate"),
         defaultValue: 0,
     }),
     rotationPosition: makeArgType({
         type: "inline-radio",
-        description: makeLink("Rotatable", "rotationPosition"),
+        description: makeLink("rotationPosition"),
         defaultValue: "top",
         control: {
             options: [
@@ -178,12 +178,12 @@ export const DEFAULT_ROTATABLE_CONTROLS = {
 export const DEFAULT_WARPABLE_CONTROLS = {
     warpable: makeArgType({
         type: "boolean",
-        description: makeLink("Warpable", "warpable"),
+        description: makeLink("warpable"),
         defaultValue: true,
     }),
     renderDirections: makeArgType({
         type: "object",
-        description: makeLink("Warpable", "renderDirections"),
+        description: makeLink("renderDirections"),
         defaultValue: ["nw", "n", "ne", "w", "e", "sw", "s", "se"],
     }),
 };
@@ -191,93 +191,93 @@ export const DEFAULT_WARPABLE_CONTROLS = {
 export const DEFAULT_SNAPPABLE_CONTROLS = {
     snappable: makeArgType({
         type: "boolean",
-        description: makeLink("Snappable", "snappable"),
+        description: makeLink("snappable"),
         defaultValue: true,
     }),
     snapDirections: makeArgType({
         type: "object",
-        description: makeLink("Snappable", "snapDirections"),
+        description: makeLink("snapDirections"),
         defaultValue: { top: true, left: true, bottom: true, right: true },
     }),
     snapHorizontalThreshold: makeArgType({
         type: "number",
-        description: makeLink("Snappable", "snapHorizontalThreshold"),
+        description: makeLink("snapHorizontalThreshold"),
         defaultValue: 5,
     }),
     snapVerticalThreshold: makeArgType({
         type: "number",
-        description: makeLink("Snappable", "snapVerticalThreshold"),
+        description: makeLink("snapVerticalThreshold"),
         defaultValue: 5,
     }),
 };
 export const DEFAULT_SNAPPABLE_GUIDELINES_CONTROLS = {
     verticalGuidelines: makeArgType({
         type: "object",
-        description: makeLink("Snappable", "verticalGuidelines"),
+        description: makeLink("verticalGuidelines"),
         defaultValue: [50, 150, 250, 450, 550],
     }),
     horizontalGuidelines: makeArgType({
         type: "object",
-        description: makeLink("Snappable", "horizontalGuidelines"),
+        description: makeLink("horizontalGuidelines"),
         defaultValue: [0, 100, 200, 400, 500],
     }),
 };
 export const DEFAULT_SNAPPABLE_ELEMENTS_CONTROLS = {
     snapDirections: makeArgType({
         type: "object",
-        description: makeLink("Snappable", "snapDirections"),
+        description: makeLink("snapDirections"),
         defaultValue: { top: true, left: true, bottom: true, right: true, center: true, middle: true },
     }),
     elementSnapDirections: makeArgType({
         type: "object",
-        description: makeLink("Snappable", "elementSnapDirections"),
+        description: makeLink("elementSnapDirections"),
         defaultValue: { top: true, left: true, bottom: true, right: true, center: true, middle: true },
     }),
     snapGap: makeArgType({
         type: "boolean",
-        description: makeLink("Snappable", "snapGap"),
+        description: makeLink("snapGap"),
         defaultValue: true,
     }),
     isDisplaySnapDigit: makeArgType({
         type: "boolean",
-        description: makeLink("Snappable", "isDisplaySnapDigit"),
+        description: makeLink("isDisplaySnapDigit"),
         defaultValue: true,
     }),
     isDisplayInnerSnapDigit: makeArgType({
         type: "boolean",
-        description: makeLink("Snappable", "isDisplayInnerSnapDigit"),
+        description: makeLink("isDisplayInnerSnapDigit"),
         defaultValue: false,
     }),
     snapDigit: makeArgType({
         type: "number",
-        description: makeLink("Snappable", "snapDigit"),
+        description: makeLink("snapDigit"),
         defaultValue: 0,
     }),
     maxSnapElementGuidelineDistance: makeArgType({
         type: "number",
-        description: makeLink("Snappable", "maxSnapElementGuidelineDistance"),
+        description: makeLink("maxSnapElementGuidelineDistance"),
         defaultValue: Infinity,
     }),
 };
 export const DEFAULT_SNAP_GRID_CONTROLS = {
     snappable: makeArgType({
         type: "boolean",
-        description: makeLink("Snappable", "snappable"),
+        description: makeLink("snappable"),
         defaultValue: true,
     }),
     isDisplayGridGuidelines: makeArgType({
         type: "boolean",
-        description: makeLink("Snappable", "isDisplayGridGuidelines"),
+        description: makeLink("isDisplayGridGuidelines"),
         defaultValue: false,
     }),
     snapGridWidth: makeArgType({
         type: "number",
-        description: makeLink("Snappable", "snapGridWidth"),
+        description: makeLink("snapGridWidth"),
         defaultValue: 10,
     }),
     snapGridHeight: makeArgType({
         type: "number",
-        description: makeLink("Snappable", "snapGridHeight"),
+        description: makeLink("snapGridHeight"),
         defaultValue: 10,
     }),
 };
@@ -285,31 +285,31 @@ export const DEFAULT_SNAP_GRID_CONTROLS = {
 export const DEFAULT_SNAP_CONTAINER_CONTROLS = {
     snapContainer: makeArgType({
         type: "text",
-        description: makeLink("Snappable", "snapContainer"),
+        description: makeLink("snapContainer"),
         defaultValue: ".snapContainer",
     }),
 };
 export const DEFAULT_BOUNDS_CONTROLS = {
     snappable: makeArgType({
         type: "boolean",
-        description: makeLink("Snappable", "snappable"),
+        description: makeLink("snappable"),
         defaultValue: true,
     }),
     bounds: makeArgType({
         type: "object",
-        description: makeLink("Snappable", "bounds"),
+        description: makeLink("bounds"),
         defaultValue: { left: 0, top: 0, right: 0, bottom: 0, position: "css" },
     }),
 };
 export const DEFAULT_INNER_BOUNDS_CONTROLS = {
     snappable: makeArgType({
         type: "boolean",
-        description: makeLink("Snappable", "snappable"),
+        description: makeLink("snappable"),
         defaultValue: true,
     }),
     innerBounds: makeArgType({
         type: "object",
-        description: makeLink("Snappable", "innerBounds"),
+        description: makeLink("innerBounds"),
         defaultValue: { left: 0, top: 0, width: 100, height: 100 },
     }),
 };
@@ -319,12 +319,12 @@ export const DEFAULT_INNER_BOUNDS_CONTROLS = {
 export const DEFAULT_ORIGIN_DRAGGABLE_CONTROLS = {
     originDraggable: makeArgType({
         type: "boolean",
-        description: makeLink("OriginDraggable", "originDraggable"),
+        description: makeLink("originDraggable"),
         defaultValue: true,
     }),
     originRelative: makeArgType({
         type: "boolean",
-        description: makeLink("OriginDraggable", "originRelative"),
+        description: makeLink("originRelative"),
         defaultValue: true,
     }),
 };
@@ -333,27 +333,27 @@ export const DEFAULT_ORIGIN_DRAGGABLE_CONTROLS = {
 export const DEFAULT_CLIPPABLE_CONTROLS = {
     clippable: makeArgType({
         type: "boolean",
-        description: makeLink("Clippable", "clippable"),
+        description: makeLink("clippable"),
         defaultValue: true,
     }),
     clipRelative: makeArgType({
         type: "boolean",
-        description: makeLink("Clippable", "clipRelative"),
+        description: makeLink("clipRelative"),
         defaultValue: false,
     }),
     clipArea: makeArgType({
         type: "boolean",
-        description: makeLink("Clippable", "clipArea"),
+        description: makeLink("clipArea"),
         defaultValue: false,
     }),
     dragWithClip: makeArgType({
         type: "boolean",
-        description: makeLink("Clippable", "dragWithClip"),
+        description: makeLink("dragWithClip"),
         defaultValue: 0,
     }),
     defaultClipPath: makeArgType({
         type: "inline-radio",
-        description: makeLink("Clippable", "defaultClipPath"),
+        description: makeLink("defaultClipPath"),
         defaultValue: "inset",
         control: {
             options: [
@@ -367,12 +367,12 @@ export const DEFAULT_CLIPPABLE_CONTROLS = {
     }),
     clipTargetBounds: makeArgType({
         type: "boolean",
-        description: makeLink("Clippable", "clipTargetBounds"),
+        description: makeLink("clipTargetBounds"),
         defaultValue: false,
     }),
     keepRatio: makeArgType({
         type: "boolean",
-        description: makeLink("Clippable", "keepRatio"),
+        description: makeLink("keepRatio"),
         defaultValue: false,
     }),
 };

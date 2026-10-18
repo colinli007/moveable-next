@@ -193,12 +193,12 @@ export const SnapMaxiumDistance = {
         argTypes: {
             maxSnapElementGuidelineDistance: makeArgType({
                 type: "number",
-                description: makeLink("Snappable", "maxSnapElementGuidelineDistance"),
+                description: makeLink("maxSnapElementGuidelineDistance"),
                 defaultValue: 100,
             }),
             maxSnapElementGapDistance: makeArgType({
                 type: "number",
-                description: makeLink("Snappable", "maxSnapElementGapDistance"),
+                description: makeLink("maxSnapElementGapDistance"),
                 defaultValue: 80,
             }),
         },

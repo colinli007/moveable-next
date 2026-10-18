@@ -10,12 +10,6 @@ import { camelize, getDocument, isArray } from "@daybrush/utils";
 import { MoveableEventsParameters } from "./types";
 import { PROPERTIES, EVENTS, METHODS } from "./consts";
 import EventEmitter from "@scena/event-emitter";
-/**
- * Moveable is Draggable! Resizable! Scalable! Rotatable!
- * @sort 1
- * @alias Moveable
- * @extends EventEmitter
- */
 @Properties(METHODS, (prototype, property) => {
     if (prototype[property]) {
         return;
@@ -85,12 +79,19 @@ class MoveableManager extends EventEmitter<MoveableEventsParameters> {
             this.updateRect();
         }
     }
+    /**
+     * Sets several options at once. `callback` is called after the change is applied.
+     */
     public setState(state: Partial<MoveableOptions>, callback?: () => any) {
         this.innerMoveable!.setState(state, callback);
     }
+    /**
+     * Renders Moveable again. `callback` is called after rendering.
+     */
     public forceUpdate(callback?: () => any) {
         this.innerMoveable!.forceUpdate(callback);
     }
+    /** {@inheritDoc MoveableInterface.dragStart} */
     public dragStart(e: MouseEvent | TouchEvent, target: EventTarget | null = e.target) {
         const innerMoveable = this.innerMoveable;
         if ((innerMoveable as any).$_timer) {
@@ -98,6 +99,7 @@ class MoveableManager extends EventEmitter<MoveableEventsParameters> {
         }
         this.getMoveable().dragStart(e, target);
     }
+    /** {@inheritDoc MoveableInterface.destroy} */
     public destroy() {
         const selfElement = this.selfElement!;
 

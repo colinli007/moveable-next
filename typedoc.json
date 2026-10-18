@@ -1,0 +1,24 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    // Defaults to the root package name (moveable-root)
+    "name": "Moveable",
+    // The entry renames moveable's default export to `Moveable` and holds the category descriptions.
+    "entryPoints": ["config/typedoc/index.ts"],
+    "tsconfig": "config/typedoc/tsconfig.json",
+    "out": "doc",
+    "readme": "README.md",
+    // Member comments only render on classes/, interfaces/ and types/ pages, one level below the
+    // doc root, which the `../../../../storybook/` links of `@see` rely on.
+    "router": "kind",
+    "categorizeByGroup": false,
+    // Able-specific declarations carry `@category <Able>`; everything else is core API.
+    "defaultCategory": "Core",
+    "highlightLanguages": ["bash", "console", "css", "html", "javascript", "json", "jsonc", "json5", "tsx", "typescript", "jsx"],
+    // The site is deployed by GitHub Actions, without Jekyll.
+    "githubPages": false,
+    "treatWarningsAsErrors": true,
+    "validation": {
+        // Links to the Storybook of the same site are relative URLs, not files in the repository.
+        "invalidPath": false
+    }
+}

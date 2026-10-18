@@ -222,50 +222,14 @@ export class InitialMoveable<T = {}>
         this.selectorMap = {};
         this.refTargets = [];
     }
-    /**
-     * Get targets set in moveable through target or targets of props.
-     * @method Moveable#getTargets
-     * @example
-     * import Moveable from "moveable";
-     *
-     * const moveable = new Moveable(document.body, {
-     *    target: [targetRef, ".target", document.querySelectorAll(".target")],
-     * });
-     *
-     * console.log(moveable.getTargets());
-     */
     public getTargets() {
         return this.moveable?.getTargets() ?? [];
     }
-    /**
-     * If the element list corresponding to the selector among the targets is changed, it is updated.
-     * @method Moveable#updateSelectors
-     * @example
-     * import Moveable from "moveable";
-     *
-     * const moveable = new Moveable(document.body, {
-     *    target: ".target",
-     * });
-     *
-     * moveable.updateSelectors();
-     */
     public updateSelectors() {
         this.selectorMap = {};
         this._updateRefs();
         this.forceUpdate();
     }
-    /**
-     * User changes target and waits for target to change.
-     * @method Moveable#waitToChangeTarget
-     * @story combination-with-other-components--components-selecto
-     * @example
-     * document.querySelector(".target").addEventListener("mousedown", e => {
-     *   moveable.waitToChangeTarget().then(() => {
-     *      moveable.dragStart(e, e.currentTarget);
-     *   });
-     *   moveable.target = e.currentTarget;
-     * });
-     */
     public waitToChangeTarget(): Promise<void> {
         // let resolvePromise: (e: OnChangeTarget) => void;
 

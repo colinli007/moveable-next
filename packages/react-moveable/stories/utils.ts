@@ -1,8 +1,14 @@
-export function makeLink(ableName: string, property: string, ) {
-    return `<a href="https://daybrush.com/moveable/release/latest/doc/Moveable.${ableName}.html#${property}" target="_blank">See API</a>`;
+// "See API" links point to the TypeDoc pages of the same site: Storybook is served from `storybook/`
+// and the docs from `release/latest/doc/` (see config/copy-demo-files.mjs). They are 404 in `pnpm storybook`.
+const API_URL = "../release/latest/doc/";
+
+export function makeLink(property: string) {
+    return `<a href="${API_URL}classes/Moveable.html#${property.toLowerCase()}" target="_blank">See API</a>`;
 }
-export function makeOptionLink(ableName: string, option: string, property: string) {
-    return `<a href="https://daybrush.com/moveable/release/latest/doc/Moveable.${ableName}.html#.${option}-${property}" target="_blank">See API</a>`;
+export function makeTypeLink(typeName: string, member?: string) {
+    const anchor = member ? `#${member.toLowerCase()}` : "";
+
+    return `<a href="${API_URL}interfaces/${typeName}.html${anchor}" target="_blank">See API</a>`;
 }
 
 export function makeArgType(param: {

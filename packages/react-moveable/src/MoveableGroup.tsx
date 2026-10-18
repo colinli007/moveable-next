@@ -205,10 +205,6 @@ function findMoveableGroups(
     return groups;
 }
 
-/**
- * @namespace Moveable.Group
- * @description You can make targets moveable.
- */
 class MoveableGroup extends MoveableManager<GroupableProps> {
     public static defaultProps = {
         ...MoveableManager.defaultProps,
@@ -487,49 +483,4 @@ class MoveableGroup extends MoveableManager<GroupableProps> {
     protected _updateObserver() { }
 }
 
-/**
- * Sets the initial rotation of the group.
- * @name Moveable.Group#defaultGroupRotate
- * @default 0
- * @example
- * import Moveable from "moveable";
- *
- * const moveable = new Moveable(document.body, {
- *   target: [].slice.call(document.querySelectorAll(".target")),
- *   defaultGroupRotate: 0,
- * });
- *
- * moveable.defaultGroupRotate = 40;
- */
-
-/**
- * Sets the initial origin of the group.
- * @name Moveable.Group#defaultGroupOrigin
- * @default 0
- * @example
- * import Moveable from "moveable";
- *
- * const moveable = new Moveable(document.body, {
- *   target: [].slice.call(document.querySelectorAll(".target")),
- *   defaultGroupOrigin: "50% 50%",
- * });
- *
- * moveable.defaultGroupOrigin = "20% 40%";
- */
-
-
-/**
- * Whether to hide the line in child moveable for group corresponding to the rect of the target.
- * @name Moveable.Group#hideChildMoveableDefaultLines
- * @default false
- * @example
- * import Moveable from "moveable";
- *
- * const moveable = new Moveable(document.body, {
- *   target: [].slice.call(document.querySelectorAll(".target")),
- *   hideChildMoveableDefaultLines: false,
- * });
- *
- * moveable.hideChildMoveableDefaultLines = true;
- */
 export default MoveableGroup;

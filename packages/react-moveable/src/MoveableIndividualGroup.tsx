@@ -6,10 +6,6 @@ import { prefix } from "./utils";
 import { setStoreCache } from "./store/Store";
 import { find } from "@daybrush/utils";
 
-/**
- * @namespace Moveable.IndividualGroup
- * @description Create targets individually, not as a group.Create targets individually, not as a group.
- */
 class MoveableIndividualGroup extends MoveableManager<GroupableProps & IndividualGroupableProps> {
     public moveables: MoveableManager[] = [];
     public render() {
@@ -131,15 +127,4 @@ class MoveableIndividualGroup extends MoveableManager<GroupableProps & Individua
     protected _updateObserver() {}
 }
 
-/**
- * Create targets individually, not as a group.
- * @name Moveable.IndividualGroup#individualGroupable
- * @example
- * import Moveable from "moveable";
- *
- * const moveable = new Moveable(document.body, {
- *   target: [].slice.call(document.querySelectorAll(".target")),
- *   individualGroupable: true,
- * });
- */
 export default MoveableIndividualGroup;

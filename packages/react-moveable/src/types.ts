@@ -32,10 +32,6 @@ export type MoveableManagerProps<T = {}> = {
 
 export type AnyObject<T> = (unknown extends T ? IObject<any> : T);
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface MoveablePosition {
     left: number;
     top: number;
@@ -50,9 +46,6 @@ export interface MoveablePosition {
 }
 
 /**
- * @typedef
- * @memberof Moveable
- * @options
  */
 export interface DefaultOptions {
     /**
@@ -63,6 +56,12 @@ export interface DefaultOptions {
     /**
      * The external target(s) to drag Moveable target(s)
      * @default target
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     * moveable.target = document.querySelector(".target");
+     * moveable.dragTarget = document.querySelector(".dragTarget");
      */
     dragTarget?: MoveableRefType | null;
     /**
@@ -91,32 +90,42 @@ export interface DefaultOptions {
     /**
      * Moveable Root Container (No Transformed Container)
      * @default parentElement
-     * @story options--options-root-container
+     * @see [Storybook](../../../../storybook/?path=/story/options--options-root-container)
      */
     rootContainer?: MoveableRefType<HTMLElement>;
     /**
      * If you want to set the dragging information to the viewer, refer to the following.
      * @default null
-     * @story options--options-view-container
+     * @see [Storybook](../../../../storybook/?path=/story/options--options-view-container)
      */
     viewContainer?: MoveableRefType<HTMLElement>;
     /**
      * Whether the target size is detected and updated whenever it changes.
      * It is more effective when used together with `useMutationObserver`.
      * @default false
-     * @story options--options-resize-observer
+     * @see [Storybook](../../../../storybook/?path=/story/options--options-resize-observer)
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     * moveable.useResizeObserver = true;
      */
     useResizeObserver?: boolean;
     /**
      * Whether the target size, pos in inline style is detected and updated whenever it changes.
      * It is more effective when used together with `useResizeObserver`.
      * @default false
-     * @story options--options-mutation-observer
+     * @see [Storybook](../../../../storybook/?path=/story/options--options-mutation-observer)
      */
     useMutationObserver?: boolean;
     /**
      * Zooms in the elements of a moveable.
      * @default 1
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     * moveable.zoom = 2;
      */
     zoom?: number;
     /**
@@ -132,6 +141,14 @@ export interface DefaultOptions {
     /**
      * You can specify the className of the moveable controlbox.
      * @default ""
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   className: "",
+     * });
+     *
+     * moveable.className = "moveable1";
      */
     className?: string;
     /**
@@ -200,7 +217,7 @@ export interface DefaultOptions {
      * Whether to drag the focused input
      * If `checkInput` is true, this option is not applied.
      * @since 0.47.0
-     * @story options--options-drag-focused-input
+     * @see [Storybook](../../../../storybook/?path=/story/options--options-drag-focused-input)
      * @default false
      */
     dragFocusedInput?: boolean;
@@ -229,7 +246,7 @@ export interface DefaultOptions {
     /**
      * By adding padding to the line, you can increase the area of the line that can be clicked and dragged.
      * @since 0.43.0
-     * @story options--options-line-padding
+     * @see [Storybook](../../../../storybook/?path=/story/options--options-line-padding)
      * @default 0
      */
     linePadding?: number;
@@ -237,7 +254,7 @@ export interface DefaultOptions {
      * By adding padding to the control, you can increase the area of the control that can be clicked and dragged.
      * Either `rotateAroundControls` or `displayAroundControls` can be used.
      * @since 0.44.0
-     * @story options--options-control-padding
+     * @see [Storybook](../../../../storybook/?path=/story/options--options-control-padding)
      * @default 0
      */
     controlPadding?: number;
@@ -262,13 +279,6 @@ export interface DefaultOptions {
      */
     flushSync?: (callback: () => void) => void;
 }
-/**
- * @typedef
- * @extends Moveable.DefaultOptions
- * @extends Moveable.DragAreaOptions
- * @extends Moveable.OriginOptions
- * @extends Moveable.PaddingOptions
- */
 export interface MoveableDefaultOptions
     extends DefaultOptions, DragAreaOptions, OriginOptions, PaddingOptions {
 }
@@ -290,10 +300,6 @@ export type MoveableManagerState<T = {}> = {
     isPersisted?: boolean;
 } & MoveableTargetInfo & T;
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface ElementSizes {
     svg: boolean;
     offsetWidth: number;
@@ -316,24 +322,24 @@ export interface ElementSizes {
     maxOffsetHeight: number;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export type LineDirection = "n" | "e" | "s" | "w" | "nw" | "ne" | "sw" | "se";
 
-/**
- * @typedef
- * @memberof Moveable
- * @property - left padding
- * @property - top padding
- * @property - right padding
- * @property - bottom padding
- */
 export interface PaddingBox {
+    /**
+     * left padding
+     */
     left?: number;
+    /**
+     * top padding
+     */
     top?: number;
+    /**
+     * right padding
+     */
     right?: number;
+    /**
+     * bottom padding
+     */
     bottom?: number;
 }
 
@@ -342,8 +348,7 @@ export interface Renderer {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface SnapGuideline {
     type: "horizontal" | "vertical";
@@ -369,13 +374,15 @@ export interface SnapGuideline {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface SnapElementGuideline extends SnapGuideline {
 
 }
 
+/**
+ * @category Snappable
+ */
 export interface SnapBoundInfo {
     isBound: boolean;
     isSnap: boolean;
@@ -385,32 +392,50 @@ export interface SnapBoundInfo {
     bounds?: BoundInfo[];
     snap?: SnapInfo;
 }
+/**
+ * @category Snappable
+ */
 export interface BoundInfo {
     direction?: "start" | "end";
     isBound: boolean;
     offset: number;
     pos: number;
 }
+/**
+ * @category Snappable
+ */
 export interface SnapOffsetInfo {
     isSnap: boolean;
     offset: number;
     pos: number;
 }
+/**
+ * @category Snappable
+ */
 export interface SnapDirectionInfo extends SnapInfo {
     direction: string;
 }
+/**
+ * @category Snappable
+ */
 export interface SnapInfo {
     isSnap: boolean;
     index: number;
     direction: string;
     posInfos: SnapPosInfo[];
 }
+/**
+ * @category Snappable
+ */
 export interface SnapPosInfo {
     pos: number;
     index: number;
     direction: string;
     guidelineInfos: SnapGuidelineInfo[];
 }
+/**
+ * @category Snappable
+ */
 export interface SnapGuidelineInfo {
     dist: number;
     offset: number;
@@ -419,8 +444,7 @@ export interface SnapGuidelineInfo {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface RenderGuidelineInfo {
     key?: string;
@@ -432,6 +456,9 @@ export interface RenderGuidelineInfo {
     posValue: number[];
     zoom: number;
 }
+/**
+ * @category Snappable
+ */
 export interface RenderGuidelineInnerInfo {
     key?: string;
     direction: string;
@@ -464,66 +491,38 @@ export interface MoveableProps extends
     ClickableProps,
     RenderableProps {
 }
-/**
- * @memberof Moveable
- * @typedef
- */
 export interface MoveableDefaultEvents {
+    /**
+     * When the targets of Moveable are changed, the `changeTargets` event is called.
+     */
     onChangeTargets?: (e: OnChangeTargets) => void;
 }
 
 export interface MoveableInitalOptions extends ExcludeKeys<MoveableDefaultOptions, "target"> {
+    /**
+     * The target to indicate Moveable Control Box.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     * moveable.target = document.querySelector(".target");
+     */
     target?: MoveableRefTargetType;
 }
 
-/**
- * @memberof Moveable
- * @typedef
- * @extends Moveable.MoveableDefaultOptions
- * @extends Moveable.MoveableDefaultEvents
- */
 export interface MoveableDefaultProps extends MoveableInitalOptions, MoveableDefaultEvents {
 
 }
-/**
- * @memberof Moveable
- * @typedef
- */
 export type MoveableRefTargetType = MoveableRefType | ArrayFormat<MoveableRefTargetType>;
 
 export type MoveableRefTargetsResultType
     = Array<HTMLElement | SVGElement | string | null | MoveableRefTargetsResultType>;
 
-/**
- * @memberof Moveable
- * @typedef
- */
 export type MoveableRefType<T extends Element = HTMLElement | SVGElement>
     = string | (() => T) | MoveableRefObject<T> | T | null | undefined;
-/**
- * @memberof Moveable
- * @typedef
- */
 export interface MoveableRefObject<T extends Element = HTMLElement | SVGElement> {
     current: T | undefined | null;
 }
-/**
- * @memberof Moveable
- * @typedef
- * @extends Moveable.MoveableDefaultProps
- * @extends Moveable.Draggable.DraggableOptions
- * @extends Moveable.Resizable.ResizableOptions
- * @extends Moveable.Scalable.ScalableOptions
- * @extends Moveable.Rotatable.RotatableOptions
- * @extends Moveable.Warpable.WarpableOptions
- * @extends Moveable.Pinchable.PinchableOptions
- * @extends Moveable.Group.GroupableOptions
- * @extends Moveable.OriginDraggable.OriginDraggableOptions
- * @extends Moveable.Scrollable.ScrollableOptions
- * @extends Moveable.Clippable.ClippableOptions
- * @extends Moveable.Roundable.RoundableOptions
- * @extends Moveable.Clickable.ClickableOptions
- */
 export interface MoveableOptions extends
     MoveableInitalOptions,
     DraggableOptions,
@@ -547,9 +546,7 @@ export type MoveableState = MoveableManagerState;
 
 /**
  * You can make Able that can work in Moveable.
- * @typedef
  * In Able, you can manage drag events, props, state, fire event props, and render elements.
- * @memberof Moveable
  */
 export interface Able<
     Props extends IObject<any> = IObject<any>,
@@ -567,14 +564,14 @@ export interface Able<
     /**
      * You can request style. Specify the name of the style in camel case.
      * You can check it with `moveable.state.style`
-     * @exmaple
+     * @example
      * ["borderRadius", "top", "left"]
      */
     requestStyle?(): string[];
     /**
      * If you use group, you can request child style. Specify the name of the style in camel case.
      * You can check it with `moveable.state.style`
-     * @exmaple
+     * @example
      * ["borderRadius", "top", "left"]
      */
     requestChildStyle?(): string[];
@@ -653,10 +650,6 @@ export interface Able<
     request?(moveable: any): AbleRequester;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface OnEvent {
     /**
      * The Moveable instance
@@ -704,23 +697,20 @@ export interface OnEvent {
     isTrusted: boolean;
 
 }
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnEvent
- * @property - This is the last dragged event. No, if you haven't dragged.
- * @property - Whether this moved
- * @property - Whether it is double-click
- */
 export interface OnEndEvent extends OnEvent {
+    /**
+     * This is the last dragged event. No, if you haven't dragged.
+     */
     lastEvent: any | undefined;
+    /**
+     * Whether this moved
+     */
     isDrag: boolean;
+    /**
+     * Whether it is double-click
+     */
     isDouble: boolean;
 }
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface OnTransformStartEvent {
     /**
      * Set your original transform.
@@ -735,11 +725,6 @@ export interface OnTransformStartEvent {
      */
     setTransformIndex(transformIndex: number): void;
 }
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.CSSObject
- */
 export interface TransformObject extends CSSObject {
     /**
      * a target's next transform string value.
@@ -750,21 +735,12 @@ export interface TransformObject extends CSSObject {
      */
     afterTransform: string;
 }
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.TransformObject
- */
 export interface OnTransformEvent extends TransformObject {
     /**
      * transform events causes a `drag` event. In some events, there may be no value.
      */
     drag: OnDrag;
 }
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface AbleRequestParam {
     /**
      * Run the request instantly. (requestStart, request, requestEnd happen at the same time)
@@ -773,18 +749,20 @@ export interface AbleRequestParam {
     [key: string]: any;
 }
 /**
- * @typedef
- * @memberof Moveable
- * @see {@link https://daybrush.com/moveable/release/latest/doc/Moveable.html#request|Request Method}
- * @see {@link https://daybrush.com/moveable/release/latest/doc/Moveable.Draggable.html#request|Draggable Requester}
- * @see {@link https://daybrush.com/moveable/release/latest/doc/Moveable.Resizable.html#request|Resizable Requester}
- * @see {@link https://daybrush.com/moveable/release/latest/doc/Moveable.Scalable.html#request|Scalable Requester}
- * @see {@link https://daybrush.com/moveable/release/latest/doc/Moveable.Rotatable.html#request|Rotatable Requester}
- * @property - Continue executing the request.
- * @property - End the request.
+ * @see {@link MoveableInterface.request | Request Method}
+ * @see {@link DraggableRequestParam | Draggable Requester}
+ * @see {@link ResizableRequestParam | Resizable Requester}
+ * @see {@link ScalableRequestParam | Scalable Requester}
+ * @see {@link RotatableRequestParam | Rotatable Requester}
  */
 export interface Requester<RequestParam extends {} = AbleRequestParam> {
+    /**
+     * Continue executing the request.
+     */
     request(param: RequestParam): this;
+    /**
+     * End the request.
+     */
     requestEnd(): this;
 }
 
@@ -796,10 +774,6 @@ export interface AbleRequester {
 }
 
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface OnChangeTargets {
     /**
      * The Moveable instance
@@ -814,31 +788,22 @@ export interface OnChangeTargets {
 
 
 /**
- * @typedef
- * @memberof Moveable.Pinchable
- * @extends Moveable.OnEvent
+ * @category Pinchable
  */
 export interface OnPinchStart extends OnEvent {
 }
 /**
- * @typedef
- * @memberof Moveable.Pinchable
- * @extends Moveable.OnEvent
+ * @category Pinchable
  */
 export interface OnPinch extends OnEvent {
 }
 /**
- * @typedef
- * @memberof Moveable.Pinchable
- * @extends Moveable.OnEndEvent
+ * @category Pinchable
  */
 export interface OnPinchEnd extends OnEndEvent { }
 /**
  * When the drag starts, the dragStart event is called.
- * @typedef
- * @memberof Moveable.Draggable
- * @extends Moveable.OnEvent
- * @extends Moveable.OnTransformStartEvent
+ * @category Draggable
  */
 export interface OnDragStart extends OnEvent, OnTransformStartEvent {
     /**
@@ -847,64 +812,84 @@ export interface OnDragStart extends OnEvent, OnTransformStartEvent {
     set: (translate: number[]) => void;
 }
 /**
- * @typedef
- * @memberof Moveable.Draggable
- * @extends Moveable.OnEvent
- * @extends Moveable.CSSObject
- * @property - The delta of [left, top]
- * @property - The distance of [left, top]
- * @property - The position of [left, top]
- * @property - The delta of [translateX, translateY]
- * @property - The distance of [translateX, translateY]
- * @property - The position of [translateX, translateY]
- * @property - a target's transform
- * @property - a target's left
- * @property - a target's top
- * @property - a target's bottom
- * @property - a target's offset width
- * @property - a target's offset height
- * @property - a target's right
- * @property - Whether or not it is being pinched.
+ * @category Draggable
  */
 export interface OnDrag extends OnEvent, CSSObject {
+    /**
+     * The delta of [left, top]
+     */
     beforeDelta: number[];
+    /**
+     * The distance of [left, top]
+     */
     beforeDist: number[];
+    /**
+     * The position of [left, top]
+     */
     beforeTranslate: number[];
+    /**
+     * The delta of [translateX, translateY]
+     */
     delta: number[];
+    /**
+     * The distance of [translateX, translateY]
+     */
     dist: number[];
+    /**
+     * The position of [translateX, translateY]
+     */
     translate: number[];
+    /**
+     * a target's transform
+     */
     transform: string;
+    /**
+     * a target's left
+     */
     left: number;
+    /**
+     * a target's top
+     */
     top: number;
+    /**
+     * a target's bottom
+     */
     bottom: number;
+    /**
+     * a target's offset width
+     */
     width: number;
+    /**
+     * a target's offset height
+     */
     height: number;
+    /**
+     * a target's right
+     */
     right: number;
+    /**
+     * Whether or not it is being pinched.
+     */
     isPinch: boolean;
 }
 /**
- * @typedef
- * @memberof Moveable.Draggable
- * @extends Moveable.OnEndEvent
+ * @category Draggable
  */
 export interface OnDragEnd extends OnEndEvent {
 }
 
 /**
- * @typedef
- * @memberof Moveable.OriginDraggable
- * @extends Moveable.OnEvent
- * @property - dragOrigin causes a `dragStart` event.
+ * @category OriginDraggable
  */
 export interface OnDragOriginStart extends OnEvent {
+    /**
+     * dragOrigin causes a `dragStart` event.
+     */
     dragStart: OnDragStart | false;
 }
 
 /**
- * @typedef
- * @memberof Moveable.OriginDraggable
- * @extends Moveable.OnEvent
- * @extends Moveable.CSSObject
+ * @category OriginDraggable
  */
 export interface OnDragOrigin extends OnEvent, CSSObject {
     /**
@@ -942,57 +927,60 @@ export interface OnDragOrigin extends OnEvent, CSSObject {
 
 }
 /**
- * @typedef
- * @memberof Moveable.OriginDraggable
- * @extends Moveable.OnEndEvent
+ * @category OriginDraggable
  */
 export interface OnDragOriginEnd extends OnEndEvent {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Roundable
- * @extends Moveable.OnEvent
+ * @category Roundable
  */
 export interface OnRoundStart extends OnEvent { }
 
 /**
- * @typedef
- * @memberof Moveable.Roundable
- * @extends Moveable.OnEvent
- * @extends Moveable.CSSObject
- * @property - Offset width of target
- * @property - Offset height of target
- * @property - The delta of [x, y]
- * @property - The distance of [x, y]
- * @property - The target's moved border-radius's horizontal poses
- * @property - The target's moved border-radius's vertical poses
- * @property - The target's moved border-radius
+ * @category Roundable
  */
 export interface OnRound extends OnEvent, CSSObject {
+    /**
+     * Offset width of target
+     */
     width: number;
+    /**
+     * Offset height of target
+     */
     height: number;
+    /**
+     * The delta of [x, y]
+     */
     delta: number[];
+    /**
+     * The distance of [x, y]
+     */
     dist: number[];
+    /**
+     * The target's moved border-radius's horizontal poses
+     */
     horizontals: number[];
+    /**
+     * The target's moved border-radius's vertical poses
+     */
     verticals: number[];
+    /**
+     * The target's moved border-radius
+     */
     borderRadius: string;
 
 }
 
 /**
- * @typedef
- * @memberof Moveable.Roundable
- * @extends Moveable.OnEndEvent
+ * @category Roundable
  */
 export interface OnRoundEnd extends OnEndEvent {
 }
 
 
 /**
- * @typedef
- * @memberof Moveable.Roundable
- * @extends Moveable.OnRoundStart
+ * @category Roundable
  */
 export interface OnRoundGroupStart extends OnRoundStart {
     /**
@@ -1006,9 +994,7 @@ export interface OnRoundGroupStart extends OnRoundStart {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Roundable
- * @extends Moveable.OnRound
+ * @category Roundable
  */
 export interface OnRoundGroup extends OnRound {
     /**
@@ -1022,9 +1008,7 @@ export interface OnRoundGroup extends OnRound {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Roundable
- * @extends Moveable.OnRoundEnd
+ * @category Roundable
  */
 export interface OnRoundGroupEnd extends OnRoundEnd {
     /**
@@ -1038,10 +1022,7 @@ export interface OnRoundGroupEnd extends OnRoundEnd {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Scalable
- * @extends Moveable.OnEvent
- * @extends Moveable.OnTransformStartEvent
+ * @category Scalable
  */
 export interface OnScaleStart extends OnEvent, OnTransformStartEvent {
     /**
@@ -1081,9 +1062,7 @@ export interface OnScaleStart extends OnEvent, OnTransformStartEvent {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Scalable
- * @extends Moveable.OnEvent
+ * @category Scalable
  */
 export interface OnBeforeScale extends OnEvent {
     /**
@@ -1107,49 +1086,48 @@ export interface OnBeforeScale extends OnEvent {
 
 
 /**
- * @typedef
- * @memberof Moveable.Scalable
- * @extends Moveable.OnEvent
- * @extends Moveable.OnTransformEvent
- * @property - The direction of scale.
- * @property - a target's offsetWidth
- * @property - a target's offsetHeight
- * @property - a target's scale
- * @property - The distance of scale
- * @property - The delta of scale
- * @property - Whether or not it is being pinched.
+ * @category Scalable
  */
 export interface OnScale extends OnEvent, OnTransformEvent {
+    /**
+     * The direction of scale.
+     */
     direction: number[];
+    /**
+     * a target's offsetWidth
+     */
     offsetWidth: number;
+    /**
+     * a target's offsetHeight
+     */
     offsetHeight: number;
 
+    /**
+     * a target's scale
+     */
     scale: number[];
+    /**
+     * The distance of scale
+     */
     dist: number[];
+    /**
+     * The delta of scale
+     */
     delta: number[];
 
+    /**
+     * Whether or not it is being pinched.
+     */
     isPinch: boolean;
 }
 /**
- * @typedef
- * @memberof Moveable.Scalable
- * @extends Moveable.OnEndEvent
+ * @category Scalable
  */
 export interface OnScaleEnd extends OnEndEvent {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Resizable
- * @extends Moveable.OnEvent
- * @property - The direction of resize.
- * @property - resize causes a `dragStart` event.
- * @property - You can set the css width, height value.
- * @property - You can set the css min width, min height value. (default: min-width)
- * @property - You can set the css max width, max height value. (default: max-width)
- * @property - You can set the css origin (default: % %)
- * @property - Set a fixed direction to resize. (default: Opposite direction)
- * @property - Set the ratio of width and height. (default: offsetWidth / offsetHeight)
+ * @category Resizable
  */
 export interface OnResizeStart extends OnEvent {
     /**
@@ -1202,9 +1180,7 @@ export interface OnResizeStart extends OnEvent {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Resizable
- * @extends Moveable.OnEvent
+ * @category Resizable
  */
 export interface OnBeforeResize extends OnEvent {
     /**
@@ -1240,10 +1216,6 @@ export interface OnBeforeResize extends OnEvent {
      */
     boundingHeight: number;
 }
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface CSSObject {
     /**
      * You can get the style you can get from the event.
@@ -1255,10 +1227,7 @@ export interface CSSObject {
     cssText: string;
 }
 /**
- * @typedef
- * @memberof Moveable.Resizable
- * @extends Moveable.OnEvent
- * @extends Moveable.OnTransformEvent
+ * @category Resizable
  */
 export interface OnResize extends OnEvent, OnTransformEvent {
     /**
@@ -1307,17 +1276,12 @@ export interface OnResize extends OnEvent, OnTransformEvent {
     isPinch: boolean;
 }
 /**
- * @typedef
- * @memberof Moveable.Resizable
- * @extends Moveable.OnEndEvent
+ * @category Resizable
  */
 export interface OnResizeEnd extends OnEndEvent {
 }
 /**
- * @typedef
- * @memberof Moveable.Rotatable
- * @extends Moveable.OnEvent
- * @extends Moveable.OnTransformStartEvent
+ * @category Rotatable
  */
 export interface OnRotateStart extends OnEvent, OnTransformStartEvent {
     /**
@@ -1344,10 +1308,8 @@ export interface OnRotateStart extends OnEvent, OnTransformStartEvent {
     resizeStart: OnResizeStart | false;
 }
 /**
- * @typedef
- * @description Parameters for the `beforeRotate` event
- * @memberof Moveable.Rotatable
- * @extends Moveable.OnEvent
+ * Parameters for the `beforeRotate` event
+ * @category Rotatable
  */
 export interface OnBeforeRotate extends OnEvent {
     /**
@@ -1370,11 +1332,8 @@ export interface OnBeforeRotate extends OnEvent {
 
 
 /**
- * @typedef
- * @description Parameters for the `rotate` event
- * @memberof Moveable.Rotatable
- * @extends Moveable.OnEvent
- * @extends Moveable.OnTransformEvent
+ * Parameters for the `rotate` event
+ * @category Rotatable
  */
 export interface OnRotate extends OnEvent, OnTransformEvent {
     /**
@@ -1438,27 +1397,21 @@ export interface OnRotate extends OnEvent, OnTransformEvent {
     resize?: OnResize;
 }
 /**
- * @typedef
- * @memberof Moveable.Rotatable
- * @extends Moveable.OnEndEvent
+ * @category Rotatable
  */
 export interface OnRotateEnd extends OnEndEvent { }
 
 /**
- * @typedef
- * @memberof Moveable.Warpable
- * @extends Moveable.OnEvent
- * @extends Moveable.OnTransformStartEvent
- * @property - You can set the start matrix value.
+ * @category Warpable
  */
 export interface OnWarpStart extends OnEvent, OnTransformStartEvent {
+    /**
+     * You can set the start matrix value.
+     */
     set: (matrix: number[]) => any;
 }
 /**
- * @typedef
- * @memberof Moveable.Warpable
- * @extends Moveable.OnEvent
- * @extends Moveable.CSSObject
+ * @category Warpable
  */
 export interface OnWarp extends OnEvent, CSSObject {
     /**
@@ -1483,64 +1436,68 @@ export interface OnWarp extends OnEvent, CSSObject {
     multiply: (matrix1: number[], matrix2: number[], n?: number) => number[];
 }
 /**
- * @typedef
- * @memberof Moveable.Warpable
- * @extends Moveable.OnEndEvent
+ * @category Warpable
  */
 export interface OnWarpEnd extends OnEndEvent { }
 
 /**
- * @typedef
- * @memberof Moveable.Draggable
- * @extends Moveable.OnDragStart
- * @property - targets to drag
- * @property - Each `dragStart` event on the targets
+ * @category Draggable
  */
 export interface OnDragGroupStart extends OnDragStart {
+    /**
+     * targets to drag
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `dragStart` event on the targets
+     */
     events: OnDragStart[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Draggable
- * @extends Moveable.OnDrag
- * @property - The dragging targets
- * @property - Each `drag` event on the targets
+ * @category Draggable
  */
 export interface OnDragGroup extends OnDrag {
+    /**
+     * The dragging targets
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `drag` event on the targets
+     */
     events: OnDrag[];
 }
 /**
- * @typedef
- * @memberof Moveable.Draggable
- * @extends Moveable.OnDragEnd
- * @property - The drag finished targets
- * @property - Each `dragEnd` event on the targets
+ * @category Draggable
  */
 export interface OnDragGroupEnd extends OnDragEnd {
+    /**
+     * The drag finished targets
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `dragEnd` event on the targets
+     */
     events: OnDragEnd[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Rotatable
- * @extends Moveable.OnRotateStart
- * @property - targets to rotate
- * @property - Each `rotateStart` event on the targets
+ * @category Rotatable
  */
 export interface OnRotateGroupStart extends OnRotateStart {
+    /**
+     * targets to rotate
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `rotateStart` event on the targets
+     */
     events: OnRotateStart[];
 }
 
 /**
- * @typedef
- * @description Parameters for the `beforeRotateGroup` event
- * @memberof Moveable.Rotatable
- * @extends Moveable.OnBeforeRotate
+ * Parameters for the `beforeRotateGroup` event
+ * @category Rotatable
  */
 export interface OnBeforeRotateGroup extends OnBeforeRotate {
     /**
@@ -1549,10 +1506,8 @@ export interface OnBeforeRotateGroup extends OnBeforeRotate {
     targets: Array<HTMLElement | SVGElement>;
 }
 /**
- * @typedef
- * @description Parameters for the `rotateGroup` event
- * @memberof Moveable.Rotatable
- * @extends Moveable.OnRotate
+ * Parameters for the `rotateGroup` event
+ * @category Rotatable
  */
 export interface OnRotateGroup extends OnRotate {
     /**
@@ -1575,33 +1530,35 @@ export interface OnRotateGroup extends OnRotate {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Rotatable
- * @extends Moveable.OnRotateEnd
- * @property - The rotate finished targets
- * @property - Each `rotateEnd` event on the targets
+ * @category Rotatable
  */
 export interface OnRotateGroupEnd extends OnRotateEnd {
+    /**
+     * The rotate finished targets
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `rotateEnd` event on the targets
+     */
     events: OnRotateEnd[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Resizable
- * @extends Moveable.OnResizeStart
- * @property - targets to resize
- * @property - Each `resizeStart` event on the targets
+ * @category Resizable
  */
 export interface OnResizeGroupStart extends OnResizeStart {
+    /**
+     * targets to resize
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `resizeStart` event on the targets
+     */
     events: OnResizeStart[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Resizable
- * @extends Moveable.OnBeforeResize
+ * @category Resizable
  */
 export interface OnBeforeResizeGroup extends OnBeforeResize {
     /**
@@ -1611,110 +1568,115 @@ export interface OnBeforeResizeGroup extends OnBeforeResize {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Resizable
- * @extends Moveable.OnResize
- * @property - The resizing targets
- * @property - Each `resize`event on the targets
+ * @category Resizable
  */
 export interface OnResizeGroup extends OnResize {
+    /**
+     * The resizing targets
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `resize`event on the targets
+     */
     events: OnResize[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Resizable
- * @extends Moveable.OnResizeEnd
- * @property - The resize finished targets
- * @property - Each `resizeEnd` event on the targets
+ * @category Resizable
  */
 export interface OnResizeGroupEnd extends OnResizeEnd {
+    /**
+     * The resize finished targets
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `resizeEnd` event on the targets
+     */
     events: OnResizeEnd[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Scalable
- * @extends Moveable.OnScaleStart
- * @property - targets to scale
- * @property - Each `scaleStart` & `dragStart` event on the targets
+ * @category Scalable
  */
 export interface OnScaleGroupStart extends OnScaleStart {
+    /**
+     * targets to scale
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `scaleStart` & `dragStart` event on the targets
+     */
     events: OnScaleStart[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Scalable
- * @extends Moveable.OnBeforeScale
- * @property - The scaling targets
+ * @category Scalable
  */
 export interface OnBeforeScaleGroup extends OnBeforeScale {
+    /**
+     * The scaling targets
+     */
     targets: Array<HTMLElement | SVGElement>;
 }
 
 /**
- * @typedef
- * @memberof Moveable.Scalable
- * @extends Moveable.OnScale
- * @property - The scaling targets
- * @property - Each `scale` & `drag` event on the targets
+ * @category Scalable
  */
 export interface OnScaleGroup extends OnScale {
+    /**
+     * The scaling targets
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `scale` & `drag` event on the targets
+     */
     events: OnScale[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Scalable
- * @extends Moveable.OnScaleEnd
- * @property - The scale finished targets
- * @property - Each `scaleEnd` event on the targets
+ * @category Scalable
  */
 export interface OnScaleGroupEnd extends OnScaleEnd {
+    /**
+     * The scale finished targets
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `scaleEnd` event on the targets
+     */
     events: OnScaleEnd[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Pinchable
- * @extends Moveable.OnPinchStart
- * @property - targets to pinch
+ * @category Pinchable
  */
 export interface OnPinchGroupStart extends OnPinchStart {
+    /**
+     * targets to pinch
+     */
     targets: Array<HTMLElement | SVGElement>;
 }
 
 /**
- * @typedef
- * @memberof Moveable.Pinchable
- * @extends Moveable.OnPinch
- * @property - targets to pinch
+ * @category Pinchable
  */
 export interface OnPinchGroup extends OnPinch {
+    /**
+     * targets to pinch
+     */
     targets: Array<HTMLElement | SVGElement>;
 }
 
 /**
- * @typedef
- * @memberof Moveable.Pinchable
- * @extends Moveable.OnPinchEnd
- * @property - The pinch finished targets
+ * @category Pinchable
  */
 export interface OnPinchGroupEnd extends OnPinchEnd {
+    /**
+     * The pinch finished targets
+     */
     targets: Array<HTMLElement | SVGElement>;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnEvent
- */
 export interface OnClick extends OnEvent {
     /**
      * Clicked element.
@@ -1738,11 +1700,6 @@ export interface OnClick extends OnEvent {
     isDouble: boolean;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnClick
- */
 export interface OnClickGroup extends OnClick {
     /**
      * targets set to group.
@@ -1756,92 +1713,83 @@ export interface OnClickGroup extends OnClick {
 
 /**
  * `beforeRenderStart` event occurs before the first start of all events.
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnEvent
- * @property - Whether or not it is being pinched.
- * @property - Set your original transform.
  */
 export interface OnBeforeRenderStart extends OnEvent {
+    /**
+     * Whether or not it is being pinched.
+     */
     isPinch: boolean;
+    /**
+     * Set your original transform.
+     */
     setTransform(transform: string | string[]): any;
 }
 
 /**
  * `beforeRender` event occurs before the dragging of all events.
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnEvent
- * @property - Whether or not it is being pinched.
  */
 export interface OnBeforeRender extends OnEvent {
+    /**
+     * Whether or not it is being pinched.
+     */
     isPinch: boolean;
 }
 
 /**
  * `beforeRenderEnd` event occurs before the end of all events.
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnEvent
- * @property - Whether or not it is being dragged.
- * @property - Whether or not it is being pinched.
  */
 export interface OnBeforeRenderEnd extends OnEvent {
+    /**
+     * Whether or not it is being dragged.
+     */
     isPinch: boolean;
+    /**
+     * Whether or not it is being pinched.
+     */
     isDrag: boolean;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnBeforeRenderStart
- * @property - targets set to group.
- * @property - children's `beforeRenderStart` events
- */
 export interface OnBeforeRenderGroupStart extends OnBeforeRenderStart {
+    /**
+     * targets set to group.
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * children's `beforeRenderStart` events
+     */
     events: OnBeforeRenderStart[];
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnBeforeRender
- * @property - targets set to group.
- * @property - children's `beforeRender` events
- */
 export interface OnBeforeRenderGroup extends OnBeforeRender {
+    /**
+     * targets set to group.
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * children's `beforeRender` events
+     */
     events: OnBeforeRender[];
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnBeforeRenderEnd
- * @property - targets set to group.
- */
 export interface OnBeforeRenderGroupEnd extends OnBeforeRenderEnd {
+    /**
+     * targets set to group.
+     */
     targets: Array<HTMLElement | SVGElement>;
 }
 
 /**
  * `renderStart` event occurs at the first start of all events.
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnEvent
- * @property - Whether or not it is being pinched.
  */
 export interface OnRenderStart extends OnEvent {
+    /**
+     * Whether or not it is being pinched.
+     */
     isPinch: boolean;
 }
 
 /**
  * `render` event occurs before the target is drawn on the screen.
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnEvent
- * @extends Moveable.CSSObject
  */
 export interface OnRender extends OnEvent, CSSObject {
     /**
@@ -1861,10 +1809,6 @@ export interface OnRender extends OnEvent, CSSObject {
 
 /**
  * `renderEnd` event occurs at the end of all events.
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnEvent
- * @extends Moveable.CSSObject
  */
 export interface OnRenderEnd extends OnEvent, CSSObject {
     /**
@@ -1891,79 +1835,93 @@ export type EventInterface<T extends IObject<any> = {}> = {
 };
 
 /**
- * @typedef
- * @memberof Moveable.Scrollable
- * @extends Moveable.OnEvent
- * @property - The container corresponding to scrolling area (scrollContainer >= rootContainer >= container)
- * @property - The direction of scrolling [left, top]
+ * @category Scrollable
  */
 export interface OnScroll extends OnEvent {
+    /**
+     * The container corresponding to scrolling area (scrollContainer >= rootContainer >= container)
+     */
     scrollContainer: HTMLElement;
+    /**
+     * The direction of scrolling [left, top]
+     */
     direction: number[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Scrollable
- * @extends Moveable.OnScroll
- * @property - targets set to group.
+ * @category Scrollable
  */
 export interface OnScrollGroup extends OnScroll {
+    /**
+     * targets set to group.
+     */
     targets: Array<HTMLElement | SVGElement>;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnRenderStart
- * @property - targets set to group.
- */
 export interface OnRenderGroupStart extends OnRenderStart {
+    /**
+     * targets set to group.
+     */
     targets: Array<HTMLElement | SVGElement>;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnRender
- * @property - targets set to group.
- * @property - Each `render` event on the targets
- */
 export interface OnRenderGroup extends OnRender {
+    /**
+     * targets set to group.
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `render` event on the targets
+     */
     events: OnRender[];
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.OnRenderEnd
- * @property - targets set to group.
- * @property - Each `renderEnd` event on the targets
- */
 export interface OnRenderGroupEnd extends OnRenderEnd {
+    /**
+     * targets set to group.
+     */
     targets: Array<HTMLElement | SVGElement>;
+    /**
+     * Each `renderEnd` event on the targets
+     */
     events: OnRenderEnd[];
 }
 
 /**
- * @typedef
- * @memberof Moveable.Draggable
+ * @category Draggable
  */
 export interface DraggableOptions {
     /**
      * Whether or not target can be dragged.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.draggable = true;
      */
     draggable?: boolean;
     /**
      * throttle of x, y when drag.
      * @default 0
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.throttleDrag = 1;
      */
     throttleDrag?: number;
     /**
      * throttle of angle(degree) of x,y when drag.
      * @default 0
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.throttleDragRotate = 45;
      */
     throttleDragRotate?: number;
     /**
@@ -1974,27 +1932,127 @@ export interface DraggableOptions {
     /**
      * start angle(degree) of x,y for throttleDragRotate when drag.
      * @default 0
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * // 45, 135, 225, 315
+     * moveable.throttleDragRotate = 90;
+     * moveable.startDragRotate = 45;
      */
     startDragRotate?: number;
     /**
      * Whether to move by dragging the edge line
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *  draggable: true,
+     *  edgeDraggable: false,
+     * });
+     *
+     * moveable.edgeDraggable = true;
      */
     edgeDraggable?: boolean | Array<LineDirection>;
 }
+/**
+ * @category Draggable
+ */
 export interface DraggableEvents {
+    /**
+     * When the drag starts, the dragStart event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { draggable: true });
+     * moveable.on("dragStart", ({ target }) => {
+     *     console.log(target);
+     * });
+     */
     onDragStart: OnDragStart;
+    /**
+     * When dragging, the drag event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { draggable: true });
+     * moveable.on("drag", ({ target, transform }) => {
+     *     target.style.transform = transform;
+     * });
+     */
     onDrag: OnDrag;
+    /**
+     * When the drag finishes, the dragEnd event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { draggable: true });
+     * moveable.on("dragEnd", ({ target, isDrag }) => {
+     *     console.log(target, isDrag);
+     * });
+     */
     onDragEnd: OnDragEnd;
 
+    /**
+     * When the group drag starts, the `dragGroupStart` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     draggable: true
+     * });
+     * moveable.on("dragGroupStart", ({ targets }) => {
+     *     console.log("onDragGroupStart", targets);
+     * });
+     */
     onDragGroupStart: OnDragGroupStart;
+    /**
+     * When the group drag, the `dragGroup` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     draggable: true
+     * });
+     * moveable.on("dragGroup", ({ targets, events }) => {
+     *     console.log("onDragGroup", targets);
+     *     events.forEach(ev => {
+     *          // drag event
+     *          console.log("onDrag left, top", ev.left, ev.top);
+     *          // ev.target!.style.left = `${ev.left}px`;
+     *          // ev.target!.style.top = `${ev.top}px`;
+     *          console.log("onDrag translate", ev.dist);
+     *          ev.target!.style.transform = ev.transform;)
+     *     });
+     * });
+     */
     onDragGroup: OnDragGroup;
+    /**
+     * When the group drag finishes, the `dragGroupEnd` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     draggable: true
+     * });
+     * moveable.on("dragGroupEnd", ({ targets, isDrag }) => {
+     *     console.log("onDragGroupEnd", targets, isDrag);
+     * });
+     */
     onDragGroupEnd: OnDragGroupEnd;
 }
 
 export interface DraggableProps extends DraggableOptions, EventInterface<DraggableEvents> {
 }
 
+/**
+ * @category Draggable
+ */
 export interface DraggableState {
     dragInfo: {
         startRect: RectInfo;
@@ -2002,25 +2060,32 @@ export interface DraggableState {
     } | null;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface PaddingOptions {
     /**
      * Add padding around the target to increase the drag area.
      * @default null
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *  target: document.querySelector(".target"),
+     *  padding: { left: 0, top: 0, right: 0, bottom: 0 },
+     * });
+     * moveable.padding = { left: 10, top: 10, right: 10, bottom: 10 },
+     * moveable.updateRect();
      */
     padding?: PaddingBox | number;
 }
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface OriginOptions {
     /**
      * Whether or not the origin control box will be visible or not.
      * @default true
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.origin = true;
      */
     origin?: boolean;
     /**
@@ -2031,104 +2096,441 @@ export interface OriginOptions {
     svgOrigin?: string;
 }
 /**
- * @typedef
- * @memberof Moveable.OriginDraggable
+ * The OriginDraggable's request parameter (`moveable.request("originDraggable", param)`):
+ * - `x`: x position
+ * - `y`: y position
+ * - `deltaX`: x number to move
+ * - `deltaY`: y number to move
+ * - `deltaOrigin`: left, top number to move transform-origin
+ * - `origin`: transform-origin position
+ * - `isInstant`: Whether to execute the request instantly
+ *
+ * ```js
+ * // Instantly Request (requestStart - request - requestEnd)
+ * // Use Relative Value
+ * moveable.request("originDraggable", { deltaX: 10, deltaY: 10 }, true);
+ * // Use Absolute Value
+ * moveable.request("originDraggable", { x: 200, y: 100 }, true);
+ * // Use Transform Value
+ * moveable.request("originDraggable", { deltaOrigin: [10, 0] }, true);
+ * moveable.request("originDraggable", { origin: [100, 0] }, true);
+ * // requestStart
+ * const requester = moveable.request("originDraggable");
+ *
+ * // request
+ * // Use Relative Value
+ * requester.request({ deltaX: 10, deltaY: 10 });
+ * requester.request({ deltaX: 10, deltaY: 10 });
+ * requester.request({ deltaX: 10, deltaY: 10 });
+ * // Use Absolute Value
+ * moveable.request("originDraggable", { x: 200, y: 100 });
+ * moveable.request("originDraggable", { x: 220, y: 100 });
+ * moveable.request("originDraggable", { x: 240, y: 100 });
+ *
+ * // requestEnd
+ * requester.requestEnd();
+ * ```
+ * @category OriginDraggable
  */
 export interface OriginDraggableOptions {
     /**
      * Whether to drag origin.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     originDraggable: true,
+     * });
+     * let translate = [0, 0];
+     * moveable.on("dragOriginStart", e => {
+     *     e.dragStart && e.dragStart.set(translate);
+     * }).on("dragOrigin", e => {
+     *     translate = e.drag.beforeTranslate;
+     *     e.target.style.cssText
+     *         = `transform-origin: ${e.transformOrigin};`
+     *         + `transform: translate(${translate[0]}px, ${translate[1]}px)`;
+     * }).on("dragOriginEnd", e => {
+     *     console.log(e);
+     * });
      */
     originDraggable?: boolean;
     /**
      * % Can be used instead of the absolute px.
      * @default true
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     originDraggable: true,
+     *     originRelative: false,
+     * });
+     * moveable.originRelative = true;
      */
     originRelative?: boolean;
 }
+/**
+ * @category OriginDraggable
+ */
 export interface OriginDraggableEvents {
+    /**
+     * When drag start the origin, the `dragOriginStart` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     originDraggable: true,
+     * });
+     * let translate = [0, 0];
+     * moveable.on("dragOriginStart", e => {
+     *     e.dragStart && e.dragStart.set(translate);
+     * }).on("dragOrigin", e => {
+     *     translate = e.drag.beforeTranslate;
+     *     e.target.style.cssText
+     *         = `transform-origin: ${e.transformOrigin};`
+     *         + `transform: translate(${translate[0]}px, ${translate[1]}px)`;
+     * }).on("dragOriginEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onDragOriginStart: OnDragOriginStart;
+    /**
+     * When drag the origin, the `dragOrigin` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     originDraggable: true,
+     * });
+     * let translate = [0, 0];
+     * moveable.on("dragOriginStart", e => {
+     *     e.dragStart && e.dragStart.set(translate);
+     * }).on("dragOrigin", e => {
+     *     translate = e.drag.beforeTranslate;
+     *     e.target.style.cssText
+     *         = `transform-origin: ${e.transformOrigin};`
+     *         + `transform: translate(${translate[0]}px, ${translate[1]}px)`;
+     * }).on("dragOriginEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onDragOrigin: OnDragOrigin;
+    /**
+     * When drag end the origin, the `dragOriginEnd` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     originDraggable: true,
+     * });
+     * let translate = [0, 0];
+     * moveable.on("dragOriginStart", e => {
+     *     e.dragStart && e.dragStart.set(translate);
+     * }).on("dragOrigin", e => {
+     *     translate = e.drag.beforeTranslate;
+     *     e.target.style.cssText
+     *         = `transform-origin: ${e.transformOrigin};`
+     *         + `transform: translate(${translate[0]}px, ${translate[1]}px)`;
+     * }).on("dragOriginEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onDragOriginEnd: OnDragOriginEnd;
 }
 export interface OriginDraggableProps extends OriginDraggableOptions, EventInterface<OriginDraggableEvents> {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Roundable
+ * @category Roundable
  */
 export interface RoundableOptions {
     /**
-     * Whether to show and drag border-radius.
+     * Whether to show and drag or double click border-radius.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     roundable: true,
+     *     roundRelative: false,
+     * });
+     * moveable.on("roundStart", e => {
+     *     console.log(e);
+     * }).on("round", e => {
+     *     e.target.style.borderRadius = e.borderRadius;
+     * }).on("roundEnd", e => {
+     *     console.log(e);
+     * });
      */
     roundable?: boolean;
     /**
      * % Can be used instead of the absolute px
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     roundable: true,
+     *     roundRelative: false,
+     * });
+     * moveable.on("roundStart", e => {
+     *     console.log(e);
+     * }).on("round", e => {
+     *     e.target.style.borderRadius = e.borderRadius;
+     * }).on("roundEnd", e => {
+     *     console.log(e);
+     * });
      */
     roundRelative?: boolean;
     /**
      * Minimum number of round controls. It moves in proportion by control. [horizontal, vertical]
      * @default [0, 0]
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     roundable: true,
+     *     roundRelative: false,
+     *     minRoundControls: [0, 0],
+     * });
+     * moveable.minRoundControls = [1, 0];
      */
     minRoundControls?: number[];
     /**
      * Maximum number of round controls. It moves in proportion by control. [horizontal, vertical]
      * @default [4, 4]
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     roundable: true,
+     *     roundRelative: false,
+     *     maxRoundControls: [4, 4],
+     * });
+     * moveable.maxRoundControls = [1, 0];
      */
     maxRoundControls?: number[];
     /**
      * Whether you can add/delete round controls by double-clicking a line or control.
      * @default true
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     roundable: true,
+     *     roundRelative: false,
+     *     roundClickable: true,
+     * });
+     * moveable.roundClickable = false;
      */
     roundClickable?: boolean | "line" | "control";
     /**
      * Whether to show a round control that does not actually exist as a shadow
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     roundable: true,
+     *     isDisplayShadowRoundControls: false,
+     * });
+     * moveable.isDisplayShadowRoundControls = true;
      */
     isDisplayShadowRoundControls?: boolean | "horizontal";
     /**
      * The padding value of the position of the round control
      * @default 0
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     roundable: true,
+     *     roundPadding: 0,
+     * });
+     * moveable.roundPadding = 15;
      */
     roundPadding?: number;
 }
 
+/**
+ * @category Roundable
+ */
 export interface RoundableEvents {
+    /**
+     * When drag start the clip area or controls, the `roundStart` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     roundable: true,
+     *     roundRelative: false,
+     * });
+     * moveable.on("roundStart", e => {
+     *     console.log(e);
+     * }).on("round", e => {
+     *     e.target.style.borderRadius = e.borderRadius;
+     * }).on("roundEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onRoundStart: OnRoundStart;
+    /**
+     * When drag or double click the border area or controls, the `round` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     roundable: true,
+     *     roundRelative: false,
+     * });
+     * moveable.on("roundStart", e => {
+     *     console.log(e);
+     * }).on("round", e => {
+     *     e.target.style.borderRadius = e.borderRadius;
+     * }).on("roundEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onRound: OnRound;
+    /**
+     * When drag end the border area or controls, the `roundEnd` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     roundable: true,
+     *     roundRelative: false,
+     * });
+     * moveable.on("roundStart", e => {
+     *     console.log(e);
+     * }).on("round", e => {
+     *     e.target.style.borderRadius = e.borderRadius;
+     * }).on("roundEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onRoundEnd: OnRoundEnd;
+    /**
+     * When drag start the clip area or controls, the `roundGroupStart` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     targets: [target1, target2, target3],
+     *     roundable: true,
+     * });
+     * moveable.on("roundGroupStart", e => {
+     *     console.log(e.targets);
+     * }).on("roundGroup", e => {
+     *   e.events.forEach(ev => {
+     *       ev.target.style.cssText += ev.cssText;
+     *   });
+     * }).on("roundGroupEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onRoundGroupStart: OnRoundGroupStart;
+    /**
+     * When drag or double click the border area or controls, the `roundGroup` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     targets: [target1, target2, target3],
+     *     roundable: true,
+     * });
+     * moveable.on("roundGroupStart", e => {
+     *     console.log(e.targets);
+     * }).on("roundGroup", e => {
+     *   e.events.forEach(ev => {
+     *       ev.target.style.cssText += ev.cssText;
+     *   });
+     * }).on("roundGroupEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onRoundGroup: OnRoundGroup;
+    /**
+     * When drag end the border area or controls, the `roundGroupEnd` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     targets: [target1, target2, target3],
+     *     roundable: true,
+     * });
+     * moveable.on("roundGroupStart", e => {
+     *     console.log(e.targets);
+     * }).on("roundGroup", e => {
+     *     e.events.forEach(ev => {
+     *         ev.target.style.cssText += ev.cssText;
+     *     });
+     * }).on("roundGroupEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onRoundGroupEnd: OnRoundGroupEnd;
 }
 export interface RoundableProps extends RoundableOptions, EventInterface<RoundableEvents> {
 }
 
+/**
+ * @category Roundable
+ */
 export interface RoundableState {
     borderRadiusState?: string;
 }
 /**
- * @typedef
- * @memberof Moveable.Resizable
- * @extends Moveable.RenderDirections
+ * @category Resizable
  */
 export interface ResizableOptions extends RenderDirections {
     /**
      * Whether or not target can be resized.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     resizable: false,
+     * });
+     *
+     * moveable.resizable = true;
      */
     resizable?: boolean | ResizableOptions;
     /**
      * throttle of width, height when resize.
+     * If throttleResize is set to less than 1, the target may shake.
      * @default 1
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   resizable: true,
+     *   throttleResize: 1,
+     * });
+     *
+     * moveable.throttleResize = 0;
      */
     throttleResize?: number;
     /**
      * When resize or scale, keeps a ratio of the width, height.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     scalable: true,
+     * });
+     *
+     * moveable.keepRatio = true;
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   resizable: true,
+     * });
+     *
+     * moveable.keepRatio = true;
      */
     keepRatio?: boolean;
     /**
@@ -2139,6 +2541,15 @@ export interface ResizableOptions extends RenderDirections {
     /**
      * Function to convert size for resize.
      * @default oneself
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   resizable: true,
+     *   resizeFormat: v => v,
+     * });
+     *
+     * moveable.resizeFormat = (size: number[]) => ([Math.trunc(size[0]), Math.trunc(size[1])];
      */
     resizeFormat?: (size: number[]) => number[];
     /**
@@ -2154,10 +2565,7 @@ export interface ResizableOptions extends RenderDirections {
     checkResizableError?: boolean;
 }
 /**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.AbleRequestParam
- * @description the Resizable's request parameter
+ * the Resizable's request parameter
  */
 export interface AbleRequesters {
     draggable: DraggableRequestParam;
@@ -2168,10 +2576,30 @@ export interface AbleRequesters {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Draggable
- * @extends Moveable.AbleRequestParam
- * @description the Draggable's request parameter
+ * the Draggable's request parameter
+ * @category Draggable
+ * @example
+ * // Instantly Request (requestStart - request - requestEnd)
+ * // Use Relative Value
+ * moveable.request("draggable", { deltaX: 10, deltaY: 10 }, true);
+ * // Use Absolute Value
+ * moveable.request("draggable", { x: 200, y: 100 }, true);
+ *
+ * // requestStart
+ * const requester = moveable.request("draggable");
+ *
+ * // request
+ * // Use Relative Value
+ * requester.request({ deltaX: 10, deltaY: 10 });
+ * requester.request({ deltaX: 10, deltaY: 10 });
+ * requester.request({ deltaX: 10, deltaY: 10 });
+ * // Use Absolute Value
+ * moveable.request("draggable", { x: 200, y: 100 });
+ * moveable.request("draggable", { x: 220, y: 100 });
+ * moveable.request("draggable", { x: 240, y: 100 });
+ *
+ * // requestEnd
+ * requester.requestEnd();
  */
 export interface DraggableRequestParam extends AbleRequestParam {
     /**
@@ -2197,10 +2625,32 @@ export interface DraggableRequestParam extends AbleRequestParam {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Resizable
- * @extends Moveable.AbleRequestParam
- * @description the Resizable's request parameter
+ * the Resizable's request parameter
+ * @category Resizable
+ * @example
+ * // Instantly Request (requestStart - request - requestEnd)
+ * // Use Relative Value
+ * moveable.request("resizable", { deltaWidth: 10, deltaHeight: 10 }, true);
+ *
+ * // Use Absolute Value
+ * moveable.request("resizable", { offsetWidth: 100, offsetHeight: 100 }, true);
+ *
+ * // requestStart
+ * const requester = moveable.request("resizable");
+ *
+ * // request
+ * // Use Relative Value
+ * requester.request({ deltaWidth: 10, deltaHeight: 10 });
+ * requester.request({ deltaWidth: 10, deltaHeight: 10 });
+ * requester.request({ deltaWidth: 10, deltaHeight: 10 });
+ *
+ * // Use Absolute Value
+ * moveable.request("resizable", { offsetWidth: 100, offsetHeight: 100 });
+ * moveable.request("resizable", { offsetWidth: 110, offsetHeight: 100 });
+ * moveable.request("resizable", { offsetWidth: 120, offsetHeight: 100 });
+ *
+ * // requestEnd
+ * requester.requestEnd();
  */
 export interface ResizableRequestParam extends AbleRequestParam {
     /**
@@ -2228,9 +2678,6 @@ export interface ResizableRequestParam extends AbleRequestParam {
      * offset number of height
      */
     offsetHeight?: number;
-    /**
-     *
-     */
     horizontal?: boolean;
     /**
      * whether to use with `snappable`
@@ -2238,15 +2685,119 @@ export interface ResizableRequestParam extends AbleRequestParam {
     useSnap?: boolean;
 }
 
+/**
+ * @category Resizable
+ */
 export interface ResizableEvents {
+    /**
+     * When the resize starts, the resizeStart event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { resizable: true });
+     * moveable.on("resizeStart", ({ target }) => {
+     *     console.log(target);
+     * });
+     */
     onResizeStart: OnResizeStart;
+    /**
+     * When resizing, `beforeResize` is called before `resize` occurs. In `beforeResize`, you can get and set the pre-value before resizing.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { resizable: true });
+     * moveable.on("beforeResize", ({ setFixedDirection }) => {
+     *     if (shiftKey) {
+     *        setFixedDirection([0, 0]);
+     *     }
+     * });
+     * moveable.on("resize", ({ target, width, height, drag }) => {
+     *     target.style.width = `${width}px`;
+     *     target.style.height = `${height}px`;
+     *     target.style.transform = drag.transform;
+     * });
+     */
     onBeforeResize: OnBeforeResize;
+    /**
+     * When resizing, the resize event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { resizable: true });
+     * moveable.on("resize", ({ target, width, height }) => {
+     *     target.style.width = `${e.width}px`;
+     *     target.style.height = `${e.height}px`;
+     * });
+     */
     onResize: OnResize;
+    /**
+     * When the resize finishes, the resizeEnd event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { resizable: true });
+     * moveable.on("resizeEnd", ({ target, isDrag }) => {
+     *     console.log(target, isDrag);
+     * });
+     */
     onResizeEnd: OnResizeEnd;
 
+    /**
+     * When the group resize starts, the `resizeGroupStart` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     resizable: true
+     * });
+     * moveable.on("resizeGroupStart", ({ targets }) => {
+     *     console.log("onResizeGroupStart", targets);
+     * });
+     */
     onResizeGroupStart: OnResizeGroupStart;
+    /**
+     * When resizing the group, `beforeResizeGroup` is called before `resizeGroup` occurs. In `beforeResizeGroup`, you can get and set the pre-value before resizing.
+     */
     onBeforeResizeGroup: OnBeforeResizeGroup;
+    /**
+     * When the group resize, the `resizeGroup` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     resizable: true
+     * });
+     * moveable.on("resizeGroup", ({ targets, events }) => {
+     *     console.log("onResizeGroup", targets);
+     *     events.forEach(ev => {
+     *         const offset = [
+     *             direction[0] < 0 ? -ev.delta[0] : 0,
+     *             direction[1] < 0 ? -ev.delta[1] : 0,
+     *         ];
+     *         // ev.drag is a drag event that occurs when the group resize.
+     *         const left = offset[0] + ev.drag.beforeDist[0];
+     *         const top = offset[1] + ev.drag.beforeDist[1];
+     *         const width = ev.width;
+     *         const top = ev.top;
+     *     });
+     * });
+     */
     onResizeGroup: OnResizeGroup;
+    /**
+     * When the group resize finishes, the `resizeGroupEnd` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     resizable: true
+     * });
+     * moveable.on("resizeGroupEnd", ({ targets, isDrag }) => {
+     *     console.log("onResizeGroupEnd", targets, isDrag);
+     * });
+     */
     onResizeGroupEnd: OnResizeGroupEnd;
 }
 
@@ -2255,19 +2806,29 @@ export interface ResizableProps extends ResizableOptions, EventInterface<Resizab
 
 
 /**
- * @typedef
- * @memberof Moveable.Scalable
- * @extends Moveable.RenderDirections
+ * @category Scalable
  */
 export interface ScalableOptions extends RenderDirections {
     /**
      * Whether or not target can be scaled.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.scalable = true;
      */
     scalable?: boolean | ScalableOptions;
     /**
      * throttle of scaleX, scaleY when scale.
      * @default 0
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.throttleScale = 0.1;
      */
     throttleScale?: number;
     /**
@@ -2285,10 +2846,22 @@ export interface ScalableOptions extends RenderDirections {
 
 
 /**
- * @typedef
- * @memberof Moveable.Scalable
- * @extends Moveable.AbleRequestParam
- * @description the Scalable's request parameter
+ * the Scalable's request parameter
+ * @category Scalable
+ * @example
+ * // Instantly Request (requestStart - request - requestEnd)
+ * moveable.request("scalable", { deltaWidth: 10, deltaHeight: 10 }, true);
+ *
+ * // requestStart
+ * const requester = moveable.request("scalable");
+ *
+ * // request
+ * requester.request({ deltaWidth: 10, deltaHeight: 10 });
+ * requester.request({ deltaWidth: 10, deltaHeight: 10 });
+ * requester.request({ deltaWidth: 10, deltaHeight: 10 });
+ *
+ * // requestEnd
+ * requester.requestEnd();
  */
 export interface ScalableRequestParam extends AbleRequestParam {
     /**
@@ -2318,59 +2891,204 @@ export interface ScalableRequestParam extends AbleRequestParam {
 
 
 /**
- * @typedef
- * @memberof Moveable.Rotatable
- * @extends Moveable.AbleRequestParam
- * @description the Rotatable's request parameter
+ * the Rotatable's request parameter
+ * @category Rotatable
+ * @example
+ * // Instantly Request (requestStart - request - requestEnd)
+ * moveable.request("rotatable", { deltaRotate: 10 }, true);
+ *
+ * * moveable.request("rotatable", { rotate: 10 }, true);
+ *
+ * // requestStart
+ * const requester = moveable.request("rotatable");
+ *
+ * // request
+ * requester.request({ deltaRotate: 10 });
+ * requester.request({ deltaRotate: 10 });
+ * requester.request({ deltaRotate: 10 });
+ *
+ * requester.request({ rotate: 10 });
+ * requester.request({ rotate: 20 });
+ * requester.request({ rotate: 30 });
+ *
+ * // requestEnd
+ * requester.requestEnd();
  */
 export interface RotatableRequestParam extends AbleRequestParam {
     /**
      * delta number of rotation
+     * @default 0
      */
     deltaRotate?: number;
     /**
      * absolute number of moveable's rotation
+     * @default 0
      */
     rotate?: number;
 }
 
 
+/**
+ * @category Scalable
+ */
 export interface ScalableEvents {
+    /**
+     * When the scale starts, the scaleStart event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { scalable: true });
+     * moveable.on("scaleStart", ({ target }) => {
+     *     console.log(target);
+     * });
+     */
     onScaleStart: OnScaleStart;
+    /**
+     * When scaling, `beforeScale` is called before `scale` occurs. In `beforeScale`, you can get and set the pre-value before scaling.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { scalable: true });
+     * moveable.on("beforeScale", ({ setFixedDirection }) => {
+     *     if (shiftKey) {
+     *        setFixedDirection([0, 0]);
+     *     }
+     * });
+     * moveable.on("scale", ({ target, transform, dist }) => {
+     *     target.style.transform = transform;
+     * });
+     */
     onBeforeScale: OnBeforeScale;
+    /**
+     * When scaling, the `scale` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { scalable: true });
+     * moveable.on("scale", ({ target, transform, dist }) => {
+     *     target.style.transform = transform;
+     * });
+     */
     onScale: OnScale;
+    /**
+     * When the scale finishes, the `scaleEnd` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { scalable: true });
+     * moveable.on("scaleEnd", ({ target, isDrag }) => {
+     *     console.log(target, isDrag);
+     * });
+     */
     onScaleEnd: OnScaleEnd;
 
+    /**
+     * When the group scale starts, the `scaleGroupStart` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     scalable: true
+     * });
+     * moveable.on("scaleGroupStart", ({ targets }) => {
+     *     console.log("onScaleGroupStart", targets);
+     * });
+     */
     onScaleGroupStart: OnScaleGroupStart;
+    /**
+     * When scaling the group, `beforeScaleGroup` is called before `scaleGroup` occurs. In `beforeScaleGroup`, you can get and set the pre-value before scaling.
+     */
     onBeforeScaleGroup: OnBeforeScaleGroup;
+    /**
+     * When the group scale, the `scaleGroup` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     scalable: true
+     * });
+     * moveable.on("scaleGroup", ({ targets, events }) => {
+     *     console.log("onScaleGroup", targets);
+     *     events.forEach(ev => {
+     *         const target = ev.target;
+     *         // ev.drag is a drag event that occurs when the group scale.
+     *         const left = ev.drag.beforeDist[0];
+     *         const top = ev.drag.beforeDist[1];
+     *         const scaleX = ev.scale[0];
+     *         const scaleY = ev.scale[1];
+     *     });
+     * });
+     */
     onScaleGroup: OnScaleGroup;
+    /**
+     * When the group scale finishes, the `scaleGroupEnd` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     scalable: true
+     * });
+     * moveable.on("scaleGroupEnd", ({ targets, isDrag }) => {
+     *     console.log("onScaleGroupEnd", targets, isDrag);
+     * });
+     */
     onScaleGroupEnd: OnScaleGroupEnd;
 }
 export interface ScalableProps extends ScalableOptions, EventInterface<ScalableEvents> {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface GapGuideline extends SnapGuideline {
     renderPos: number[];
     inner?: boolean;
 }
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface RenderDirections {
     /**
      * Set directions to show the control box.
      * @default false if rotatable, ["n", "nw", "ne", "s", "se", "sw", "e", "w"] otherwise
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     warpable: true,
+     *     renderDirections: ["n", "nw", "ne", "s", "se", "sw", "e", "w"],
+     * });
+     *
+     * moveable.renderDirections = ["nw", "ne", "sw", "se"];
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     scalable: true,
+     *   renderDirections: ["n", "nw", "ne", "s", "se", "sw", "e", "w"],
+     * });
+     *
+     * moveable.renderDirections = ["nw", "ne", "sw", "se"];
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   resizable: true,
+     *   renderDirections: ["n", "nw", "ne", "s", "se", "sw", "e", "w"],
+     * });
+     *
+     * moveable.renderDirections = ["nw", "ne", "sw", "se"];
      */
     renderDirections?: boolean | string[];
     /**
      * Whether to scale and resize through edge lines.
      * You can use "n", "w", "s", "e" in LineDirection array.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     * moveable.edge = true;
      */
     edge?: boolean | Array<LineDirection>;
     /**
@@ -2378,12 +3096,15 @@ export interface RenderDirections {
      * Either `rotateAroundControls` or `displayAroundControls` can be used.
      * You can set the area through the `controlPadding` value.
      * @since 0.44.0
-     * @story options--options-control-padding
+     * @see [Storybook](../../../../storybook/?path=/story/options--options-control-padding)
      * @default false
      */
     displayAroundControls?: boolean;
 }
 
+/**
+ * @category Rotatable
+ */
 export type RotationPosition
     = "top" | "bottom"
     | "left" | "right"
@@ -2394,19 +3115,31 @@ export type RotationPosition
     | "none";
 
 /**
- * @typedef
- * @memberof Moveable.Rotatable
- * @extends Moveable.RenderDirections
+ * @category Rotatable
  */
 export interface RotatableOptions extends RenderDirections {
     /**
      * Whether or not target can be rotated.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.rotatable = true;
      */
     rotatable?: boolean | RotatableOptions;
     /**
      * You can specify the position of the rotation.
      * @default "top"
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   rotationPosition: "top",
+     * });
+     *
+     * moveable.rotationPosition = "bottom"
      */
     rotationPosition?: RotationPosition | RotationPosition[];
     /**
@@ -2423,6 +3156,12 @@ export interface RotatableOptions extends RenderDirections {
     /**
      * throttle of angle(degree) when rotate.
      * @default 0
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.throttleRotate = 1;
      */
     throttleRotate?: number;
 
@@ -2432,58 +3171,294 @@ export interface RotatableOptions extends RenderDirections {
      */
     rotationTarget?: MoveableRefType | ArrayFormat<MoveableRefType> | false;
 }
+/**
+ * @category Rotatable
+ */
 export interface RotatableEvents {
+    /**
+     * When the rotate starts, the rotateStart event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { rotatable: true });
+     * moveable.on("rotateStart", ({ target }) => {
+     *     console.log(target);
+     * });
+     */
     onRotateStart: OnRotateStart;
+    /**
+     * When rotating, `beforeRotate` is called before `rotate` occurs. In `beforeRotate`, you can get and set the pre-value before rotating.
+     */
     onBeforeRotate: OnBeforeRotate;
+    /**
+     * When rotating, the rotate event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { rotatable: true });
+     * moveable.on("rotate", ({ target, transform, dist }) => {
+     *     target.style.transform = transform;
+     * });
+     */
     onRotate: OnRotate;
+    /**
+     * When the rotate finishes, the rotateEnd event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { rotatable: true });
+     * moveable.on("rotateEnd", ({ target, isDrag }) => {
+     *     console.log(target, isDrag);
+     * });
+     */
     onRotateEnd: OnRotateEnd;
 
+    /**
+     * When the group rotate starts, the `rotateGroupStart` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     rotatable: true
+     * });
+     * moveable.on("rotateGroupStart", ({ targets }) => {
+     *     console.log("onRotateGroupStart", targets);
+     * });
+     */
     onRotateGroupStart: OnRotateGroupStart;
+    /**
+     * When rotating the group, `beforeRotateGroup` is called before `rotateGroup` occurs. In `beforeRotateGroup`, you can get and set the pre-value before rotating.
+     */
     onBeforeRotateGroup: OnBeforeRotateGroup;
+    /**
+     * When the group rotate, the `rotateGroup` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     rotatable: true
+     * });
+     * moveable.on("rotateGroup", ({ targets, events }) => {
+     *     console.log("onRotateGroup", targets);
+     *     events.forEach(ev => {
+     *         const target = ev.target;
+     *         // ev.drag is a drag event that occurs when the group rotate.
+     *         const left = ev.drag.beforeDist[0];
+     *         const top = ev.drag.beforeDist[1];
+     *         const deg = ev.beforeDist;
+     *     });
+     * });
+     */
     onRotateGroup: OnRotateGroup;
+    /**
+     * When the group rotate finishes, the `rotateGroupEnd` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     rotatable: true
+     * });
+     * moveable.on("rotateGroupEnd", ({ targets, isDrag }) => {
+     *     console.log("onRotateGroupEnd", targets, isDrag);
+     * });
+     */
     onRotateGroupEnd: OnRotateGroupEnd;
 }
 export interface RotatableProps extends RotatableOptions, EventInterface<RotatableEvents> {
 }
 /**
- * @typedef
- * @memberof Moveable.Warpable
- * @extends Moveable.RenderDirections
+ * @category Warpable
  */
 export interface WarpableOptions extends RenderDirections {
     /**
      * Whether or not target can be warped.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.warpable = true;
      */
     warpable?: boolean;
 }
 
+/**
+ * @category Warpable
+ */
 export interface WarpableEvents {
+    /**
+     * When the warp starts, the warpStart event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { warpable: true });
+     * moveable.on("warpStart", ({ target }) => {
+     *     console.log(target);
+     * });
+     */
     onWarpStart: OnWarpStart;
+    /**
+     * When warping, the warp event is called.
+     * @example
+     * import Moveable from "moveable";
+     * let matrix = [
+     *  1, 0, 0, 0,
+     *  0, 1, 0, 0,
+     *  0, 0, 1, 0,
+     *  0, 0, 0, 1,
+     * ];
+     * const moveable = new Moveable(document.body, { warpable: true });
+     * moveable.on("warp", ({ target, transform, delta, multiply }) => {
+     *    // target.style.transform = transform;
+     *    matrix = multiply(matrix, delta);
+     *    target.style.transform = `matrix3d(${matrix.join(",")})`;
+     * });
+     */
     onWarp: OnWarp;
+    /**
+     * When the warp finishes, the warpEnd event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, { warpable: true });
+     * moveable.on("warpEnd", ({ target, isDrag }) => {
+     *     console.log(target, isDrag);
+     * });
+     */
     onWarpEnd: OnWarpEnd;
 }
 export interface WarpableProps extends WarpableOptions, EventInterface<WarpableEvents> {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Pinchable
+ * @category Pinchable
  */
 export interface PinchableOptions {
     /**
      * Whether or not target can be pinched with draggable, resizable, scalable, rotatable.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.pinchable = true;
      */
     pinchable?: boolean | Array<"rotatable" | "resizable" | "scalable">;
 }
+/**
+ * @category Pinchable
+ */
 export interface PinchableEvents {
+    /**
+     * When the pinch starts, the pinchStart event is called with part of scaleStart, rotateStart, resizeStart
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     rotatable: true,
+     *     scalable: true,
+     *     pinchable: true, // ["rotatable", "scalable"]
+     * });
+     * moveable.on("pinchStart", ({ target }) => {
+     *     console.log(target);
+     * });
+     * moveable.on("rotateStart", ({ target }) => {
+     *     console.log(target);
+     * });
+     * moveable.on("scaleStart", ({ target }) => {
+     *     console.log(target);
+     * });
+     */
     onPinchStart: OnPinchStart;
+    /**
+     * When pinching, the pinch event is called with part of scale, rotate, resize
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     rotatable: true,
+     *     scalable: true,
+     *     pinchable: true, // ["rotatable", "scalable"]
+     * });
+     * moveable.on("pinch", ({ target }) => {
+     *     console.log(target);
+     * });
+     * moveable.on("rotate", ({ target }) => {
+     *     console.log(target);
+     * });
+     * moveable.on("scale", ({ target }) => {
+     *     console.log(target);
+     * });
+     */
     onPinch: OnPinch;
+    /**
+     * When the pinch finishes, the pinchEnd event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     rotatable: true,
+     *     scalable: true,
+     *     pinchable: true, // ["rotatable", "scalable"]
+     * });
+     * moveable.on("pinchEnd", ({ target }) => {
+     *     console.log(target);
+     * });
+     * moveable.on("rotateEnd", ({ target }) => {
+     *     console.log(target);
+     * });
+     * moveable.on("scaleEnd", ({ target }) => {
+     *     console.log(target);
+     * });
+     */
     onPinchEnd: OnPinchEnd;
 
+    /**
+     * When the group pinch starts, the `pinchGroupStart` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     pinchable: true
+     * });
+     * moveable.on("pinchGroupStart", ({ targets }) => {
+     *     console.log("onPinchGroupStart", targets);
+     * });
+     */
     onPinchGroupStart: OnPinchGroupStart;
+    /**
+     * When the group pinch, the `pinchGroup` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     pinchable: true
+     * });
+     * moveable.on("pinchGroup", ({ targets, events }) => {
+     *     console.log("onPinchGroup", targets);
+     * });
+     */
     onPinchGroup: OnPinchGroup;
+    /**
+     * When the group pinch finishes, the `pinchGroupEnd` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     *     pinchable: true
+     * });
+     * moveable.on("pinchGroupEnd", ({ targets, isDrag }) => {
+     *     console.log("onPinchGroupEnd", targets, isDrag);
+     * });
+     */
     onPinchGroupEnd: OnPinchGroupEnd;
 }
 export interface PinchableProps
@@ -2492,13 +3467,21 @@ export interface PinchableProps
 }
 
 /**
- * @typedef
- * @memberof Moveable.Group
+ * @category Group
  */
 export interface GroupableOptions {
     /**
      * Sets the initial rotation of the group.
      * @default 0
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   target: [].slice.call(document.querySelectorAll(".target")),
+     *   defaultGroupRotate: 0,
+     * });
+     *
+     * moveable.defaultGroupRotate = 40;
      */
     defaultGroupRotate?: number;
     /**
@@ -2509,10 +3492,20 @@ export interface GroupableOptions {
     /**
      * Sets the initial transform origin of the group.
      * @default  "50% 50%"
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   target: [].slice.call(document.querySelectorAll(".target")),
+     *   defaultGroupOrigin: "50% 50%",
+     * });
+     *
+     * moveable.defaultGroupOrigin = "20% 40%";
      */
     defaultGroupOrigin?: string;
     /**
-     * @default
+     * The nested groups of the targets, made from the nested arrays in `target`.
+     * Moveable sets it itself when it renders a group.
      */
     targetGroups?: MoveableTargetGroupsType;
     /**
@@ -2522,6 +3515,15 @@ export interface GroupableOptions {
     /**
      * Whether to hide the line in child moveable for group corresponding to the rect of the target.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   target: [].slice.call(document.querySelectorAll(".target")),
+     *   hideChildMoveableDefaultLines: false,
+     * });
+     *
+     * moveable.hideChildMoveableDefaultLines = true;
      */
     hideChildMoveableDefaultLines?: boolean;
     /**
@@ -2539,26 +3541,28 @@ export interface GroupableOptions {
     groupableProps?: Record<string, any>;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export type MoveableTargetGroupsType = Array<HTMLElement | SVGElement | MoveableTargetGroupsType>;
 
 
 /**
- * @typedef
- * @memberof Moveable.IndividualGroup
+ * @category IndividualGroup
  */
 export interface IndividualGroupableOptions {
     /**
      * Create targets individually, not as a group.
-     * @story individual-group--individual-group-draggable-scalable-rotatable
+     * @see [Storybook](../../../../storybook/?path=/story/individual-group--individual-group-draggable-scalable-rotatable)
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   target: [].slice.call(document.querySelectorAll(".target")),
+     *   individualGroupable: true,
+     * });
      */
     individualGroupable?: boolean;
     /**
      * When using individualGroupable you can pass props to child moveable.
-     * @story individual-group--individual-group-groupable-props
+     * @see [Storybook](../../../../storybook/?path=/story/individual-group--individual-group-groupable-props)
      * @since 0.44.0
      */
     individualGroupableProps?: (
@@ -2576,33 +3580,77 @@ export interface GroupableProps extends GroupableOptions {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface SnappableOptions {
     /**
      * Whether or not target can be snapped to the guideline.
      * @default false
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.snappable = true;
      */
     snappable?: boolean | string[];
     /**
      * A snap container that is the basis for snap, bounds, and innerBounds.
      * @default null
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.querySelector(".container"));
+     *
+     * moveable.snapContainer = document.body;
      */
     snapContainer?: MoveableRefType<HTMLElement | SVGElement>;
     /**
      * You can specify the directions to snap to the target.
      * @default true (true is all directions)
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   snappable: true,
+     *   snapDirections: true,
+     * });
+     * // snap center
+     * moveable.snapDirections = { left: true, top: true, right: true, bottom: true, center: true, middle: true };
      */
     snapDirections?: boolean | SnapDirections;
     /**
      * You can specify the snap directions of elements.
      * @default true (true is all directions)
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   snappable: true,
+     *   elementSnapDirections: true,
+     * });
+     * // snap center
+     * moveable.elementSnapDirections = { left: true, top: true, right: true, bottom: true, center: true, middle: true };
      */
     elementSnapDirections?: boolean | SnapDirections;
     /**
      * When you drag, make the gap snap in the element guidelines.
      * @default true
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *   snappable: true,
+     *   snapElement: true,
+     *   snapGap: true,
+     * });
+     *
+     * moveable.snapGap = false;
      */
     snapGap?: boolean;
     /**
@@ -2610,7 +3658,14 @@ export interface SnappableOptions {
      * Distance value that can snap to guidelines.
      * Use `snapHorizontalThreshold` and `snapVerticalThreshold`
      * @default 0
-     * @depreacted
+     * @deprecated
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.snapThreshold = 5;
      */
     snapThreshold?: number;
     /**
@@ -2631,6 +3686,13 @@ export interface SnappableOptions {
     /**
      * snap distance digits.
      * @default 0
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.snapDigit = 0
      */
     snapDigit?: number;
     /**
@@ -2651,11 +3713,25 @@ export interface SnappableOptions {
     /**
      * If width size is greater than 0, you can vertical snap to the grid.
      * @default 0 (0 is not used)
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.snapGridWidth = 5;
      */
     snapGridWidth?: number;
     /**
      * If height size is greater than 0, you can horizontal snap to the grid.
      * @default 0 (0 is not used)
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.snapGridHeight = 5;
      */
     snapGridHeight?: number;
     /**
@@ -2667,26 +3743,63 @@ export interface SnappableOptions {
     /**
      * Whether to show snap distance.
      * @default true
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.isDisplaySnapDigit = true;
      */
     isDisplaySnapDigit?: boolean;
     /**
      * Whether to show element inner snap distance
      * @default false
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.isDisplayInnerSnapDigit = true;
      */
     isDisplayInnerSnapDigit?: boolean;
     /**
      * Add guidelines in the horizontal direction.
      * @default []
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.horizontalGuidelines = [100, 200, 500];
      */
     horizontalGuidelines?: Array<PosGuideline | number | string>;
     /**
      * Add guidelines in the vertical direction.
      * @default []
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.verticalGuidelines = [100, 200, 500];
      */
     verticalGuidelines?: Array<PosGuideline | number | string>;
     /**
      * Add guidelines for the element.
      * @default []
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.elementGuidelines = [
+     *   document.querySelector(".element"),
+     * ];
      */
     elementGuidelines?: Array<ElementGuidelineValueOption | MoveableRefType<Element>>;
     /**
@@ -2702,23 +3815,45 @@ export interface SnappableOptions {
     /**
      * You can set up boundaries.
      * @default null
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.bounds = { left: 0, right: 1000, top: 0, bottom: 1000};
      */
     bounds?: BoundType | null;
     /**
      * You can set up inner boundaries.
      * @default null
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.innerBounds = { left: 500, top: 500, width: 100, height: 100};
      */
     innerBounds?: InnerBoundType | null;
     /**
      * You can set the text format of the distance shown in the guidelines.
      * @default oneself
+     * @see {@link SnappableOptions}
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *  snappable: true,
+     *  snapDistFormat: (v, type) => v,
+     * });
+     * moveable.snapDistFormat = (v, type) => `${v}px`;
      */
     snapDistFormat?: (distance: number, type: "vertical" | "horizontal") => number | string;
 }
 
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface SnapDirections {
     /**
@@ -2753,9 +3888,7 @@ export interface SnapDirections {
     middle?: boolean;
 }
 /**
- * @typedef
- * @memberof Moveable.Snappable
- * @extends Moveable.Snappable.SnapDirections
+ * @category Snappable
  */
 export interface ElementGuidelineValue extends SnapDirections {
     /**
@@ -2794,9 +3927,7 @@ export interface ElementGuidelineValue extends SnapDirections {
 
 
 /**
- * @typedef
- * @memberof Moveable.Snappable
- * @extends Moveable.Snappable.SnapDirections
+ * @category Snappable
  */
 export interface ElementGuidelineValueOption extends SnapDirections {
     /**
@@ -2815,8 +3946,7 @@ export interface ElementGuidelineValueOption extends SnapDirections {
     refresh?: boolean;
 }
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface PosGuideline {
     /**
@@ -2830,43 +3960,43 @@ export interface PosGuideline {
     className?: string;
 }
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface NumericPosGuideline extends PosGuideline {
     pos: number;
 }
-/**
- * @typedef
- * @memberof Moveable.Snappable
- * @extends Moveable.Snappable.SnapDirections
- */
 export interface ElementGuidelineValue extends SnapDirections {
-    /**
-     * guideline element
-     */
     element: Element;
-    /**
-     * class names to add to guideline
-     * @default ""
-     */
     className?: string;
-    /**
-     * Whether to update the element size at every render
-     * @default false
-     */
     refresh?: boolean;
 }
+/**
+ * @category Snappable
+ */
 export interface SnappableEvents {
+    /**
+     * When you drag or dragControl, the `snap` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     snappable: true
+     * });
+     * moveable.on("snap", e => {
+     *     console.log("onSnap", e);
+     * });
+     */
     onSnap: OnSnap;
+    /**
+     * When the bounds or inner bounds that the target touches while snapping are changed, the `bound` event is called.
+     */
     onBound: OnBound;
 }
 export interface SnappableProps extends SnappableOptions, EventInterface<SnappableEvents> {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface OnSnap {
     /**
@@ -2884,8 +4014,7 @@ export interface OnSnap {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface OnBound {
     bounds: {
@@ -2902,8 +4031,7 @@ export interface OnBound {
     };
 }
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface InnerBoundType {
     left: number;
@@ -2912,8 +4040,7 @@ export interface InnerBoundType {
     height: number;
 }
 /**
- * @typedef
- * @memberof Moveable.Snappable
+ * @category Snappable
  */
 export interface BoundType {
     /**
@@ -2927,6 +4054,9 @@ export interface BoundType {
     bottom?: number;
 }
 
+/**
+ * @category Snappable
+ */
 export interface SnapDirectionPoses {
     left?: number;
     top?: number;
@@ -2939,6 +4069,9 @@ export interface SnapDirectionPoses {
 export interface SnapElementRect extends ElementGuidelineValue {
     rect: SnapDirectionPoses;
 }
+/**
+ * @category Snappable
+ */
 export interface SnappableState {
     staticGuidelines: SnapGuideline[];
     elementRects: SnapElementRect[];
@@ -2949,6 +4082,9 @@ export interface SnappableState {
     snapThresholdInfo?: { multiples: number[]; offset: number[]; } | null;
     enableSnap: boolean;
 }
+/**
+ * @category Snappable
+ */
 export interface SnapRenderInfo {
     render?: boolean;
     direction?: number[];
@@ -2960,9 +4096,7 @@ export interface SnapRenderInfo {
 }
 
 /**
- * @typedef
- * @options
- * @memberof Moveable.Scrollable
+ * @category Scrollable
  */
 export interface ScrollableOptions {
     /**
@@ -2998,7 +4132,7 @@ export interface ScrollableOptions {
     /**
      * Option to scroll with dragging
      * @since 0.43.0
-     * @story support-scroll--scrolling-scrollable
+     * @see [Storybook](../../../../storybook/?path=/story/support-scroll--scrolling-scrollable)
      * @example
      * const scrollOptions = {
      *     container: () => viewer.getContainer(),
@@ -3013,37 +4147,100 @@ export interface ScrollableOptions {
      */
     scrollOptions?: Partial<DragScrollOptions> | null;
 }
+/**
+ * @category Scrollable
+ */
 export interface ScrollableEvents {
+    /**
+     * When the drag cursor leaves the scrollContainer, the `scroll` event occur to scroll.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: document.querySelector(".target"),
+     * });
+     * moveable.on("scroll", ({ scrollContainer, direction }) => {
+     *   scrollContainer.scrollLeft += direction[0] * 10;
+     *   scrollContainer.scrollTop += direction[1] * 10;
+     * });
+     */
     onScroll: OnScroll;
+    /**
+     * When the drag cursor leaves the scrollContainer, the `scrollGroup` event occur to scroll in group.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     * });
+     * moveable.on("scroll", ({ scrollContainer, direction }) => {
+     *   scrollContainer.scrollLeft += direction[0] * 10;
+     *   scrollContainer.scrollTop += direction[1] * 10;
+     * });
+     */
     onScrollGroup: OnScrollGroup;
 }
 export interface ScrollableProps extends ScrollableOptions, EventInterface<ScrollableEvents> {
 }
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface DragAreaOptions {
     /**
      * Instead of firing an event on the target, we add it to the moveable control element. You can use click and clickGroup events.
+     * Add an event to the moveable area instead of the target for stopPropagation.
      * @default if group, true, else fals
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *  dragArea: false,
+     * });
      */
     dragArea?: boolean;
     /**
      * Set `pointerEvents: none;` css to pass events in dragArea.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *  dragArea: false,
+     * });
      */
     passDragArea?: boolean;
 }
 export interface DragAreaProps extends DragAreaOptions {
 }
 /**
- * @typedef
- * @memberof Moveable.Clickable
+ * @category Clickable
  */
 export interface ClickableEvents {
+    /**
+     * When you click on the element, the `click` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: document.querySelector(".target"),
+     * });
+     * moveable.on("click", ({ hasTarget, containsTarget, targetIndex }) => {
+     *     // If you click on an element other than the target and not included in the target, index is -1.
+     *     console.log("onClickGroup", target, hasTarget, containsTarget, targetIndex);
+     * });
+     */
     onClick: OnClick;
+    /**
+     * When you click on the element inside the group, the `clickGroup` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     * });
+     * moveable.on("clickGroup", ({ inputTarget, isTarget, containsTarget, targetIndex }) => {
+     *     // If you click on an element other than the target and not included in the target, index is -1.
+     *     console.log("onClickGroup", inputTarget, isTarget, containsTarget, targetIndex);
+     * });
+     */
     onClickGroup: OnClickGroup;
 }
 
@@ -3052,8 +4249,7 @@ export interface ArrayFormat<T = any> {
     [key: number]: T;
 }
 /**
- * @typedef
- * @memberof Moveable.Clickable
+ * @category Clickable
  */
 export interface ClickableOptions {
     /**
@@ -3063,42 +4259,150 @@ export interface ClickableOptions {
     clickable?: boolean;
 }
 /**
- * @memberof Moveable.Clickable
- * @extends Moveable.Clickable.ClickableEvents
- * @extends Moveable.Clickable.ClickableOptions
- * @typedef
+ * @category Clickable
  */
 export interface ClickableProps extends EventInterface<ClickableEvents>, ClickableOptions {
 }
 export interface BeforeRenderableEvents {
+    /**
+     * `beforeRenderStart` event occurs before the first start of all events.
+     */
     onBeforeRenderStart: OnBeforeRenderStart;
+    /**
+     * `beforeRender` event occurs before the dragging of all events.
+     */
     onBeforeRender: OnBeforeRender;
+    /**
+     * `beforeRenderEnd` event occurs before the end of all events.
+     */
     onBeforeRenderEnd: OnBeforeRenderEnd;
+    /**
+     * `beforeRenderGroupStart` event occurs before the first start of all events in group.
+     */
     onBeforeRenderGroupStart: OnBeforeRenderGroupStart;
+    /**
+     * `beforeRenderGroup` event occurs before the dragging of all events in group.
+     */
     onBeforeRenderGroup: OnBeforeRenderGroup;
+    /**
+     * `beforeRenderGroupEnd` event occurs before the end of all events in group.
+     */
     onBeforeRenderGroupEnd: OnBeforeRenderGroupEnd;
 }
 export interface BeforeRenderableProps extends EventInterface<BeforeRenderableEvents> {
 }
 export interface RenderableEvents {
+    /**
+     * `renderStart` event occurs at the first start of all events.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: document.querySelector(".target"),
+     * });
+     * moveable.on("renderStart", ({ target }) => {
+     *     console.log("onRenderStart", target);
+     * });
+     */
     onRenderStart: OnRenderStart;
+    /**
+     * `render` event occurs before the target is drawn on the screen.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: document.querySelector(".target"),
+     * });
+     * moveable.on("render", ({ target }) => {
+     *     console.log("onRender", target);
+     * });
+     */
     onRender: OnRender;
+    /**
+     * `renderEnd` event occurs at the end of all events.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: document.querySelector(".target"),
+     * });
+     * moveable.on("renderEnd", ({ target }) => {
+     *     console.log("onRenderEnd", target);
+     * });
+     */
     onRenderEnd: OnRenderEnd;
+    /**
+     * `renderGroupStart` event occurs at the first start of all events in group.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     * });
+     * moveable.on("renderGroupStart", ({ targets }) => {
+     *     console.log("onRenderGroupStart", targets);
+     * });
+     */
     onRenderGroupStart: OnRenderGroupStart;
+    /**
+     * `renderGroup` event occurs before the target is drawn on the screen in group.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     * });
+     * moveable.on("renderGroup", ({ targets }) => {
+     *     console.log("onRenderGroup", targets);
+     * });
+     */
     onRenderGroup: OnRenderGroup;
+    /**
+     * `renderGroupEnd` event occurs at the end of all events in group.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     target: [].slice.call(document.querySelectorAll(".target")),
+     * });
+     * moveable.on("renderGroupEnd", ({ targets }) => {
+     *     console.log("onRenderGroupEnd", targets);
+     * });
+     */
     onRenderGroupEnd: OnRenderGroupEnd;
 }
 export interface RenderableProps extends EventInterface<RenderableEvents> {
 }
 
 /**
- * @typedef
- * @memberof Moveable.Clippable
+ * @category Clippable
  */
 export interface ClippableOptions {
     /**
      * Whether to clip the target.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     * });
+     * moveable.on("clipStart", e => {
+     *     console.log(e);
+     * }).on("clip", e => {
+     *     if (e.clipType === "rect") {
+     *         e.target.style.clip = e.clipStyle;
+     *     } else {
+     *         e.target.style.clipPath = e.clipStyle;
+     *     }
+     * }).on("clipEnd", e => {
+     *     console.log(e);
+     * });
      */
     clippable?: boolean | ClippableOptions;
     /**
@@ -3108,78 +4412,335 @@ export interface ClippableOptions {
     keepRatio?: boolean;
     /**
      * You can force the custom clipPath. (defaultClipPath < style < customClipPath < dragging clipPath)
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     * });
+     * moveable.on("clipStart", e => {
+     *     console.log(e);
+     * }).on("clip", e => {
+     *     if (e.clipType === "rect") {
+     *         e.target.style.clip = e.clipStyle;
+     *     } else {
+     *         e.target.style.clipPath = e.clipStyle;
+     *     }
+     * }).on("clipEnd", e => {
+     *     console.log(e);
+     * });
      */
     customClipPath?: string;
     /**
      * If clippath is not set, the default value can be set. (defaultClipPath < style < customClipPath < dragging clipPath)
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     * });
+     * moveable.on("clipStart", e => {
+     *     console.log(e);
+     * }).on("clip", e => {
+     *     if (e.clipType === "rect") {
+     *         e.target.style.clip = e.clipStyle;
+     *     } else {
+     *         e.target.style.clipPath = e.clipStyle;
+     *     }
+     * }).on("clipEnd", e => {
+     *     console.log(e);
+     * });
      */
     defaultClipPath?: string;
     /**
      * % Can be used instead of the absolute px (`rect` not possible)
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     * });
+     * moveable.on("clipStart", e => {
+     *     console.log(e);
+     * }).on("clip", e => {
+     *     if (e.clipType === "rect") {
+     *         e.target.style.clip = e.clipStyle;
+     *     } else {
+     *         e.target.style.clipPath = e.clipStyle;
+     *     }
+     * }).on("clipEnd", e => {
+     *     console.log(e);
+     * });
      */
     clipRelative?: boolean;
     /**
      * When dragging the target, the clip also moves.
      * @default true
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     * });
+     * moveable.on("clipStart", e => {
+     *     console.log(e);
+     * }).on("clip", e => {
+     *     if (e.clipType === "rect") {
+     *         e.target.style.clip = e.clipStyle;
+     *     } else {
+     *         e.target.style.clipPath = e.clipStyle;
+     *     }
+     * }).on("clipEnd", e => {
+     *     console.log(e);
+     * });
      */
     dragWithClip?: boolean;
     /**
      * You can drag the clip by setting clipArea.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     * });
+     * moveable.on("clipStart", e => {
+     *     console.log(e);
+     * }).on("clip", e => {
+     *     if (e.clipType === "rect") {
+     *         e.target.style.clip = e.clipStyle;
+     *     } else {
+     *         e.target.style.clipPath = e.clipStyle;
+     *     }
+     * }).on("clipEnd", e => {
+     *     console.log(e);
+     * });
      */
     clipArea?: boolean;
     /**
      * Whether the clip is bound to the target.
      * @default false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     *     clipTargetBounds: true,
+     * });
+     * moveable.on("clipStart", e => {
+     *     console.log(e);
+     * }).on("clip", e => {
+     *     if (e.clipType === "rect") {
+     *         e.target.style.clip = e.clipStyle;
+     *     } else {
+     *         e.target.style.clipPath = e.clipStyle;
+     *     }
+     * }).on("clipEnd", e => {
+     *     console.log(e);
+     * });
      */
     clipTargetBounds?: boolean;
     /**
      * Add clip guidelines in the vertical direction.
      * @default []
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     *     clipVerticalGuidelines: [0, 100, 200],
+     *     clipHorizontalGuidelines: [0, 100, 200],
+     *     clipSnapThreshold: 5,
+     * });
      */
     clipVerticalGuidelines?: Array<string | number>;
     /**
      * Add clip guidelines in the horizontal direction.
      * @default []
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     *     clipVerticalGuidelines: [0, 100, 200],
+     *     clipHorizontalGuidelines: [0, 100, 200],
+     *     clipSnapThreshold: 5,
+     * });
      */
     clipHorizontalGuidelines?: Array<string | number>;
     /**
      * Distance value that can snap to clip guidelines.
      * @default 5
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     *     clipVerticalGuidelines: [0, 100, 200],
+     *     clipHorizontalGuidelines: [0, 100, 200],
+     *     clipSnapThreshold: 5,
+     * });
      */
     clipSnapThreshold?: number;
 }
+/**
+ * @category Clippable
+ */
 export interface ClippableEvents {
+    /**
+     * When drag start the clip area or controls, the `clipStart` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     * });
+     * moveable.on("clipStart", e => {
+     *     console.log(e);
+     * }).on("clip", e => {
+     *     if (e.clipType === "rect") {
+     *         e.target.style.clip = e.clipStyle;
+     *     } else {
+     *         e.target.style.clipPath = e.clipStyle;
+     *     }
+     * }).on("clipEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onClipStart: OnClipStart;
+    /**
+     * When drag the clip area or controls, the `clip` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     * });
+     * moveable.on("clipStart", e => {
+     *     console.log(e);
+     * }).on("clip", e => {
+     *     if (e.clipType === "rect") {
+     *         e.target.style.clip = e.clipStyle;
+     *     } else {
+     *         e.target.style.clipPath = e.clipStyle;
+     *     }
+     * }).on("clipEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onClip: OnClip;
+    /**
+     * When drag end the clip area or controls, the `clipEnd` event is called.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *     clippable: true,
+     *     defaultClipPath: "inset",
+     *     customClipPath: "",
+     *     clipRelative: false,
+     *     clipArea: false,
+     *     dragWithClip: true,
+     * });
+     * moveable.on("clipStart", e => {
+     *     console.log(e);
+     * }).on("clip", e => {
+     *     if (e.clipType === "rect") {
+     *         e.target.style.clip = e.clipStyle;
+     *     } else {
+     *         e.target.style.clipPath = e.clipStyle;
+     *     }
+     * }).on("clipEnd", e => {
+     *     console.log(e);
+     * });
+     */
     onClipEnd: OnClipEnd;
 }
 export interface ClippableProps extends ClippableOptions, EventInterface<ClippableEvents> {
 }
+/**
+ * @category Clippable
+ */
 export interface ClippableState {
     clipPathState?: string;
     snapBoundInfos?: { vertical: Required<SnapBoundInfo>, horizontal: Required<SnapBoundInfo> } | null;
 }
 
 /**
- * @typedef
- * @memberof Moveable.Clippable
- * @extends Moveable.OnEvent
- * @property - The clip type.
- * @property - The control positions
- * @property - CSS style of changed clip
+ * @category Clippable
  */
 export interface OnClipStart extends OnEvent {
+    /**
+     * The clip type.
+     */
     clipType: "polygon" | "circle" | "ellipse" | "inset" | "rect";
+    /**
+     * The control positions
+     */
     poses: number[][];
+    /**
+     * CSS style of changed clip
+     */
     clipStyle: string;
 }
 /**
- * @typedef
- * @memberof Moveable.Clippable
- * @extends Moveable.OnEvent
- * @extends Moveable.CSSObject
+ * @category Clippable
  */
 export interface OnClip extends OnEvent, CSSObject {
     /**
@@ -3213,9 +4774,7 @@ export interface OnClip extends OnEvent, CSSObject {
 
 }
 /**
- * @typedef
- * @memberof Moveable.Clippable
- * @extends Moveable.OnEndEvent
+ * @category Clippable
  */
 export interface OnClipEnd extends OnEndEvent { }
 
@@ -3230,19 +4789,11 @@ export interface OnCustomDrag extends GestoTypes.Position {
     parentGesto: CustomGesto;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export type PersistRectData = Omit<Partial<RectInfo>, "children"> & {
     children?: Array<Partial<RectInfo>>;
 };
 
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface RectInfo {
     /**
      * The coordinates of the vertex 1
@@ -3306,10 +4857,6 @@ export interface RectInfo {
     children?: RectInfo[];
 }
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface GroupRect {
     pos1: number[];
     pos2: number[];
@@ -3324,26 +4871,25 @@ export interface GroupRect {
     rotation: number;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @property - top position
- * @property - left position
- * @property - target's width
- * @property - target's height
- */
 export interface HitRect {
+    /**
+     * top position
+     */
     top: number;
+    /**
+     * left position
+     */
     left: number;
+    /**
+     * target's width
+     */
     width?: number;
+    /**
+     * target's height
+     */
     height?: number;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.MoveableInterface
- */
 export interface MoveableManagerInterface<T = {}, U = {}> extends MoveableInterface {
     moveables?: MoveableManagerInterface[];
     props: MoveableManagerProps<T>;
@@ -3366,11 +4912,6 @@ export interface MoveableManagerInterface<T = {}, U = {}> extends MoveableInterf
     triggerEvent(name: string, params: IObject<any>, isManager?: boolean): any;
 }
 
-/**
- * @typedef
- * @memberof Moveable
- * @extends Moveable.MoveableManagerInterface
- */
 export interface MoveableGroupInterface<T = {}, U = {}> extends MoveableManagerInterface<T, U> {
     props: MoveableManagerProps<T> & { targets: Array<HTMLElement | SVGElement> };
     moveables: MoveableManagerInterface[];
@@ -3379,38 +4920,90 @@ export interface MoveableGroupInterface<T = {}, U = {}> extends MoveableManagerI
     getRequestChildStyles(): string[];
 }
 
-/**
- * @typedef
- * @memberof Moveable
- */
 export interface MoveableInterface {
+    /**
+     * Get a manager that manages the moveable's state and props.
+     * @returns The Rect Info
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * const manager = moveable.getManager(); // real moveable class instance
+     */
     getManager(): MoveableManagerInterface<any, any>;
+    /**
+     * You can get the vertex information, position and offset size information of the target based on the container.
+     * @returns The Rect Info
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * const rectInfo = moveable.getRect();
+     */
     getRect(): RectInfo;
+    /**
+     * Get the able used in MoveableManager.
+     * @param ableName - able name
+     */
     getAble<T extends Able>(ableName: string): T | undefined;
+    /**
+     * Check if the target is an element included in the moveable.
+     * @param target - the target
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * window.addEventListener("click", e => {
+     *     if (!moveable.isMoveableElement(e.target)) {
+     *         moveable.target = e.target;
+     *     }
+     * });
+     */
     isMoveableElement(target: Element): boolean;
     /**
      * If the location or size of the target is changed, call the `.updateRect()` method.
      * Use the `useResizeObserver` and `useMutationObserver` props to update automatically.
+     *
+     * If the width, height, left, and top of all elements change, update the shape of the moveable.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * window.addEventListener("resize", e => {
+     *     moveable.updateRect();
+     * });
      */
     updateRect(type?: "Start" | "" | "End", isTarget?: boolean, isSetState?: boolean): void;
     /**
+     * If the width, height, left, and top of the only target change, update the shape of the moveable.
+     * Use `.updateRect()` method
      * @deprecated
      * Use `.updateRect()` method
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.updateTarget();
      */
     updateTarget(): void;
     /**
      * Request able through a method rather than an event.
      * At the moment of execution, requestStart is executed,
      * and then request and requestEnd can be executed through Requester.
-     * @see {@link https://daybrush.com/moveable/release/latest/doc/Moveable.Draggable.html#request Draggable Requester}
-     * @see {@link https://daybrush.com/moveable/release/latest/doc/Moveable.Resizable.html#request Resizable Requester}
-     * @see {@link https://daybrush.com/moveable/release/latest/doc/Moveable.Scalable.html#request Scalable Requester}
-     * @see {@link https://daybrush.com/moveable/release/latest/doc/Moveable.Rotatable.html#request Rotatable Requester}
-     * @see {@link https://daybrush.com/moveable/release/latest/doc/Moveable.OriginDraggable.html#request OriginDraggable Requester}
-     * @param - ableName
-     * @param - request to be able params.
-     * @param - If isInstant is true, request and requestEnd are executed immediately.
-     * @return - Able Requester. If there is no request in able, nothing will work.
+     * @see {@link DraggableRequestParam | Draggable Requester}
+     * @see {@link ResizableRequestParam | Resizable Requester}
+     * @see {@link ScalableRequestParam | Scalable Requester}
+     * @see {@link RotatableRequestParam | Rotatable Requester}
+     * @see {@link OriginDraggableOptions | OriginDraggable Requester}
+     * @param ableName - ableName
+     * @param params - request to be able params.
+     * @param isInstant - If isInstant is true, request and requestEnd are executed immediately.
+     * @returns Able Requester. If there is no request in able, nothing will work.
      * @example
      * import Moveable from "moveable";
      *
@@ -3446,16 +5039,130 @@ export interface MoveableInterface {
      * Target element to be dragged in moveable
      */
     getDragElement(): HTMLElement | SVGElement | null | undefined;
+    /**
+     * Remove the Moveable object and the events.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.destroy();
+     */
     destroy(): void;
+    /**
+     * You can drag start the Moveable through the external `MouseEvent`or `TouchEvent`. (Angular: ngDragStart)
+     * @param e - external `MouseEvent`or `TouchEvent`
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * document.body.addEventListener("mousedown", e => {
+     *     if (!moveable.isMoveableElement(e.target)) {
+     *          moveable.dragStart(e);
+     *     }
+     * });
+     */
     dragStart(e: MouseEvent | TouchEvent, target?: EventTarget | null): void;
+    /**
+     * Whether the coordinates are inside Moveable
+     * @param clientX - x coordinate
+     * @param clientY - y coordinate
+     * @returns True if the coordinate is in moveable or false
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * document.body.addEventListener("mousedown", e => {
+     *     if (moveable.isInside(e.clientX, e.clientY)) {
+     *          console.log("inside");
+     *     }
+     * });
+     */
     isInside(clientX: number, clientY: number): boolean;
+    /**
+     * Check if the moveable state is being dragged.
+     * @param ableName - If you want to check if able is dragging, specify ableName.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * // false
+     * console.log(moveable.isDragging());
+     *
+     * moveable.on("drag", () => {
+     *   // true
+     *   console.log(moveable.isDragging());
+     * });
+     */
     isDragging(ableName?: string): boolean;
+    /**
+     * Hit test an element or rect on a moveable target.
+     * (100% = 100)
+     * @param el - element or rect to test
+     * @returns Get hit test rate (rate > 0 is hitted)
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * document.body.addEventListener("mousedown", e => {
+     *     if (moveable.hitTest(e.target) > 0) {
+     *          console.log("hiited");
+     *     }
+     * });
+     */
     hitTest(el: Element | HitRect): number;
     setState(state: any, callback?: () => any): any;
+    /**
+     * User changes target and waits for target to change.
+     * @see [Storybook](../../../../storybook/?path=/story/combination-with-other-components--components-selecto)
+     * @example
+     * document.querySelector(".target").addEventListener("mousedown", e => {
+     *   moveable.waitToChangeTarget().then(() => {
+     *      moveable.dragStart(e, e.currentTarget);
+     *   });
+     *   moveable.target = e.currentTarget;
+     * });
+     */
     waitToChangeTarget(): Promise<void>;
     forceUpdate(callback?: () => any): any;
+    /**
+     * If the element list corresponding to the selector among the targets is changed, it is updated.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *    target: ".target",
+     * });
+     *
+     * moveable.updateSelectors();
+     */
     updateSelectors(): void;
+    /**
+     * Get targets set in moveable through target or targets of props.
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body, {
+     *    target: [targetRef, ".target", document.querySelectorAll(".target")],
+     * });
+     *
+     * console.log(moveable.getTargets());
+     */
     getTargets(): Array<HTMLElement | SVGElement>;
+    /**
+     * You can stop the dragging currently in progress through a method from outside.
+     * @returns The Rect Info
+     * @example
+     * import Moveable from "moveable";
+     *
+     * const moveable = new Moveable(document.body);
+     *
+     * moveable.stopDrag();
+     */
     stopDrag(type?: "target" | "control"): void;
 }
 
@@ -3484,10 +5191,14 @@ export type Writable<T> = {
     -readonly [key in keyof T]: T[key];
 };
 
+// Mapped over `Pick` so each property keeps its declaration (and doc comment) from MoveableProps.
 export type MoveableProperties = {
-    -readonly [key in typeof MOVEABLE_PROPS[number]]?: MoveableProps[key];
+    -readonly [key in keyof Pick<MoveableProps, typeof MOVEABLE_PROPS[number]>]?: MoveableProps[key];
 };
 
+/**
+ * @category Snappable
+ */
 export interface SnappableRenderType {
     type: "snap" | "bounds";
     pos: number;

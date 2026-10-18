@@ -10,7 +10,7 @@
 | 2 | Storybook 10 + Vite 8，测试改为 Vitest 5 | 已完成 | `archive/2026-10-11-upgrade-storybook-10-vitest` |
 | 3 | 库构建工具替换 | 已完成 | `archive/2026-10-12-replace-build-with-tsdown`，`archive/2026-10-13-migrate-eslint-flat-config` |
 | 4 | 框架包装升级与依赖升级 | 已完成 | `archive/2026-10-13-upgrade-lit-3`、`archive/2026-10-15-migrate-vue3-to-tsdown`、`archive/2026-10-16-upgrade-svelte-5`、`archive/2026-10-18-bump-dependencies` |
-| 5 | 文档与部署 | 进行中 | `archive/2026-10-18-deploy-demo-with-actions` |
+| 5 | 文档与部署 | 进行中 | `archive/2026-10-18-deploy-demo-with-actions`、`replace-jsdoc-with-typedoc` |
 | 6 | 以 `@moveable-next` 发布 | 未开始 | |
 
 ## 已完成
@@ -41,7 +41,7 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 拆成 3 个 change，依次是：`deploy-demo-with-actions`（发布通道）、TypeDoc、Svelte 示例。
 
 - demo 站点发布：`deploy-demo-with-actions` 把 `pnpm deploy`（gh-pages 2 本地推送 gh-pages 分支）换成 GitHub Actions 手动发布到 GitHub Pages，删除 gh-pages 依赖，站点只保留 `release/latest/`。仓库目前是私有的，开不了 Pages，只验证了构建和上传。开启 Pages 后（仓库公开或开通 Pro）还要做：把这些提交合并到 `main`；Settings → Pages 的 Source 选「GitHub Actions」；在 Actions 中手动运行 `Deploy demo`；检查站点（落地页、Storybook、`release/latest/doc/`、dist）；在 Settings → Environments 中确认 `github-pages` 环境只允许 `main` 部署。
-- TypeDoc 替换 `@daybrush/jsdoc`。
+- API 文档：`replace-jsdoc-with-typedoc` 把 `@daybrush/jsdoc` 换成 TypeDoc 0.28（`typedoc.json` + `config/typedoc/`，警告视为错误，CI 中执行）。源码注释改为挂在声明上的 TSDoc：jsdoc 的结构标签全部移除；128 段读不到的选项和事件说明移到 `XxxOptions` / `XxxEvents` 上；方法说明移到 `MoveableInterface`；接口按 able 用 `@category` 分组。`MoveableProperties` 改为同态映射，让 `Moveable` 类页面带上说明。文档和 Storybook 之间的链接改为站内相对链接。
 - Storybook 生成的 Svelte 示例改为 Svelte 5 写法（`$state`、`onDrag` 等回调 prop 代替顶层 `let` 和 `on:drag`）：`on:` 是 croffle 的 SvelteWaffle 内部固定输出的，要改 croffle 的输出。同时修复 3 个编译失败的生成示例（两个 `<input>` 写了闭合标签，`ReactSelectoNestedGroupApp` 的 JS 语法错误，见 `upgrade-svelte-5` 的 baseline）。示例改完后，svelte-moveable 去掉对已弃用的 `on:` 指令的支持（`createEventDispatcher`）。
 
 ### 6. 以 `@moveable-next` 发布
@@ -59,4 +59,6 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 - @croffle/bakery 0.0.25 依赖已弃用的 glob 8，glob 8 又依赖已弃用的 inflight。删除 gh-pages 后，仓库中已弃用的包只剩这两个，随 croffle 一起处理。（gh-pages 2 只带来了 glob 7；它也依赖 inflight，但 inflight 同时经 glob 8 被引入，所以没有随 gh-pages 消失。）
 - origin 上的 gh-pages 分支（上游 2023 年的内容，加上一次误操作推送的提交）已经不再使用：Pages 的来源是 Actions。是否删除由用户决定。
 - 落地页（`demo/index.html` 等，上游预先构建好的页面，源码不在仓库中）和 README 中的链接都指向上游的 `daybrush.com`，随第 6 步的包名、站点地址一起调整。
+- Storybook 控件说明中的「See API」是指向同一站点 `release/latest/doc/` 的相对链接，单独运行 `pnpm storybook` 开发时会是 404，部署后和本地 `demo/` 中可用。
+- README 中「Contribute」链接的 `CONTRIBUTING.md` 不存在（API 文档首页也会显示这个链接）；TypeDoc 关掉了相对路径检查（`validation.invalidPath`，为了指向 Storybook 的相对链接），所以不会报警。
 - Storybook 10 在 React 16 下测试时会打印 `act(...)` 警告，不影响结果；升级 React 后会消失。

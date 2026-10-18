@@ -29,7 +29,7 @@ pnpm build                 # 只构建 react-moveable
 pnpm lint                  # ESLint 检查库包的 src（警告也算失败），再检查各包有没有重复的依赖版本范围；不需要先构建
 pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact/preact → moveable → lit/vue3/svelte，helper 独立）；vue3-moveable 的构建最后执行类型测试；svelte-moveable 的构建依次执行 svelte-check（警告也算失败）、svelte-package、publint 和类型测试
 pnpm build:storybook       # 先 bake，再构建静态 Storybook 到 demo/storybook
-pnpm doc                   # jsdoc 生成 doc/
+pnpm doc                   # TypeDoc 从源码生成 moveable 的 API 文档到 doc/（typedoc.json + config/typedoc/，警告视为错误；不需要先构建，CI 会跑）
 pnpm demo:build            # 构建所有包、文档和 Storybook，再由 config/copy-demo-files.mjs 把 moveable/helper 的 dist 和 doc/ 复制进 demo/；完成后 demo/ 就是站点根目录
 
 # packages/react-moveable（或在根目录用 pnpm --filter react-moveable <script>）
@@ -60,6 +60,7 @@ story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
 - 只为测试存在的 story 打 `tags: ["hidden-test"]`：侧边栏默认隐藏（可在标签筛选中显示），照常参与测试。
 - 公共样式 `stories/common.css`、`stories/templates/default.css` 在 `.storybook/preview.tsx` 中全局引入；`.storybook/vitest.setup.ts` 给测试页面补上 Storybook 默认的 padded 布局。
 - 代码 tab（React / CSS / Script / Vue3 / Svelte / Lit，随 Controls 实时替换参数）是本地 addon `.storybook/addons/code-preview/`，读取 story 的 `parameters.preview`。
+- 控件说明中的「See API」用 `stories/utils.ts` 的 `makeLink(属性名)`（`Moveable` 类页面的锚点）或 `makeTypeLink(类型名, 成员名)` 生成，是指向同一站点 `release/latest/doc/` 的相对链接：部署后和本地 `demo/` 中可用，单独运行 `pnpm storybook` 时是 404。
 
 `pnpm bake`（croffle）会把 React story 自动转译成 script（vanilla）/vue3/svelte/lit 版本的示例代码，生成在各 story 目录的子文件夹里（已 git 忽略），不要手改这些生成目录；`storybook`、`build:storybook`、`test` 都会先执行它。
 
@@ -111,3 +112,10 @@ helper              独立工具包（@moveable/helper）
 ### 类型
 
 `src/types.ts`（数千行）是所有 props、事件参数、`MoveableManagerInterface` 的唯一来源；`tests/types.ts` 用于编译期类型断言（`pnpm test:type`）。
+
+API 文档（`pnpm doc`）由 TypeDoc 从这些声明的注释生成，入口 `config/typedoc/index.ts` 把 moveable 的默认导出命名为 `Moveable`，并写各分组的 `@categoryDescription`。注释约定：
+- 注释写在它描述的声明上（TSDoc），不要用 `@typedef`、`@memberof`、`@name`、`@event`、`@namespace`、`@method` 这类结构标签把注释「挂」到别处：TypeDoc 只读声明上的注释，`pnpm doc` 会因未知标签失败。
+- 选项的说明和示例写在 `XxxOptions` 的字段上；事件写在 `XxxEvents` 的 `onX` 成员上（`moveable.on("x")` 的说明也在这里）；方法写在 `MoveableInterface` 上，原生类自己实现、含义相同的方法用 `{@inheritDoc MoveableInterface.x}` 引用（`setState`、`forceUpdate` 在原生类和 React 组件上含义不同，说明直接写在原生类上）；`moveable.request(able, param)` 的参数写在 `XxxRequestParam` 上。
+- 属于某个 able 的类型加 `@category <Able>`，其余默认归入 Core（`typedoc.json` 的 `defaultCategory`）。标为 `@private` 的选项不出现在文档中。
+- `@param 参数名 - 说明`、`@returns 说明`；`@example` 单独一行，后面接代码（同一行的文字会被当成示例标题）；链接用 `{@link 符号}`；指向 Storybook 的链接写成 `@see [Storybook](../../../../storybook/?path=/story/<id>)`（文档页面在站点的 `release/latest/doc/<kind>/` 下）。
+- `MoveableProperties` 必须保持基于 `Pick` 的同态映射，否则 `Moveable` 类页面上的选项会丢失注释。

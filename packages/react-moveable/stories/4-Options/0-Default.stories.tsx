@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect } from "storybook/test";
 import { appStory, devPlay } from "../utils/story";
 
-import { makeArgType, makeOptionLink } from "../utils";
+import { makeArgType, makeLink } from "../utils";
 import { pan, wait } from "../utils/testing";
 import ReactUseResizeObserverApp from "./ReactUseResizeObserverApp";
 import ReactUseResizeObserverGroupApp from "./ReactUseResizeObserverGroupApp";
@@ -118,7 +118,7 @@ export const OptionsLinePadding = {
         argTypes: {
             linePadding: makeArgType({
                 type: "number",
-                description: makeOptionLink("Moveable", "DefaultOptions", "linePadding"),
+                description: makeLink("linePadding"),
                 defaultValue: 0,
                 value: 10,
             }),
@@ -134,7 +134,7 @@ export const OptionsControlPadding = {
         argTypes: {
             controlPadding: makeArgType({
                 type: "number",
-                description: makeOptionLink("Moveable", "DefaultOptions", "controlPadding"),
+                description: makeLink("controlPadding"),
                 defaultValue: 0,
                 value: 20,
             }),

@@ -14,10 +14,6 @@ function getDefaultScrollPosition(e: { scrollContainer: HTMLElement, direction: 
         scrollContainer.scrollTop,
     ];
 }
-/**
- * @namespace Moveable.Scrollable
- * @description Whether or not target can be scrolled to the scroll container (default: false)
- */
 export default {
     name: "scrollable",
     canPinch: true,
@@ -138,37 +134,3 @@ export default {
         state.dragScroll = null;
     },
 };
-
-/**
- * When the drag cursor leaves the scrollContainer, the `scroll` event occur to scroll.
- * @memberof Moveable.Scrollable
- * @event scroll
- * @param {Moveable.Scrollable.OnScroll} - Parameters for the `scroll` event
- * @example
- * import Moveable from "moveable";
- *
- * const moveable = new Moveable(document.body, {
- *     target: document.querySelector(".target"),
- * });
- * moveable.on("scroll", ({ scrollContainer, direction }) => {
- *   scrollContainer.scrollLeft += direction[0] * 10;
- *   scrollContainer.scrollTop += direction[1] * 10;
- * });
- */
-
-/**
- * When the drag cursor leaves the scrollContainer, the `scrollGroup` event occur to scroll in group.
- * @memberof Moveable.Scrollable
- * @event scrollGroup
- * @param {Moveable.Scrollable.OnScrollGroup} - Parameters for the `scrollGroup` event
- * @example
- * import Moveable from "moveable";
- *
- * const moveable = new Moveable(document.body, {
- *     target: [].slice.call(document.querySelectorAll(".target")),
- * });
- * moveable.on("scroll", ({ scrollContainer, direction }) => {
- *   scrollContainer.scrollLeft += direction[0] * 10;
- *   scrollContainer.scrollTop += direction[1] * 10;
- * });
- */

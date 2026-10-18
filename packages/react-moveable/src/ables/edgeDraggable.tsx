@@ -78,17 +78,3 @@ cursor: move;
         return Draggable.unset(moveable);
     },
 });
-
-/**
- * Whether to move by dragging the edge line (default: false)
- * @name Moveable.Draggable#edgeDraggable
- * @example
- * import Moveable from "moveable";
- *
- * const moveable = new Moveable(document.body, {
- *  draggable: true,
- *  edgeDraggable: false,
- * });
- *
- * moveable.edgeDraggable = true;
- */

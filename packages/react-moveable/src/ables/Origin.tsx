@@ -31,14 +31,3 @@ export default makeAble("origin", {
         ];
     },
 });
-
-/**
- * Whether or not the origin controlbox will be visible or not (default: true)
- * @name Moveable#origin
- * @example
- * import Moveable from "moveable";
- *
- * const moveable = new Moveable(document.body);
- *
- * moveable.origin = true;
- */

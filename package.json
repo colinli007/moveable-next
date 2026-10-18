@@ -52,18 +52,16 @@
         "packages:build": "pnpm -r build",
         "test": "pnpm bake && vitest run",
         "lint": "eslint --max-warnings 0 && node config/check-dependency-ranges.mjs",
-        "doc": "rm -rf ./doc && jsdoc -c jsdoc.json",
+        "doc": "typedoc",
         "build:storybook": "pnpm --filter react-moveable build:storybook",
         "demo:build": "pnpm packages:build && pnpm doc && pnpm build:storybook && node config/copy-demo-files.mjs"
     },
     "devDependencies": {
-        "@daybrush/jsdoc": "^0.4.7",
         "@eslint/js": "^10.0.1",
-        "@scena/event-emitter": "catalog:",
         "@stylistic/eslint-plugin": "^5.10.0",
-        "daybrush-jsdoc-template": "^1.10.0",
         "eslint": "^10.12.0",
         "eslint-plugin-react": "^7.37.5",
+        "typedoc": "^0.28.20",
         "typescript": "catalog:",
         "typescript-eslint": "^8.71.2",
         "vitest": "catalog:"

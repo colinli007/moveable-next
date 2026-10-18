@@ -9,8 +9,7 @@
   "scripts": {
     "start": "tsdown --watch",
     "build": "tsdown && pnpm run declaration",
-    "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
-    "doc": "rm -rf ./doc && jsdoc -c jsdoc.json"
+    "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json"
   },
   "keywords": [
     "moveable",

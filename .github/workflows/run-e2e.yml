@@ -17,6 +17,9 @@ jobs:
       # Lints the src of the seven library packages and svelte-moveable (root eslint.config.mjs); needs no build output
       - name: Lint
         run: pnpm lint
+      # Checks the doc comments: TypeDoc reads the sources (needs no build output) and treats warnings as errors
+      - name: API docs
+        run: pnpm doc
       # Builds every publishable package in dependency order (pnpm -r build)
       - name: Build packages
         run: pnpm packages:build

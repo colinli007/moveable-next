@@ -164,24 +164,3 @@ export default {
         }
     },
 };
-
-/**
- * Add an event to the moveable area instead of the target for stopPropagation. (default: false, true in group)
- * @name Moveable#dragArea
- * @example
- * import Moveable from "moveable";
- *
- * const moveable = new Moveable(document.body, {
- *  dragArea: false,
- * });
- */
-/**
- * Set `pointerEvents: none;` css to pass events in dragArea. (default: false)
- * @name Moveable#passDragArea
- * @example
- * import Moveable from "moveable";
- *
- * const moveable = new Moveable(document.body, {
- *  dragArea: false,
- * });
- */

@@ -1,0 +1,13 @@
+{
+    // Compiles the documentation entry against the sources, so `pnpm doc` reads the comments in
+    // react-moveable's src instead of its built declaration/ and needs no build.
+    "extends": "../../packages/moveable/tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "../..",
+        "paths": {
+            "react-moveable": ["../../packages/react-moveable/src/index.ts"],
+            "react-moveable/types": ["../../packages/react-moveable/src/externalTypes.ts"]
+        }
+    },
+    "include": ["index.ts"]
+}
