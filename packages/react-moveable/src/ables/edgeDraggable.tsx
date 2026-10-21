@@ -1,5 +1,8 @@
 import { hasClass } from "@daybrush/utils";
-import { DraggableProps, MoveableGroupInterface, MoveableManagerInterface, Renderer } from "../types";
+import {
+    DraggableProps, MoveableGroupInterface, MoveableManagerInterface, Renderer,
+    OnDragStart, OnDrag, OnDragEnd, OnDragGroup,
+} from "../types";
 import { prefix } from "../utils";
 import Draggable from "./Draggable";
 import { makeAble } from "./AbleManager";
@@ -47,13 +50,13 @@ cursor: move;
             && hasClass(target, prefix("edge"))
             && hasClass(target, prefix("edgeDraggable"));
     },
-    dragStart(moveable: MoveableManagerInterface<DraggableProps>, e: any) {
+    dragStart(moveable: MoveableManagerInterface<DraggableProps>, e: any): false | OnDragStart {
         return Draggable.dragStart(moveable, getDraggableEvent(e));
     },
-    drag(moveable: MoveableManagerInterface<DraggableProps>, e: any) {
+    drag(moveable: MoveableManagerInterface<DraggableProps>, e: any): OnDrag | undefined {
         return Draggable.drag(moveable, getDraggableEvent(e));
     },
-    dragEnd(moveable: MoveableManagerInterface<DraggableProps, any>, e: any) {
+    dragEnd(moveable: MoveableManagerInterface<DraggableProps, any>, e: any): OnDragEnd | undefined {
         return Draggable.dragEnd(moveable, getDraggableEvent(e));
     },
     dragGroupCondition(moveable: MoveableGroupInterface<DraggableProps>, e: any) {
@@ -65,10 +68,10 @@ cursor: move;
         }
         return !props.draggable && hasClass(target, prefix("direction")) && hasClass(target, prefix("line"));
     },
-    dragGroupStart(moveable: MoveableGroupInterface<DraggableProps>, e: any) {
+    dragGroupStart(moveable: MoveableGroupInterface<DraggableProps>, e: any): false | OnDragStart {
         return Draggable.dragGroupStart(moveable, getDraggableEvent(e));
     },
-    dragGroup(moveable: MoveableGroupInterface<DraggableProps>, e: any) {
+    dragGroup(moveable: MoveableGroupInterface<DraggableProps>, e: any): OnDragGroup | undefined {
         return Draggable.dragGroup(moveable, getDraggableEvent(e));
     },
     dragGroupEnd(moveable: MoveableGroupInterface<DraggableProps, any>, e: any) {

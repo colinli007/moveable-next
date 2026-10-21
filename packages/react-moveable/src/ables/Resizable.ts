@@ -24,7 +24,7 @@ import {
     ResizableProps, OnResizeGroup, OnResizeGroupEnd,
     OnResizeGroupStart, DraggableProps, OnDrag, OnResizeStart, SnappableState,
     OnResize, OnResizeEnd, MoveableManagerInterface, MoveableGroupInterface, SnappableProps,
-    OnBeforeResize, OnBeforeResizeGroup, ResizableRequestParam,
+    OnBeforeResize, OnBeforeResizeGroup, ResizableRequestParam, RenderDirections, Renderer,
 } from "../types";
 import { getRenderDirections } from "../renderDirections";
 import {
@@ -48,6 +48,11 @@ import { getFixedDirectionInfo, getOffsetFixedPositionInfo } from "../utils/getF
 
 
 const directionCondition = getDirectionCondition("resizable");
+// Typed so that the declaration doesn't reach the package entry (see MOVEABLE_ABLES in ./consts).
+const renderResizableDirections: (
+    moveable: MoveableManagerInterface<Partial<RenderDirections>>,
+    React: Renderer,
+) => any[] = getRenderDirections("resizable");
 
 export default {
     name: "resizable",
@@ -74,7 +79,7 @@ export default {
         "resizeGroup",
         "resizeGroupEnd",
     ] as const,
-    render: getRenderDirections("resizable"),
+    render: renderResizableDirections,
     dragControlCondition: directionCondition,
     viewClassName: getDirectionViewClassName("resizable"),
     dragControlStart(

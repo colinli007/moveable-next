@@ -22,6 +22,7 @@ import {
     OnScale, OnScaleEnd, MoveableManagerInterface, MoveableGroupInterface,
     OnBeforeScaleGroup,
     OnBeforeScale,
+    RenderDirections, Renderer,
 } from "../types";
 import {
     fillChildEvents,
@@ -40,6 +41,11 @@ import {
 import { getFixedDirectionInfo } from "../utils/getFixedDirection";
 
 const directionCondition = getDirectionCondition("scalable");
+// Typed so that the declaration doesn't reach the package entry (see MOVEABLE_ABLES in ./consts).
+const renderScalableDirections: (
+    moveable: MoveableManagerInterface<Partial<RenderDirections>>,
+    React: Renderer,
+) => any[] = getRenderDirections("scalable");
 
 export default {
     name: "scalable",
@@ -63,7 +69,7 @@ export default {
         "scaleGroup",
         "scaleGroupEnd",
     ] as const,
-    render: getRenderDirections("scalable"),
+    render: renderScalableDirections,
     dragControlCondition: directionCondition,
     viewClassName: getDirectionViewClassName("scalable"),
     dragControlStart(

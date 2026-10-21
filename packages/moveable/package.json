@@ -20,8 +20,9 @@
   "jsdelivr": "./dist/moveable.min.js",
   "scripts": {
     "start": "tsdown --watch",
-    "build": "tsdown && pnpm run declaration",
-    "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json"
+    "build": "tsdown && pnpm run declaration && pnpm run test:type",
+    "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
+    "test:type": "node test/checkTypes.mjs"
   },
   "keywords": [
     "moveable",

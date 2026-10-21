@@ -22,7 +22,22 @@ import IndividualGroupable from "./IndividualGroupable";
 import { camelize, pushSet } from "@daybrush/utils";
 import { Able } from "../types";
 
-export const MOVEABLE_ABLES = [
+// The tuple type is written out so that the declaration refers to each able by `typeof`.
+// Inferred, it expands every able's type, and tsc references the types that this file
+// doesn't import through the package entry (`import("..")`), which pulls React's types
+// into `@moveable-next/react/types`.
+export const MOVEABLE_ABLES: readonly [
+    typeof BeforeRenderable,
+    typeof Default, typeof Snappable, typeof Pinchable,
+    typeof Draggable, typeof edgeDraggable,
+    typeof Resizable, typeof Scalable, typeof Warpable, typeof Rotatable,
+    typeof Scrollable, typeof Padding, typeof Origin,
+    typeof OriginDraggable,
+    typeof Clippable, typeof Roundable, typeof Groupable, typeof IndividualGroupable,
+    typeof Clickable,
+    typeof DragArea,
+    typeof Renderable,
+] = [
     BeforeRenderable,
     Default, Snappable, Pinchable,
     Draggable, edgeDraggable,
@@ -33,7 +48,7 @@ export const MOVEABLE_ABLES = [
     Clickable,
     DragArea,
     Renderable,
-] as const;
+];
 
 
 export const MOVEABLE_EVENTS = /*#__PURE__*/(MOVEABLE_ABLES as readonly Able[]).reduce((current, able) => {
