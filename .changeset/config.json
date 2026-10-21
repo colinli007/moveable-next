@@ -1,0 +1,18 @@
+{
+    "$schema": "https://unpkg.com/@changesets/config@4.0.1/schema.json",
+    "access": "public",
+    "fixed": [
+        [
+            "@moveable-next/react",
+            "@moveable-next/croact",
+            "@moveable-next/vanilla",
+            "@moveable-next/vue3"
+        ]
+    ],
+    "changelog": [
+        "@changesets/changelog-github",
+        {
+            "repo": "colinli007/moveable-next"
+        }
+    ]
+}
