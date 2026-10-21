@@ -1,6 +1,6 @@
 {
     "name": "@moveable-next/react",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "description": "A React Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable, Groupable.",
     "main": "./dist/moveable.cjs.js",
     "module": "./dist/moveable.esm.js",
