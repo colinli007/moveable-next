@@ -10,7 +10,7 @@
 | 2 | Storybook 10 + Vite 8，测试改为 Vitest 5 | 已完成 | `archive/2026-10-11-upgrade-storybook-10-vitest` |
 | 3 | 库构建工具替换 | 已完成 | `archive/2026-10-12-replace-build-with-tsdown`，`archive/2026-10-13-migrate-eslint-flat-config` |
 | 4 | 框架包装升级与依赖升级 | 已完成 | `archive/2026-10-13-upgrade-lit-3`、`archive/2026-10-15-migrate-vue3-to-tsdown`、`archive/2026-10-16-upgrade-svelte-5`、`archive/2026-10-18-bump-dependencies` |
-| 5 | 文档与部署 | 进行中 | `archive/2026-10-18-deploy-demo-with-actions`、`archive/2026-10-18-replace-jsdoc-with-typedoc`、`archive/2026-10-18-remove-croffle-examples` |
+| 5 | 文档与部署 | 已完成 | `archive/2026-10-18-deploy-demo-with-actions`、`archive/2026-10-18-replace-jsdoc-with-typedoc`、`archive/2026-10-18-remove-croffle-examples` |
 | 6 | 以 `@moveable-next` 发布 | 进行中 | `archive/2026-10-18-remove-preact-lit-svelte-packages`、`archive/2026-10-18-rename-to-moveable-next-scope`、`archive/2026-10-18-upgrade-react-19` |
 | 7 | Storybook 加入 Vue3 示例 | 未开始 | |
 
@@ -36,14 +36,14 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 
 `bump-dependencies`：依赖升到最新。删除 20 个未使用的依赖声明，例如 @babel/core、keycon 0.3、各子包的 gh-pages、根目录的 tslib、helper 的 React 全家、3 个包的 `@types/node`。overrides 去掉 14 条从 yarn `resolutions` 迁来的去重条目，剩下的 3 项覆盖都写明理由和删除条件，并逐条验证仍然起作用。被两个及以上包声明的 19 个依赖改由 `pnpm-workspace.yaml` 的 catalog 统一声明，`pnpm lint` 中加入重复范围检查。补丁和小版本统一升级后，连同 node_modules 删除锁文件重新解析：yarn 时代残留的 jsdom 11 等被清掉，已弃用警告从 12 个降到 3 个，锁文件从 8430 行减到 6834 行。大版本只升了 happy-dom 21；React 19、preact 11、gh-pages 6、TypeScript 7 暂缓，`@types/node` 保持 22.x，与运行时一致。每一步都执行全量检查，产物结构和 bake 输出都与升级前一致。
 
-## 待进行
-
 ### 5. 文档与部署
-拆成 3 个 change，依次是：`deploy-demo-with-actions`（发布通道）、TypeDoc、删除 croffle 生成的示例。三个 change 都已完成，剩下开启 GitHub Pages 后的发布步骤（见第一项）。
+拆成 3 个 change，依次是：`deploy-demo-with-actions`（发布通道）、TypeDoc、删除 croffle 生成的示例。
 
-- demo 站点发布：`deploy-demo-with-actions` 把 `pnpm deploy`（gh-pages 2 本地推送 gh-pages 分支）换成 GitHub Actions 手动发布到 GitHub Pages，删除 gh-pages 依赖，站点只保留 `release/latest/`。仓库目前是私有的，开不了 Pages，只验证了构建和上传。开启 Pages 后（仓库公开或开通 Pro）还要做：把这些提交合并到 `main`；Settings → Pages 的 Source 选「GitHub Actions」；在 Actions 中手动运行 `Deploy demo`；检查站点（落地页、Storybook、`release/latest/doc/`、dist）；在 Settings → Environments 中确认 `github-pages` 环境只允许 `main` 部署。
+- demo 站点发布：`deploy-demo-with-actions` 把 `pnpm deploy`（gh-pages 2 本地推送 gh-pages 分支）换成 GitHub Actions 手动发布到 GitHub Pages，删除 gh-pages 依赖，站点只保留 `release/latest/`。2026-10-21 仓库改为公开后上线：`refactor` 快进合并到 `main`，Pages 的来源设为「GitHub Actions」，`github-pages` 环境只允许 `main` 部署，首次运行 `Deploy demo` 成功。站点是 https://colinli007.github.io/moveable-next/ ，落地页、Storybook（story 正常渲染）、`release/latest/doc/`、moveable 和 helper 的 UMD 都在浏览器中检查过，没有加载失败的资源和脚本错误。
 - API 文档：`replace-jsdoc-with-typedoc` 把 `@daybrush/jsdoc` 换成 TypeDoc 0.28（`typedoc.json` + `config/typedoc/`，警告视为错误，CI 中执行）。源码注释改为挂在声明上的 TSDoc：jsdoc 的结构标签全部移除；128 段读不到的选项和事件说明移到 `XxxOptions` / `XxxEvents` 上；方法说明移到 `MoveableInterface`；接口按 able 用 `@category` 分组。`MoveableProperties` 改为同态映射，让 `Moveable` 类页面带上说明。文档和 Storybook 之间的链接改为站内相对链接。
 - 示例代码：原计划是改 croffle 的输出，让生成的 Svelte 示例使用 Svelte 5 写法。调研发现生成的示例没有任何检查：用各框架的编译器检查，Svelte 133 个中 3 个编译失败、Vue3 1 个、Lit 1 个、Script 2 个；用到 svelte-selecto、svelte-infinite-viewer（只支持 Svelte 3）的 6 个 Svelte 示例在 Svelte 5 下运行时一定出错；croffle 本身 2023 年 6 月后停更，仓库已无法访问。`remove-croffle-examples` 因此删除 croffle 和 Script / Vue3 / Svelte / Lit 四个代码 tab，只保留 React 和 CSS：React tab 就是被渲染、被测试的 App 源码，删除前后 137 个 story 的 React tab 逐字相同；CSS tab 补上 App import 的样式文件（`snap.css`、`safari.css`）。croffle 带来的 TypeScript 4.5.5、glob 8、inflight 随之移除，仓库中不再有已弃用的依赖，TypeScript 只剩一个版本，`storybook`、`test`、`build:storybook` 不再先执行 bake。svelte-moveable 去掉 `on:` 指令（`createEventDispatcher`），事件只用回调 prop；原来按生成示例写法的测试改为测试 runes 组件中 `bind:this` 得到的引用。
+
+## 待进行
 
 ### 6. 以 `@moveable-next` 发布
 - 精简包的范围：`remove-preact-lit-svelte-packages` 删除 preact-moveable、lit-moveable、svelte-moveable，只支持 React、原生 JS 和 Vue 3（上游一周下载量：preact 201、lit 31、svelte 843，react 30.6 万、原生 4.9 万、vue3 7114）。仓库剩下 react-moveable、croact-moveable、moveable、vue3-moveable、@moveable/helper 5 个包；只为这三个包存在的依赖（preact、preact-css-styled、lit、svelte 及其工具链）和 preact-css-styled 的 `packageExtensions` 一并删除，`vite` 只剩 react-moveable 使用，移出 catalog。剩下 5 个包的产物逐字节不变。后面各项只需覆盖这 5 个包。
@@ -59,7 +59,7 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 - eslint-plugin-react 7.37.5 的 peer 范围还不包含 ESLint 10，`pnpm-workspace.yaml` 中用 `peerDependencyRules.allowedVersions` 只对它放行；它的推荐集在 ESLint 10 下能正常运行，但推荐集以外有规则（如 `jsx-filename-extension`、`forward-ref-uses-ref`）调用了 ESLint 10 已删除的 API，所以配置只启用推荐集，额外启用 react 规则前要先确认它在 ESLint 10 下能运行。上游发布支持 ESLint 10 的版本后删除放行。
 - typescript-eslint 8 支持的 TypeScript 是 `<6.1`，以后升级到 TS 7 需要等它支持（npm 上已有 7.0.2）。
 - origin 上的 gh-pages 分支（上游 2023 年的内容，加上一次误操作推送的提交）已经不再使用：Pages 的来源是 Actions。是否删除由用户决定。
-- 落地页（`demo/index.html` 等，上游预先构建好的页面，源码不在仓库中）和 README 中指向上游 `daybrush.com`、`github.com/daybrush/moveable` 的链接（文档、Storybook、源码链接）还没改：包名已经改好，这些链接随站点地址一起调整。
+- 落地页（`demo/index.html` 等，上游预先构建好的页面，源码不在仓库中）和 README 中指向上游 `daybrush.com`、`github.com/daybrush/moveable` 的链接（文档、Storybook、源码链接）还没改：包名已经改好，站点已经发布在 https://colinli007.github.io/moveable-next/ ，这些链接可以改成指向它。
 - Storybook 控件说明中的「See API」是指向同一站点 `release/latest/doc/` 的相对链接，单独运行 `pnpm storybook` 开发时会是 404，部署后和本地 `demo/` 中可用。
 - README 中「Contribute」链接的 `CONTRIBUTING.md` 不存在（API 文档首页也会显示这个链接）；TypeDoc 关掉了相对路径检查（`validation.invalidPath`，为了指向 Storybook 的相对链接），所以不会报警。
 - 测试只在 React 19 上运行：`@moveable-next/react` 的 peer 范围包含 16.8 到 18，这些版本上的行为以升级时产物逐字节不变为依据，以后改动 react-moveable 时不再被测试。需要时加 CI 矩阵。
