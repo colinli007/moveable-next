@@ -39,10 +39,12 @@ pnpm storybook             # = react-moveable 的 Storybook（端口 6006），�
 pnpm test                  # 跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试 + 框架包装的浏览器测试；后者读构建产物，要先 pnpm packages:build）
 pnpm build                 # 只构建 react-moveable
 pnpm lint                  # ESLint 检查库包的 src（警告也算失败），再检查各包有没有重复的依赖版本范围；不需要先构建
-pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact → moveable → vue3，helper 独立）；vue3-moveable 的构建最后执行类型测试
+pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact → moveable → vue3，helper 独立）；moveable、vue3-moveable 的构建最后执行类型测试
 pnpm build:storybook       # 构建静态 Storybook 到 demo/storybook
 pnpm doc                   # TypeDoc 从源码生成 moveable 的 API 文档到 doc/（typedoc.json + config/typedoc/，警告视为错误；不需要先构建，CI 会跑）
 pnpm demo:build            # 构建所有包、文档和 Storybook，再由 config/copy-demo-files.mjs 把 moveable/helper 的 dist 和 doc/ 复制进 demo/；完成后 demo/ 就是站点根目录
+pnpm changeset             # 为改动添加 changeset（.changeset/，见 CONTRIBUTING.md）
+pnpm release               # 全量构建后 changeset publish：CI 的发布步骤；本地只用于新包的第一次发布
 
 # packages/react-moveable（或在根目录用 pnpm --filter @moveable-next/react <script>）
 pnpm test:type             # tsc -p tsconfig.test.json，对 tests/types.ts 做类型断言检查
@@ -54,6 +56,8 @@ pnpm exec vitest run stories/1-Basic    # 只跑某个目录 / 文件的 story �
 ```
 
 demo 站点只能在 GitHub Actions 中手动运行 `Deploy demo`（`.github/workflows/deploy-demo.yml`）发布：CI 从干净检出执行 `pnpm demo:build`，把 `demo/` 整体发布到本仓库的 GitHub Pages（来源设为「GitHub Actions」，不使用 gh-pages 分支）。本地没有发布命令。在 pnpm 11 中 `pnpm deploy` 执行的是根目录的同名脚本（不是 pnpm 内置命令，加 `--help` 也照样执行），所以根目录不要定义会写远程的 `deploy` 脚本。
+
+npm 发布用 changesets（`.changeset/config.json`）：react、croact、vanilla、vue3 四个包是 fixed 组，版本号始终相同；helper 独立。改动影响已发布包的使用者时加 changeset，测试、story、文档、CI 的改动不需要。`.github/workflows/release.yml` 在 push 到 `main` 时先调用 `run-e2e.yml` 跑全部检查，再由 changesets/action 开或更新版本 PR；版本 PR 合并后在 `npm` 环境（只允许 `main`）中执行 `pnpm release`，用 npm 可信发布（OIDC，pnpm 11 自己实现，不需要 npm CLI 11）并自动带 provenance，仓库和 CI 中没有 npm token。npm 只能给已存在的包配置可信发布，所以新包的第一个版本由维护者在本地 `main` 上 `npm login` 后执行 `pnpm release`，再到 npmjs.com 为它添加可信发布（仓库 `colinli007/moveable-next`、工作流 `release.yml`、环境 `npm`）。
 
 Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon-vitest`（Vitest 5 浏览器模式，Playwright 驱动 chromium）。Vitest 配置按包分开：根目录 `vitest.config.mts` 只汇总 `packages/*/vitest.config.mts`；react-moveable 有 `storybook`（浏览器）和 `unit`（node，code-preview 的单元测试）两个 project，helper 一个（happy-dom），vue3-moveable 一个（浏览器）。配置文件用 `.mts`，因为包的 `package.json` 不是 `"type": "module"`。
 
@@ -116,6 +120,8 @@ helper              独立工具包
 ### 类型
 
 `src/types.ts`（数千行）是所有 props、事件参数、`MoveableManagerInterface` 的唯一来源；`tests/types.ts` 用于编译期类型断言（`pnpm test:type`）。
+
+`@moveable-next/react/types` 以及原生版、Vue 3 版的类型声明不能引入 React 的类型（使用者通常没有 `@types/react`）。able 的类型多是推断出来的；推断结果里用到本文件没有 import 的类型时，tsc 会合成 `import("..")`，也就是经由 react-moveable 的入口引用，入口又引用了 `InitialMoveable` 和 `react`。moveable 的 `test:type`（`test/checkTypes.mjs`，在构建的最后执行）发现 `@types/react` 参与编译时会失败。修复方法是在源码中写出这些类型（import 后加注解），参见 `src/ables/consts.ts` 中 `MOVEABLE_ABLES` 的写法。
 
 API 文档（`pnpm doc`）由 TypeDoc 从这些声明的注释生成，入口 `config/typedoc/index.ts` 把 moveable 的默认导出命名为 `Moveable`，并写各分组的 `@categoryDescription`。注释约定：
 - 注释写在它描述的声明上（TSDoc），不要用 `@typedef`、`@memberof`、`@name`、`@event`、`@namespace`、`@method` 这类结构标签把注释「挂」到别处：TypeDoc 只读声明上的注释，`pnpm doc` 会因未知标签失败。

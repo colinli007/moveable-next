@@ -93,6 +93,13 @@ $ npm i @moveable-next/vue3 vue
 
 @moveable-next/vue3 requires [Vue](https://vuejs.org) 3.5 or later (`vue` is a peer dependency).
 
+### Node ESM
+The package ships an ES module build for bundlers (picked through the `module` condition) and a CommonJS build, which Node loads for both `import` and `require`. With a bundler, use it as shown below. In native ES modules run by Node without a bundler (for example server-side rendering), the default import is the whole CommonJS module, so import the named export instead:
+
+```ts
+import { VueMoveable } from "@moveable-next/vue3";
+```
+
 ## 🚀 How to use
 If you want to check the methods and events, please refer to the [**API documentation**](https://daybrush.com/moveable/release/latest/doc/).
 
@@ -147,7 +154,7 @@ If you have any questions or requests or want to contribute to `moveable` or oth
 
 ### Code Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](https://github.com/daybrush/moveable/blob/master/CONTRIBUTING.md)].
+This project exists thanks to all the people who contribute. [[Contribute](https://github.com/colinli007/moveable-next/blob/main/CONTRIBUTING.md)].
 
 <a href="https://github.com/daybrush/moveable/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=daybrush/moveable" />

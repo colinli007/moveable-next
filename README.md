@@ -99,6 +99,17 @@ $ npm i @moveable-next/vanilla
 <script src="https://unpkg.com/@moveable-next/vanilla/dist/moveable.min.js"></script>
 ```
 
+### Node ESM
+The package ships an ES module build for bundlers (picked through the `module` condition) and a CommonJS build, which Node loads for both `import` and `require`. With a bundler, or with TypeScript's `moduleResolution: "bundler"`, use it as shown below.
+
+In a native ES module project type-checked with `moduleResolution: "node16"` or `"nodenext"`, TypeScript types the default import as the whole CommonJS module, so `new Moveable(...)` is a type error although it works at runtime. Use `Moveable.default`, which is the same class at runtime:
+
+```ts
+import Moveable from "@moveable-next/vanilla";
+
+const moveable = new Moveable.default(document.body, { draggable: true });
+```
+
 ## 📄 Documents
 
 * [**Moveable Handbook**](https://github.com/daybrush/moveable/blob/master/handbook/handbook.md)
