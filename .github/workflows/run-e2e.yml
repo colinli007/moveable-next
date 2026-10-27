@@ -1,5 +1,10 @@
 name: Tests
-on: [push, pull_request]
+on:
+  # main is checked by release.yml, which calls this workflow before publishing
+  push:
+    branches-ignore: [main]
+  pull_request:
+  workflow_call:
 jobs:
   test:
     timeout-minutes: 60

@@ -1,0 +1,40 @@
+name: Release
+# On every push to main: run all checks, then let changesets/action either open/update the
+# version PR (pending changesets) or publish the versions not yet on npm (version PR merged).
+on:
+  push:
+    branches: [main]
+jobs:
+  checks:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/run-e2e.yml
+  release:
+    needs: checks
+    runs-on: ubuntu-latest
+    # The npm environment only allows main; each package's trusted publisher is bound to this
+    # workflow and environment. No npm token: pnpm publish exchanges the OIDC token itself.
+    environment: npm
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+    # A running release is never cancelled; a later push waits for it.
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+      # pnpm version comes from the root package.json `packageManager` field
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      # The action passes its token to both scripts as GITHUB_TOKEN (needed by changelog-github)
+      - uses: changesets/action@v2
+        with:
+          version-script: pnpm changeset version
+          publish-script: pnpm release
