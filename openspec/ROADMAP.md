@@ -59,7 +59,7 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 - eslint-plugin-react 7.37.5 的 peer 范围还不包含 ESLint 10，`pnpm-workspace.yaml` 中用 `peerDependencyRules.allowedVersions` 只对它放行；它的推荐集在 ESLint 10 下能正常运行，但推荐集以外有规则（如 `jsx-filename-extension`、`forward-ref-uses-ref`）调用了 ESLint 10 已删除的 API，所以配置只启用推荐集，额外启用 react 规则前要先确认它在 ESLint 10 下能运行。上游发布支持 ESLint 10 的版本后删除放行。
 - typescript-eslint 8 支持的 TypeScript 是 `<6.1`，以后升级到 TS 7 需要等它支持（npm 上已有 7.0.2）。
 - origin 上的 gh-pages 分支（上游 2023 年的内容，加上一次误操作推送的提交）已经不再使用：Pages 的来源是 Actions。是否删除由用户决定。
-- 落地页（`demo/index.html` 等，上游预先构建好的页面，源码不在仓库中）和 README 中指向上游 `daybrush.com`、`github.com/daybrush/moveable` 的链接（文档、Storybook、源码链接）还没改：包名已经改好，站点已经发布在 https://colinli007.github.io/moveable-next/ ，这些链接可以改成指向它。
+- 落地页（`demo/index.html` 等，上游预先构建好的页面，源码不在仓库中）中指向上游 `daybrush.com`、`github.com/daybrush/moveable` 的链接还没改，可以改成指向 https://colinli007.github.io/moveable-next/ 。README 中的这类链接已在 `prepare-first-release` 的验证发版（0.1.1）中改为本仓库和站点；指向其它上游项目（scena、selecto、croact）和作者赞助页的链接保留。
 - Storybook 控件说明中的「See API」是指向同一站点 `release/latest/doc/` 的相对链接，单独运行 `pnpm storybook` 开发时会是 404，部署后和本地 `demo/` 中可用。
 - README 中「Contribute」链接的 `CONTRIBUTING.md` 不存在（API 文档首页也会显示这个链接）；TypeDoc 关掉了相对路径检查（`validation.invalidPath`，为了指向 Storybook 的相对链接），所以不会报警。
 - 测试只在 React 19 上运行：`@moveable-next/react` 的 peer 范围包含 16.8 到 18，这些版本上的行为以升级时产物逐字节不变为依据，以后改动 react-moveable 时不再被测试。需要时加 CI 矩阵。
