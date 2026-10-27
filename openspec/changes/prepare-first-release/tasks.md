@@ -25,16 +25,16 @@
 - [x] 4.1 推送第 1–3 组的提交（含 changeset）后，执行 `GITHUB_TOKEN=$(gh auth token) pnpm changeset version`：5 个包都是 0.1.0，各包 CHANGELOG 只有 0.1.0 一条且带 PR 或提交链接，`.changeset/` 中的 changeset 被消耗；`pnpm install` 后锁文件没有意外变化；提交并合并到 `main`
 - [x] 4.2 发布前检查：`pnpm packages:build` 后对每个包执行 `pnpm pack --dry-run` 和 publint，文件清单符合 library-build「包名、入口与发布内容」，`package.json` 中的内部依赖是 `~0.1.0`，不是 `workspace:`
 - [x] 4.3 【维护者】在本地 `main` 上 `npm login`，执行 `pnpm release`（输入 OTP）；`npm view @moveable-next/<包> version` 对 5 个包都返回 0.1.0；推送 `changeset publish` 创建的 5 个 git 标签
-- [ ] 4.4 【维护者】在 npmjs.com 上为 react、croact、vanilla、vue3 添加可信发布：仓库 `colinli007/moveable-next`、工作流 `release.yml`、环境 `npm`，勾选「Allow npm publish」、不勾 dist-tag；5 个包的发布权限都设为「需要 2FA 并禁止 token」。helper 暂不配置可信发布（design 决策 6）。配置在 2 天内要由 5.3 的发布验证
+- [x] 4.4 【维护者】在 npmjs.com 上为 react、croact、vanilla、vue3 添加可信发布：仓库 `colinli007/moveable-next`、工作流 `release.yml`、环境 `npm`，勾选「Allow npm publish」、不勾 dist-tag；5 个包的发布权限都设为「需要 2FA 并禁止 token」。helper 暂不配置可信发布（design 决策 6）。配置在 2 天内要由 5.3 的发布验证
 
 ## 5. CI 发布流程（design 决策 5）
 
 - [x] 5.1 【维护者确认后执行】仓库设置：用 `gh api` 允许 Actions 创建 PR（`can_approve_pull_request_reviews: true`，`default_workflow_permissions` 保持 `read`）；新建环境 `npm`，部署分支只允许 `main`；再用 API 读取这两项设置，确认已生效
 - [x] 5.2 `run-e2e.yml` 增加 `workflow_call`，`push` 改为 `branches-ignore: [main]`；新增 `release.yml`（`checks` 调用 `run-e2e.yml`；`release` 需要 `checks`，使用环境 `npm`，权限 `contents: write`、`pull-requests: write`、`id-token: write`，`concurrency: release`；安装依赖后运行 changesets/action，`publish: pnpm release`）；工作流里没有 npm token；用 actionlint 检查语法（或在推送后看 Actions 页面没有解析错误）
-- [ ] 5.3 端到端验证：合并 5.2 后，确认 `main` 上的运行中 `checks` 通过、`release` 没有可发布的内容，并正常结束；再用一个真实的小改动验证（4.4 的配置创建后 2 天内）：react、vanilla、vue3 的 README 中指向上游 `daybrush.com/moveable`、`github.com/daybrush/moveable` 的链接改为本仓库和 demo 站点，加一份四个 fixed 包的 patch changeset；合并后 CI 打开版本 PR；合并版本 PR 后，CI 发布四个 fixed 包的 0.1.1，npm 页面显示 provenance，仓库中有对应的标签和 GitHub Release
-- [ ] 5.4 在一个非 `main` 的分支上手动推送并确认 `release.yml` 不会运行发布，或者在环境限制下被拒绝（对应 spec 的「其它分支不能发布」）；检查仓库和环境的 secrets 中没有 npm token
+- [x] 5.3 端到端验证：合并 5.2 后，确认 `main` 上的运行中 `checks` 通过、`release` 没有可发布的内容，并正常结束；再用一个真实的小改动验证（4.4 的配置创建后 2 天内）：react、vanilla、vue3 的 README 中指向上游 `daybrush.com/moveable`、`github.com/daybrush/moveable` 的链接改为本仓库和 demo 站点，加一份四个 fixed 包的 patch changeset；合并后 CI 打开版本 PR；合并版本 PR 后，CI 发布四个 fixed 包的 0.1.1，npm 页面显示 provenance，仓库中有对应的标签和 GitHub Release（2026-10-27：第一次开版本 PR 时失败，vue3-moveable 的 `package.json`、`.gitignore` 是上游带来的可执行文件，GitHub API 拒绝提交，改为 `100644` 后通过；0.1.1 四个包都带 SLSA provenance，vanilla 的内部依赖是 `~0.1.1`，4 个标签和 GitHub Release 都已创建）
+- [x] 5.4 在一个非 `main` 的分支上手动推送并确认 `release.yml` 不会运行发布，或者在环境限制下被拒绝（对应 spec 的「其它分支不能发布」）；检查仓库和环境的 secrets 中没有 npm token（推送 `docs/readme-links` 只触发了 `Tests`；仓库和 `npm` 环境的 secrets 都是 0 个）
 
 ## 6. 收尾
 
-- [ ] 6.1 更新 `openspec/ROADMAP.md`：第 6 步改为已完成并写明本 change，移除已解决的「类型声明 import react」和「CONTRIBUTING.md 不存在」两条遗留，保留 ESM 双格式一条并注明 README 已写明限制
-- [ ] 6.2 `openspec validate prepare-first-release --strict` 通过
+- [x] 6.1 更新 `openspec/ROADMAP.md`：第 6 步改为已完成并写明本 change，移除已解决的「类型声明 import react」和「CONTRIBUTING.md 不存在」两条遗留，保留 ESM 双格式一条并注明 README 已写明限制
+- [x] 6.2 `openspec validate prepare-first-release --strict` 通过

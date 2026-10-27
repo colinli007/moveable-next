@@ -43,6 +43,6 @@ Releases are published by the `Release` workflow:
 1. When changesets reach `main`, the workflow runs all checks and then opens or updates a "Version Packages" pull request with the new versions and changelogs.
 2. Merging that pull request runs the checks again and publishes the packages whose version isn't on npm yet, with git tags and GitHub releases.
 
-The workflow authenticates with npm trusted publishing, so there is no npm token, and every version carries a provenance attestation. The version pull request is created by the workflow's token, which doesn't trigger other workflows, so it shows no checks; they run on `main` before anything is published.
+The workflow authenticates with npm trusted publishing, so there is no npm token, and every version carries a provenance attestation. The version pull request is opened by `github-actions[bot]`, so its checks wait for a maintainer to approve them ("Action required"). Approving is optional: the checks run on `main` again before anything is published.
 
 The only exception is the first version of a package that isn't on npm yet: npm can configure trusted publishing only for an existing package. A maintainer publishes it once from `main` with `pnpm release` (logged in with `npm login`), then adds the trusted publisher on npmjs.com: repository `colinli007/moveable-next`, workflow `release.yml`, environment `npm`.

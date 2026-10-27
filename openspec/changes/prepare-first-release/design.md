@@ -111,7 +111,8 @@ npm 只能给已经存在的包配置可信发布，所以按以下顺序：
 
 - [OIDC 发布依赖 pnpm 自己的实现（已查证 pnpm 11.28.2 支持）] → 第一次 CI 发布后，在 npm 页面上确认有 provenance 标记。如果以后某个 pnpm 版本出现回归，备选是「先 `pnpm pack` 替换 `workspace:` 协议，再用 npm ≥ 11.5.1 发布 tarball」，只影响 `release` 脚本。
 - [`.npmrc` 中的 token 占位干扰 OIDC] → changesets/action v2 已不再处理 `.npmrc`（v1 在设置了 `NPM_TOKEN` 时会写入一行），工作流也不给 `setup-node` 传 `registry-url`，所以不会出现占位；即使出现，pnpm 11 在 OIDC 成功时也会用换来的 token 覆盖静态 `_authToken`。工作流和仓库中都不设置 `NPM_TOKEN`、`NODE_AUTH_TOKEN`。
-- [由 `GITHUB_TOKEN` 创建的版本 PR 不会触发 `pull_request` 工作流，PR 上看不到检查结果] → 版本 PR 只包含版本号和 CHANGELOG 的改动；合并后 `release.yml` 会先执行全部检查，失败就不发布。在 CONTRIBUTING.md 中写明这一点。
+- [`github-actions[bot]` 创建的版本 PR 不会自动运行 `pull_request` 工作流：`Tests` 显示为等待维护者批准（Action required），批准前 PR 上没有检查结果] → 版本 PR 只包含版本号和 CHANGELOG 的改动；合并后 `release.yml` 会先执行全部检查，失败就不发布。想在 PR 上看到结果时可以批准运行。在 CONTRIBUTING.md 中写明这一点。
+- [changesets/action v2 通过 GitHub API 提交版本 PR，API 拒绝带可执行权限的文件] → 第一次开版本 PR 时因 vue3-moveable 的 `package.json`、`.gitignore`（上游以 `100755` 加入）失败，改为 `100644` 后通过。以后新增文件不要带可执行权限，脚本文件也不要放进 changeset 会修改的位置。
 - [首次发布依赖维护者本地的 npm 登录和 2FA] → 任务中写明命令和顺序；发布前先用 `pnpm pack --dry-run` 和 publint 检查。
 - [合并后的元组类型与原来展开的类型如果有细微差异，会影响使用方的类型推断] → react-moveable 的 `test:type`（`tests/types.ts`）、vue3-moveable 的类型测试和 `pnpm doc` 都必须通过；比较修改前后的 `declaration/`，只允许这 4 个文件变化。
 - [发布出错的版本无法复用版本号] → 72 小时内可以 `npm unpublish`，否则用 `npm deprecate` 并发布一个 patch。首次发布前的检查清单写进任务。
