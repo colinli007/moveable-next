@@ -1,21 +1,21 @@
 
-<p align="middle" ><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/logo.png"/></p>
+<p align="middle" ><img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/logo.png"/></p>
 <h2 align="middle">Moveable</h2>
 <p align="middle">
 <a href="https://opencollective.com/moveable" alt="Financial Contributors on Open Collective"><img src="https://opencollective.com/moveable/all/badge.svg?label=financial+contributors" /></a>
 <a href="https://www.npmjs.com/package/@moveable-next/vanilla" target="_blank"><img src="https://img.shields.io/npm/v/@moveable-next/vanilla.svg?style=flat-square&color=007acc&label=version" alt="npm version" /></a>
 <img src="https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square"/>
-<a href="https://github.com/daybrush/moveable/blob/master/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/daybrush/moveable.svg?style=flat-square&label=license&color=08CE5D"/></a>
-<a href="https://github.com/daybrush/moveable/tree/master/packages/react-moveable" target="_blank"><img alt="React" src="https://img.shields.io/static/v1.svg?label=&message=React&style=flat-square&color=61daeb"></a>
-<a href="https://github.com/daybrush/moveable/tree/master/packages/vue3-moveable" target="_blank"><img
+<a href="https://github.com/colinli007/moveable-next/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/colinli007/moveable-next.svg?style=flat-square&label=license&color=08CE5D"/></a>
+<a href="https://github.com/colinli007/moveable-next/tree/main/packages/react-moveable" target="_blank"><img alt="React" src="https://img.shields.io/static/v1.svg?label=&message=React&style=flat-square&color=61daeb"></a>
+<a href="https://github.com/colinli007/moveable-next/tree/main/packages/vue3-moveable" target="_blank"><img
     alt="Vue 3"
     src="https://img.shields.io/static/v1.svg?label=&message=Vue%203&style=flat-square&color=3fb984"></a>
 </p>
 <p align="middle">Moveable is Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable, Groupable, Snappable</p>
 <p align="middle">
-    <a href="https://daybrush.com/moveable" target="_blank"><strong>Demo</strong></a> /
-    <a href="https://daybrush.com/moveable/storybook/" target="_blank"><strong>Storybook</strong></a> /
-    <a href="https://daybrush.com/moveable/release/latest/doc/" target="_blank"><strong>API</strong></a> /
+    <a href="https://colinli007.github.io/moveable-next/" target="_blank"><strong>Demo</strong></a> /
+    <a href="https://colinli007.github.io/moveable-next/storybook/" target="_blank"><strong>Storybook</strong></a> /
+    <a href="https://colinli007.github.io/moveable-next/release/latest/doc/" target="_blank"><strong>API</strong></a> /
     <a href="https://github.com/daybrush/scena" target="_blank"><strong>Main Project</strong></a>
 </p>
 
@@ -24,48 +24,48 @@
 <th colspan="4">Moveable</th>
 </tr>
 <tr>
-<td align="center"><a href="https://daybrush.com/moveable/storybook/index.html?path=/story/basic--basic-draggable"><strong>Draggable</strong></a></td>
-<td align="center"><a href="https://daybrush.com/moveable/storybook/index.html?path=/story/basic--basic-resizable"><strong>Resizable</strong></a></td>
-<td align="center"><a href="https://daybrush.com/moveable/storybook/index.html?path=/story/basic--basic-scalable"><strong>Scalable</strong></a></td>
-<td align="center"><a href="https://daybrush.com/moveable/storybook/index.html?path=/story/basic--basic-rotatable"><strong>Rotatable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/storybook/?path=/story/basic--basic-draggable"><strong>Draggable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/storybook/?path=/story/basic--basic-resizable"><strong>Resizable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/storybook/?path=/story/basic--basic-scalable"><strong>Scalable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/storybook/?path=/story/basic--baisc-rotatable"><strong>Rotatable</strong></a></td>
 </tr>
 <tr>
 <td align="center">
-<img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/draggable.gif"/>
+<img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/draggable.gif"/>
 </td>
 <td align="center">
-<img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/resizable.gif"/>
+<img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/resizable.gif"/>
 </td>
 <td align="center">
-<img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/scalable.gif"/>
+<img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/scalable.gif"/>
 </td>
 <td align="center">
-<img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/rotatable.gif"/>
+<img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/rotatable.gif"/>
 </td>
 </tr>
 <tr>
-<td align="center"><a href="https://daybrush.com/moveable/storybook/index.html?path=/story/basic--basic-warpable"><strong>Warpable</strong></a></td>
-<td align="center"><a href="https://daybrush.com/moveable/release/latest/doc/Moveable.Pinchable.html"><strong>Pinchable</strong></a></td>
-<td align="center"><a href="https://daybrush.com/moveable/storybook/index.html?path=/story/group--group-draggable-resizable-rotatable"><strong>Groupable</strong></a></td>
-<td align="center"><a href="https://daybrush.com/moveable/storybook/index.html?path=/story/snap-bound--snap-guidelines"><strong>Snappable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/storybook/?path=/story/basic--basic-warpable"><strong>Warpable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/release/latest/doc/interfaces/PinchableOptions.html"><strong>Pinchable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/storybook/?path=/story/group--group-draggable-resizable-rotatable"><strong>Groupable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/storybook/?path=/story/snap-bound--snap-guidelines"><strong>Snappable</strong></a></td>
 </tr>
 <tr>
-<td align="center"><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/warpable.gif"/></td>
-<td align="center"><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/pinchable.gif"/></td>
-<td align="center"><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/groupable.gif"/></td>
-<td align="center"><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/snappable.gif"/></td>
+<td align="center"><img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/warpable.gif"/></td>
+<td align="center"><img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/pinchable.gif"/></td>
+<td align="center"><img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/groupable.gif"/></td>
+<td align="center"><img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/snappable.gif"/></td>
 </tr>
 <tr>
-<td align="center"><a href="https://daybrush.com/moveable/storybook/index.html?path=/story/basic--basic-clippable"><strong>Clippable</strong></a></td>
-<td align="center"><a href="https://daybrush.com/moveable/storybook/index.html?path=/story/basic--basic-roundable"><strong>Roundable</strong></a></td>
-<td align="center"><a href="https://daybrush.com/moveable/storybook/index.html?path=/story/basic--basic-origin-draggable"><strong>OriginDraggable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/storybook/?path=/story/basic--basic-clippable"><strong>Clippable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/storybook/?path=/story/basic--basic-roundable"><strong>Roundable</strong></a></td>
+<td align="center"><a href="https://colinli007.github.io/moveable-next/storybook/?path=/story/basic--basic-origin-draggable"><strong>OriginDraggable</strong></a></td>
 <td align="center"><a href="https://github.com/daybrush/selecto"><strong>Selecto</strong></a></td>
 </tr>
 <tr>
-<td align="center"><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/clippable.gif"/></td>
-<td align="center"><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/roundable.gif"/></td>
-<td align="center"><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/origindraggable.gif"/></td>
-<td align="center"><img src="https://raw.githubusercontent.com/daybrush/moveable/master/demo/images/selecto.gif"/></td>
+<td align="center"><img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/clippable.gif"/></td>
+<td align="center"><img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/roundable.gif"/></td>
+<td align="center"><img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/origindraggable.gif"/></td>
+<td align="center"><img src="https://raw.githubusercontent.com/colinli007/moveable-next/main/demo/images/selecto.gif"/></td>
 </tr>
 </table>
 
@@ -111,11 +111,11 @@ const moveable = new Moveable.default(document.body, { draggable: true });
 
 ## 📄 Documents
 
-* [**Moveable Handbook**](https://github.com/daybrush/moveable/blob/master/handbook/handbook.md)
-* [**How to use Group**](https://github.com/daybrush/moveable/blob/master/handbook/handbook.md#toc-group)
-* [**How to use custom CSS**](https://github.com/daybrush/moveable/blob/master/handbook/handbook.md#toc-custom-css)
-* [**How to make custom able**](https://github.com/daybrush/moveable/blob/master/packages/react-moveable/src/ables/README.md)
-* [API Documentation](https://daybrush.com/moveable/release/latest/doc/)
+* [**Moveable Handbook**](https://github.com/colinli007/moveable-next/blob/main/handbook/handbook.md)
+* [**How to use Group**](https://github.com/colinli007/moveable-next/blob/main/handbook/handbook.md#toc-group)
+* [**How to use custom CSS**](https://github.com/colinli007/moveable-next/blob/main/handbook/handbook.md#toc-custom-css)
+* [**How to make custom able**](https://github.com/colinli007/moveable-next/blob/main/packages/react-moveable/src/ables/README.md)
+* [API Documentation](https://colinli007.github.io/moveable-next/release/latest/doc/)
 
 ## 🚀 How to use
 ```ts
@@ -236,16 +236,16 @@ moveable.on("pinchStart", ({ target, clientX, clientY }) => {
 
 
 ## 📦 Packages
-* [**@moveable-next/vanilla**](https://github.com/daybrush/moveable/blob/master/packages/moveable): A Vanilla Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
-* [**@moveable-next/react**](https://github.com/daybrush/moveable/blob/master/packages/react-moveable): A React Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
-* [**@moveable-next/vue3**](https://github.com/daybrush/moveable/blob/master/packages/vue-moveable): A Vue 3 Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
+* [**@moveable-next/vanilla**](https://github.com/colinli007/moveable-next/tree/main/packages/moveable): A Vanilla Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
+* [**@moveable-next/react**](https://github.com/colinli007/moveable-next/tree/main/packages/react-moveable): A React Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
+* [**@moveable-next/vue3**](https://github.com/colinli007/moveable-next/tree/main/packages/vue3-moveable): A Vue 3 Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.
 
 ## ⚙️ Developments
 The `moveable` repo is managed as a [monorepo](https://github.com/lerna/lerna) with `yarn`.
 
 The main project was made with `react` and I used [`croact`](https://github.com/daybrush/croact) to make it lighter with umd.
 
-For development and testing, check in [packages/react-moveable](https://github.com/daybrush/moveable/blob/master/packages/react-moveable).
+For development and testing, check in [packages/react-moveable](https://github.com/colinli007/moveable-next/tree/main/packages/react-moveable).
 
 ### `npm run storybook`
 
@@ -266,19 +266,19 @@ Please give a ⭐️ if this project helped you!
 
 ## 👏 Contributing
 
-If you have any questions or requests or want to contribute to `moveable` or other packages, please write the [issue](https://github.com/daybrush/moveable/issues) or give me a Pull Request freely.
+If you have any questions or requests or want to contribute to `moveable` or other packages, please write the [issue](https://github.com/colinli007/moveable-next/issues) or give me a Pull Request freely.
 
 ### Code Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute](https://github.com/colinli007/moveable-next/blob/main/CONTRIBUTING.md)].
 
-<a href="https://github.com/daybrush/moveable/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=daybrush/moveable" />
+<a href="https://github.com/colinli007/moveable-next/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=colinli007/moveable-next" />
 </a>
 
 ## 🐞 Bug Report
 
-If you find a bug, please report to us opening a new [Issue](https://github.com/daybrush/moveable/issues) on GitHub.
+If you find a bug, please report to us opening a new [Issue](https://github.com/colinli007/moveable-next/issues) on GitHub.
 
 ## Sponsors
 <p align="center">
@@ -289,7 +289,7 @@ If you find a bug, please report to us opening a new [Issue](https://github.com/
 
 ## 📝 License
 
-This project is [MIT](https://github.com/daybrush/moveable/blob/master/LICENSE) licensed.
+This project is [MIT](https://github.com/colinli007/moveable-next/blob/main/LICENSE) licensed.
 
 ```
 MIT License
