@@ -1,5 +1,11 @@
 # @moveable-next/react
 
+## 0.1.1
+
+### Patch Changes
+
+- [#1](https://github.com/colinli007/moveable-next/pull/1) [`c04d1b1`](https://github.com/colinli007/moveable-next/commit/c04d1b16ce10b35f7a76a582266f6a965d937703) Thanks [@colinli007](https://github.com/colinli007)! - README links to the demo, Storybook, API documentation, handbook, issues and license now point to this project's site and repository instead of upstream's.
+
 ## 0.1.0
 
 ### Minor Changes
