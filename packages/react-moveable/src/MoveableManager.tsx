@@ -242,8 +242,12 @@ export default class MoveableManager<T = {}>
         this.updateCheckInput();
         this._updateObserver(this.props);
 
-        if (!container && !parentMoveable && !this.state.isPersisted) {
-            this.updateRect("", false, false);
+        if (!parentMoveable && !this.state.isPersisted) {
+            // With a container, render already measured (checkUpdate); without one, measure now that the box has a parent.
+            if (!container) {
+                this.updateRect("", false, false);
+            }
+            // Render again: the box is visible once it is mounted (`this.controlBox`), container or not.
             this.forceUpdate();
         }
     }
