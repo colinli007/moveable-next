@@ -12,7 +12,7 @@
 | 4 | 框架包装升级与依赖升级 | 已完成 | `archive/2026-10-13-upgrade-lit-3`、`archive/2026-10-15-migrate-vue3-to-tsdown`、`archive/2026-10-16-upgrade-svelte-5`、`archive/2026-10-18-bump-dependencies` |
 | 5 | 文档与部署 | 已完成 | `archive/2026-10-18-deploy-demo-with-actions`、`archive/2026-10-18-replace-jsdoc-with-typedoc`、`archive/2026-10-18-remove-croffle-examples` |
 | 6 | 以 `@moveable-next` 发布 | 已完成 | `archive/2026-10-18-remove-preact-lit-svelte-packages`、`archive/2026-10-18-rename-to-moveable-next-scope`、`archive/2026-10-18-upgrade-react-19`、`archive/2026-10-27-prepare-first-release` |
-| 7 | Storybook 加入 Vue3 示例 | 已完成 | `add-vue3-storybook-examples` |
+| 7 | Storybook 加入 Vue3 示例 | 已完成 | `archive/2026-10-28-add-vue3-storybook-examples` |
 | 8 | 原生版在单目标和组之间切换时删除旧的控制框 | 未开始 | |
 | 9 | 原生版和 Vue 3 版的 `makeMoveable` | 未开始 | |
 
