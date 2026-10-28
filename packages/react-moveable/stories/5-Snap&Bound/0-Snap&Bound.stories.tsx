@@ -220,9 +220,6 @@ export const SnapMaxiumDistance = {
 
 export const SnapElementsGroup = {
     name: "Snap Elements (group)",
-    // @moveable-next/vanilla leaves the hidden control box of its first (single target) render in the DOM when the
-    // selector resolves to a group, and the play reads that box in Vue. Remove once vanilla removes it.
-    tags: ["vue-known-issue"],
     ...appStory(ReactSnapElementsGroupApp, {
         apps,
         sources,

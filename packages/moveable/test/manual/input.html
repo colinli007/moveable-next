@@ -13,7 +13,6 @@
     // });
     const target = document.querySelector("#a");
     const moveable = new Moveable(document.querySelector("#a"), {
-        warpSelf: true,
         draggable: true,
         target: [document.querySelector(".target2")],
     }).on("drag", e => {

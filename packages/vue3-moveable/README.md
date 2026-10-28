@@ -142,6 +142,8 @@ export default {
 </script>
 ```
 
+The root element of the component is a mount point without a box (`display: contents`) that holds the control box, and positions are computed in the parent of the component unless `container` is set. To reach the control box, call `getControlBoxElement()` through the component ref; to give it classes, use the `className` prop, since attributes set on the component (such as `class`) go to the mount point.
+
 
 ## ⭐️ Show Your Support
 Please give a ⭐️ if this project helped you!
