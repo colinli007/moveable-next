@@ -4,6 +4,7 @@ import { appStory, devPlay } from "../utils/story";
 import { splitBracket, splitComma } from "@daybrush/utils";
 import { findMoveable, pan, wait } from "../utils/testing";
 import ReactNoTargetApp from "./ReactNoTargetApp";
+import ReactContainerVisibleApp from "./ReactContainerVisibleApp";
 import ReactATagApp from "./ReactATagApp";
 import ReactInputApp from "./ReactInputApp";
 import ReactSafariApp from "./ReactSafariApp";
@@ -448,5 +449,26 @@ export const TestNestedSVG = {
         apps,
         sources,
         vueApps,
+    }),
+} satisfies StoryObj;
+
+
+export const TestContainerVisible = {
+    name: "Test Control Boxes Visible with Container",
+    tags: ["hidden-test"],
+    ...appStory(ReactContainerVisibleApp, {
+        apps,
+        sources,
+        vueApps,
+    }),
+    play: devPlay(async ({ canvasElement }) => {
+        await wait();
+        const boxes = Array.from(canvasElement.querySelectorAll<HTMLElement>(".moveable-control-box"));
+
+        // The single target's box, the individual group's box and the boxes of its two targets
+        expect(boxes).toHaveLength(4);
+        boxes.forEach(box => {
+            expect(getComputedStyle(box).visibility).toBe("visible");
+        });
     }),
 } satisfies StoryObj;
