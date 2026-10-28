@@ -11,6 +11,7 @@
     "include": [
         "./**/*.ts",
         "./**/*.tsx",
+        "./**/*.vue",
         "../.storybook/**/*.ts",
         "../.storybook/**/*.tsx",
         "../global.d.ts"

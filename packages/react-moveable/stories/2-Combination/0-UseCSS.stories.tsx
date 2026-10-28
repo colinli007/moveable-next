@@ -11,7 +11,8 @@ import ReactDraggableOriginDraggableRotatableApp from "./ReactDraggableOriginDra
 import ReactAllInOneApp from "./ReactAllInOneApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -26,6 +27,7 @@ export const CombinationDraggableResizableRotatble = {
     ...appStory(ReactDraggableResizableRotatableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_DRAGGABLE_CONTROLS,
             ...DEFAULT_RESIZABLE_CONTROLS,
@@ -38,6 +40,7 @@ export const CombinationDraggableScalableRotatable = {
     ...appStory(ReactDraggableScalableRotatableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_DRAGGABLE_CONTROLS,
             ...DEFAULT_SCALABLE_CONTROLS,
@@ -50,6 +53,7 @@ export const CombinationDraggableOriginRotatable = {
     ...appStory(ReactDraggableOriginDraggableRotatableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_ORIGIN_DRAGGABLE_CONTROLS,
             ...DEFAULT_DRAGGABLE_CONTROLS,
@@ -63,6 +67,7 @@ export const CombinationAllInOne = {
     ...appStory(ReactAllInOneApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_ORIGIN_DRAGGABLE_CONTROLS,
             ...DEFAULT_DRAGGABLE_CONTROLS,

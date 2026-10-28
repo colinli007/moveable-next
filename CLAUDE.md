@@ -36,7 +36,7 @@ Moveable（daybrush/moveable 的 fork）：给 DOM/SVG 元素提供拖拽、缩�
 # 根目录
 pnpm install               # 安装依赖（根目录一次装好所有包）
 pnpm storybook             # = react-moveable 的 Storybook（端口 6006），主要的开发/调试环境
-pnpm test                  # 跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试 + 框架包装的浏览器测试；后者读构建产物，要先 pnpm packages:build）
+pnpm test                  # 跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试 + 框架包装的浏览器测试；story 的 Vue 模式和框架包装测试读构建产物，要先 pnpm packages:build）
 pnpm build                 # 只构建 react-moveable
 pnpm lint                  # ESLint 检查库包的 src（警告也算失败），再检查各包有没有重复的依赖版本范围；不需要先构建
 pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact → moveable → vue3，helper 独立）；moveable、vue3-moveable 的构建最后执行类型测试
@@ -48,7 +48,7 @@ pnpm release               # 全量构建后 changeset publish：CI 的发布步
 
 # packages/react-moveable（或在根目录用 pnpm --filter @moveable-next/react <script>）
 pnpm test:type             # tsc -p tsconfig.test.json，对 tests/types.ts 做类型断言检查
-pnpm typecheck:stories     # tsc -p stories：stories 和 .storybook 的类型检查（CI 会跑）
+pnpm typecheck:stories     # vue-tsc -p stories：stories（含 Vue 示例 *.vue）和 .storybook 的类型检查（CI 会跑）
 pnpm build                 # test:type + tsdown + declaration（不含 lint）
 pnpm exec playwright install chromium   # 首次跑测试前安装浏览器（不靠 postinstall）
 pnpm test                  # 跑本包的 Vitest
@@ -59,18 +59,21 @@ demo 站点只能在 GitHub Actions 中手动运行 `Deploy demo`（`.github/wor
 
 npm 发布用 changesets（`.changeset/config.json`）：react、croact、vanilla、vue3 四个包是 fixed 组，版本号始终相同；helper 独立。改动影响已发布包的使用者时加 changeset，测试、story、文档、CI 的改动不需要。`.github/workflows/release.yml` 在 push 到 `main` 时先调用 `run-e2e.yml` 跑全部检查，再由 changesets/action 开或更新版本 PR；版本 PR 合并后在 `npm` 环境（只允许 `main`）中执行 `pnpm release`，用 npm 可信发布（OIDC，pnpm 11 自己实现，不需要 npm CLI 11）并自动带 provenance，仓库和 CI 中没有 npm token。npm 只能给已存在的包配置可信发布，所以新包的第一个版本由维护者在本地 `main` 上 `npm login` 后执行 `pnpm release`，再到 npmjs.com 为它添加可信发布（仓库 `colinli007/moveable-next`、工作流 `release.yml`、环境 `npm`）。
 
-Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon-vitest`（Vitest 5 浏览器模式，Playwright 驱动 chromium）。Vitest 配置按包分开：根目录 `vitest.config.mts` 只汇总 `packages/*/vitest.config.mts`；react-moveable 有 `storybook`（浏览器）和 `unit`（node，code-preview 的单元测试）两个 project，helper 一个（happy-dom），vue3-moveable 一个（浏览器）。配置文件用 `.mts`，因为包的 `package.json` 不是 `"type": "module"`。
+Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon-vitest`（Vitest 5 浏览器模式，Playwright 驱动 chromium）。Vitest 配置按包分开：根目录 `vitest.config.mts` 只汇总 `packages/*/vitest.config.mts`；react-moveable 有 `storybook-react`、`storybook-vue`（浏览器，同一批 story 分别以两种框架渲染）和 `unit`（node，code-preview 的单元测试）三个 project，helper 一个（happy-dom），vue3-moveable 一个（浏览器）。配置文件用 `.mts`，因为包的 `package.json` 不是 `"type": "module"`。
 
-测试：每个 story 都在 1280×720 视口下真实渲染并算作一个测试，带 `play` 的再执行断言（`stories/**/*.stories.tsx`，用 `stories/utils/testing.tsx` 的 `pan`/`pinch`/`rotate` 模拟手势，再断言 `style.transform`）。失败截图在根目录 `.vitest/attachments/failure-screenshots/`。本地调试单个用例：开着 `pnpm storybook`，在 Interactions 面板看对应 story 的 play 的每一步。
+测试：每个 story 在 React 和 Vue 下各自在 1280×720 视口下真实渲染并算作一个测试（`storybook-react`、`storybook-vue` 两个 project，由 `initialGlobals.framework` 区分；打了 `react-only` 的 story 不进 Vue 的 project），带 `play` 的再执行断言（`stories/**/*.stories.tsx`，用 `stories/utils/testing.tsx` 的 `pan`/`pinch`/`rotate` 模拟手势，再断言 `style.transform`）。play 只看 DOM，两种框架共用，不允许按框架分支：Vue 下失败要改的是 Vue 示例或 vue3-moveable 的包装。Vue 模式用的是原生版的构建产物，要先 `pnpm packages:build`，改了 react-moveable 源码也要重新构建才能在 Vue 模式中看到（没有构建时 Vue 模式的画布显示 `Failed to fetch dynamically imported module …/Vue…App.vue`，终端显示无法解析 `@moveable-next/vanilla`）；React 模式不需要构建。失败截图在 `.vitest/attachments/failure-screenshots/<project>/`（由 `.storybook/vitest.setup.ts` 按 project 保存，Vitest 内置的截图路径不含 project，两种框架会互相覆盖）；框架包装测试的失败截图在 `.vitest/attachments/failure-screenshots/`。本地调试单个用例：开着 `pnpm storybook`，在 Interactions 面板看对应 story 的 play 的每一步。
 
 框架包装的浏览器测试（vue3-moveable，在 `test/` 下）：Vitest 浏览器模式，import 的是包的 `dist` 产物而不是源码（检查的就是使用者拿到的代码），所以要先构建。原生 moveable 的属性赋值经 croact 的 `setState` 异步生效，断言内部状态前用 `expect.poll` 等待（如 `getManager().props`）。vue3-moveable 的测试用 `createApp` + `h` 挂载，不依赖 `@vue/test-utils`。创建目标元素和模拟鼠标拖动的辅助函数在根目录 `config/testing/browser.ts`（只用 DOM API），清理逻辑留在测试文件中。vue3-moveable 另有类型测试 `test/types.ts`（`pnpm --filter @moveable-next/vue3 test:type`，检查的是 `declaration/`）。
 
 story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
-- 每个 story 文件静态 import 自己的 App，并对**本目录**做两次 `import.meta.glob`（`apps`，以及 `?raw` 的 `sources`：`./{*App.tsx,*.css}`，即 App 源码和 App import 的样式文件），交给 `appStory(App, { apps, sources, argTypes, args })` 生成 `render`、`args`、`argTypes` 和代码 tab；`name`、`tags` 必须写成字面量（索引器只读静态值），export 名就是 story id，不要改。
+- 每个 story 文件静态 import 自己的 React App，并对**本目录**做三次 `import.meta.glob`（eager 的 `apps`：`./*App.tsx`；非 eager 的 `vueApps`：`./*App.vue`，只在 Vue 模式下由 loaders 加载；`?raw` 的 `sources`：`./{*App.tsx,*App.vue,*.css}`，即 App 源码和 App import 的样式文件），交给 `appStory(App, { apps, sources, vueApps, argTypes, args })` 生成 `loaders`、`render`、`args`、`argTypes` 和代码 tab；`name`、`tags` 必须写成字面量（索引器只读静态值），export 名就是 story id，不要改。
 - `play` 用 `devPlay(...)` 包一层：开发模式和测试中执行，发布的 Storybook 中不执行。`userEvent` 等来自 `storybook/test`，是异步的，要 `await`。
 - 只为测试存在的 story 打 `tags: ["hidden-test"]`：侧边栏默认隐藏（可在标签筛选中显示），照常参与测试。
+- Vue 示例：`React<Name>App.tsx` 的 Vue 版是同目录的 `Vue<Name>App.vue`，`appStory` 按文件名配对，缺了直接报错。写法：`<script setup lang="ts">` + `<template>`，不写 `<style>`（样式文件在脚本顶部 `import "./xxx.css";`）；从 `@/vue3-moveable` import（别名指向 vue3-moveable 的源码，见 `tsconfig.json` 的 `paths`；不写成 workspace 依赖，否则 react-moveable → vue3-moveable → moveable → croact-moveable → react-moveable 成环）；参数只用一条 `const props = defineProps<{ ... }>();` 声明 story 中存在的参数，模板和脚本里都写 `props.xxx`；prop 和事件名用 moveable 原名（`:throttleDrag`、`@dragStart`）；目标用 `useTemplateRef`；渲染出与 React 版相同的 DOM 结构，play 才能共用。示例中不为包装的问题写绕过代码，问题修在 vue3-moveable 中。
+- 没有 Vue 版的 story（目前只有 TreeShaking：原生版和 Vue 3 版没有 `makeMoveable`）要同时写 `tags: ["react-only"]` 和 `appStory(App, { ..., vue: false })`：前者让 Vue 的测试 project 跳过它（索引器只读字面量的 tags），后者让 Vue 模式显示「不支持」的说明、不生成 Vue tab。只写后者时 Vue 下会把说明文字当作通过的测试。
+- Vue 下的已知失败（问题不在示例和包装中，经用户确认暂不修）打 `tags: ["vue-known-issue"]`：Vue 的测试 project 跳过它，结果中显示为 skipped；每一条都要登记在 monorepo-tooling spec「CI 跑交互测试」场景和 ROADMAP 的已知遗留中，修复后删除标签。
 - 公共样式 `stories/common.css`、`stories/templates/default.css` 在 `.storybook/preview.tsx` 中全局引入；`.storybook/vitest.setup.ts` 给测试页面补上 Storybook 默认的 padded 布局。
-- 代码 tab 只有 React 和 CSS（随 Controls 实时替换参数），由本地 addon `.storybook/addons/code-preview/` 读取 story 的 `parameters.preview`。React tab 就是 App 源码本身，只做三处转换（`@/react-moveable` 换成 `@moveable-next/react`、`props.xxx` 换成当前参数值、`App(props)` 变成 `App()`），所以展示的代码就是被渲染、被测试的代码；CSS tab 是默认样式，加上 App 从自己目录 import 的样式文件（`import "./xxx.css"`，单双引号、有无分号都认，`sources` 中找不到时直接报错）。不要再加入翻译生成的其他框架示例。
+- 工具栏的 Framework（global `framework`，`.storybook/preview.tsx`）切换 React / Vue：画布渲染对应的 App，代码 tab 只显示当前框架的一组（React + CSS 或 Vue + CSS，随 Controls 实时替换参数），由本地 addon `.storybook/addons/code-preview/` 读取 story 的 `parameters.preview`（每项带 `framework`）。React tab 就是 App 源码本身，只做三处转换（`@/react-moveable` 换成 `@moveable-next/react`、`props.xxx` 换成当前参数值、`App(props)` 变成 `App()`）；Vue tab 同样是 `.vue` 源码本身，三处转换是 `@/vue3-moveable` 换成 `@moveable-next/vue3`、`props.xxx` 换成当前参数值、去掉 `defineProps` 那一句，参数值中的字符串写成单引号（值在 `:prop="..."` 的双引号里）。所以展示的代码就是被渲染、被测试的代码；CSS tab 是默认样式，加上当前框架的 App 从自己目录 import 的样式文件（`import "./xxx.css"`，单双引号、有无分号都认，`sources` 中找不到时直接报错）。不要再加入翻译生成的其他框架示例。
 - 控件说明中的「See API」用 `stories/utils.ts` 的 `makeLink(属性名)`（`Moveable` 类页面的锚点）或 `makeTypeLink(类型名, 成员名)` 生成，是指向同一站点 `release/latest/doc/` 的相对链接：部署后和本地 `demo/` 中可用，单独运行 `pnpm storybook` 时是 404。
 
 ## 架构

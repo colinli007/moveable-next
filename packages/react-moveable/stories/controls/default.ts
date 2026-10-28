@@ -349,7 +349,7 @@ export const DEFAULT_CLIPPABLE_CONTROLS = {
     dragWithClip: makeArgType({
         type: "boolean",
         description: makeLink("dragWithClip"),
-        defaultValue: 0,
+        defaultValue: false,
     }),
     defaultClipPath: makeArgType({
         type: "inline-radio",

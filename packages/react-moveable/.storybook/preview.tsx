@@ -15,6 +15,24 @@ function StoryName() {
 
 const preview: Preview = {
     tags: ["autodocs"],
+    // Which App a story renders and which code its panel shows (`appStory` in stories/utils/story.tsx).
+    globalTypes: {
+        framework: {
+            description: "Framework of the example",
+            toolbar: {
+                title: "Framework",
+                icon: "component",
+                items: [
+                    { value: "react", title: "React" },
+                    { value: "vue", title: "Vue" },
+                ],
+                dynamicTitle: true,
+            },
+        },
+    },
+    initialGlobals: {
+        framework: "react",
+    },
     parameters: {
         options: {
             // Keep the numbered directory order (1-Basic, 2-Combination, ..., 9A-Components).

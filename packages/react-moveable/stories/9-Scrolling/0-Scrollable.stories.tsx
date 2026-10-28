@@ -4,7 +4,8 @@ import { DEFAULT_SCROLLABLE_CONTROLS } from "../controls/default";
 import ReactScrollableApp from "./ReactScrollableApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -19,6 +20,7 @@ export const ScrollingScrollable = {
     ...appStory(ReactScrollableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_SCROLLABLE_CONTROLS,
         },

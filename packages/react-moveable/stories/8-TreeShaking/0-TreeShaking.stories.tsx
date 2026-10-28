@@ -18,8 +18,11 @@ export default {
 
 export const TreeShaking = {
     name: "Use only Draggable, Resizable, Rotatable",
+    // @moveable-next/vanilla and @moveable-next/vue3 have no makeMoveable.
+    tags: ["react-only"],
     ...appStory(TreeShakingApp, {
         apps,
         sources,
+        vue: false,
     }),
 } satisfies StoryObj;

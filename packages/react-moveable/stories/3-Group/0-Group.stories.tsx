@@ -23,7 +23,8 @@ import ReactRoundableGroupApp from "./ReactRoundableGroupApp";
 import ReactFixedResizeGroupApp from "./ReactFixedResizeGroupApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -38,6 +39,7 @@ export const GroupDraggableResizableRotatable = {
     ...appStory(ReactDraggableResizableRotatableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_GROUPPABLE_GROUP_CONTROLS,
             ...DEFAULT_RESIZABLE_CONTROLS,
@@ -102,6 +104,7 @@ export const GroupDraggableScalableRotatable = {
     ...appStory(ReactDraggableScalableRotatableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_GROUPPABLE_GROUP_CONTROLS,
             ...DEFAULT_SCALABLE_CONTROLS,
@@ -146,6 +149,7 @@ export const GroupAllInOne = {
     ...appStory(ReactAllInOneApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_GROUPPABLE_GROUP_CONTROLS,
             ...DEFAULT_DRAGGABLE_CONTROLS,
@@ -159,6 +163,7 @@ export const GroupMultipleGroup = {
     ...appStory(ReactMultipleGroupApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -198,6 +203,7 @@ export const GroupRoundableGroup = {
     ...appStory(ReactRoundableGroupApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -226,5 +232,6 @@ export const GroupFixedResizeGroup = {
     ...appStory(ReactFixedResizeGroupApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;

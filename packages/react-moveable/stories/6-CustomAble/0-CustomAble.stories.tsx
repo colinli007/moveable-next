@@ -7,7 +7,8 @@ import ReactMouseEnterLeaveApp from "./ReactMouseEnterLeaveApp";
 import ReactDragTargetAbleApp from "./ReactDragTargetAbleApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -22,6 +23,7 @@ export const CustomAbleDimensionViewable = {
     ...appStory(ReactDimensionViewableApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -30,6 +32,7 @@ export const CustomAbleEditable = {
     ...appStory(ReactEditableApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -38,6 +41,7 @@ export const CustomAbleRotatble = {
     ...appStory(ReactCustomRotatableApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -46,6 +50,7 @@ export const CustomAbleMouseEnterLeave = {
     ...appStory(ReactMouseEnterLeaveApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -55,5 +60,6 @@ export const CustomAbleDragTarget = {
     ...appStory(ReactDragTargetAbleApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;

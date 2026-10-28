@@ -30,6 +30,9 @@
             ],
             "@moveable-next/helper": [
                 "../helper/src/"
+            ],
+            "@/vue3-moveable": [
+                "../vue3-moveable/src/"
             ]
         }
     },

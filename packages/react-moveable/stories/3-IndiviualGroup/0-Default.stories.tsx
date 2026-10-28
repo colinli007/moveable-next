@@ -9,7 +9,8 @@ import ReactDraggableScalableRotatableApp from "./ReactDraggableScalableRotatabl
 import ReactIndividualGroupablePropsApp from "./ReactIndividualGroupablePropsApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -25,6 +26,7 @@ export const IndividualGroupDraggableScalableRotatable = {
     ...appStory(ReactDraggableScalableRotatableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_SCALABLE_CONTROLS,
             ...DEFAULT_ROTATABLE_CONTROLS,
@@ -38,5 +40,6 @@ export const IndividualGroupGroupableProps = {
     ...appStory(ReactIndividualGroupablePropsApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;

@@ -26,12 +26,29 @@ catalog:
   framework-utils: ^1.1.0
   gesto: ^1.19.4
   overlap-area: ^1.1.0
+  # Framework (vue3-moveable's dev version of its peer; the Vue examples in react-moveable's Storybook)
+  vue: ^3.5.44
 
 overrides:
   # react-keycon pulls @cfcs/react (core ~0.0.6, resolves to 0.0.26) and keycon (core ^0.0.6 = 0.0.6).
   # Two copies of @cfcs/core break useKeycon's result type (typecheck:stories fails); 0.0.6 is within
   # both ranges. Remove once react-keycon's dependencies agree on one @cfcs/core.
   "@cfcs/react>@cfcs/core": "0.0.6"
+
+packageExtensions:
+  # vue3-selecto 1.12.3 and vue3-infinite-viewer 0.17.1 import `vue` and `@daybrush/utils` without declaring them
+  # (Vite fails with `Failed to resolve import "@daybrush/utils"` under the isolated layout). Used by the Vue examples
+  # in react-moveable's Storybook. Remove once releases declare both.
+  vue3-selecto:
+    dependencies:
+      "@daybrush/utils": ^1.13.0
+    peerDependencies:
+      vue: ^3.0.0
+  vue3-infinite-viewer:
+    dependencies:
+      "@daybrush/utils": ^1.13.0
+    peerDependencies:
+      vue: ^3.0.0
 
 peerDependencyRules:
   allowedVersions:

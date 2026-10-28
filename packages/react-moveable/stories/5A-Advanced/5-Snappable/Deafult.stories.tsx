@@ -4,7 +4,8 @@ import ReactCustomGuidelinesApp from "./ReactCustomGuidelinesApp";
 import ReactCustomElementGuidelinesApp from "./ReactCustomElementGuidelinesApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -20,6 +21,7 @@ export const AdvancedSnappableCustomGuidelines = {
     ...appStory(ReactCustomGuidelinesApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -28,5 +30,6 @@ export const AdvancedSnappableCustomElementGuidelines = {
     ...appStory(ReactCustomElementGuidelinesApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
