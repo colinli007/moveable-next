@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { createApp, h, ref, shallowReactive } from "vue";
 import Moveable from "../dist/moveable.esm.js";
-import { createTarget, drag } from "../../../config/testing/browser";
+import { createTarget, drag, mouse } from "../../../config/testing/browser";
 
 const cleanups: Array<() => void> = [];
 
@@ -82,6 +82,22 @@ describe("vue3-moveable", () => {
 
         expect(events.map(([name]) => name)).toEqual(["dragStart", "drag", "dragEnd"]);
         expect(events[1][1].transform).toContain("translate(50px, 30px)");
+    });
+
+    it("does not pass native DOM events of the same name to the listeners", () => {
+        const calls: unknown[] = [];
+        const clickTarget = target();
+        const { el } = mount({ target: clickTarget, draggable: true, onClick: (e: unknown) => calls.push(e) });
+        const { left, top } = clickTarget.getBoundingClientRect();
+
+        // moveable's click: pressed and released on the target without moving (needs `draggable` to listen on the target)
+        clickTarget.dispatchEvent(mouse("mousedown", left + 10, top + 10));
+        clickTarget.dispatchEvent(mouse("mouseup", left + 10, top + 10));
+        // the browser's click on the control box (the root element)
+        el.dispatchEvent(mouse("click", left, top));
+
+        expect(calls.length).toBeGreaterThan(0);
+        expect(calls.filter(e => e instanceof MouseEvent)).toHaveLength(0);
     });
 
     it("proxies moveable methods through the component ref", () => {
