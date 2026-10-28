@@ -1,6 +1,6 @@
 import { ref, Properties } from "framework-utils";
 import * as React from "react";
-import { renderSelf, ContainerProvider } from "croact";
+import { render, createPortal } from "croact";
 import InnerMoveable from "./InnerMoveable";
 import {
     MoveableInterface,
@@ -39,9 +39,7 @@ import EventEmitter from "@scena/event-emitter";
 })
 class MoveableManager extends EventEmitter<MoveableEventsParameters> {
     private innerMoveable!: InnerMoveable | null;
-    private containerProvider: ContainerProvider | null = null;
-    private selfElement: HTMLElement | null = null;
-    private _warp = false;
+    private root: HTMLElement | null = null;
     /**
      *
      */
@@ -54,26 +52,23 @@ class MoveableManager extends EventEmitter<MoveableEventsParameters> {
         EVENTS.forEach(name => {
             events[camelize(`on ${name}`)] = (e: any) => this.trigger<any>(name, e);
         });
-        let selfElement!: HTMLElement;
+        // croact owns `root`, which is never attached, and portals the control box into `parentElement`.
+        // The box stays a child of `parentElement`, and croact removes the boxes it replaces (a target, a group)
+        // and the last one on destroy: its self mode (`renderSelf`) leaves them in the DOM.
+        const root = getDocument(parentElement).createElement("div");
 
-        if (options.warpSelf) {
-            delete options.warpSelf;
-            this._warp = true;
-            selfElement = parentElement;
-        } else {
-            selfElement = getDocument(parentElement).createElement("div");
-            parentElement.appendChild(selfElement);
-        }
-        this.containerProvider = renderSelf(
-            <InnerMoveable
-                ref={ref(this, "innerMoveable")}
-                {...nextOptions}
-                {...events}
-            /> as any,
-            selfElement,
+        render(
+            createPortal(
+                <InnerMoveable
+                    ref={ref(this, "innerMoveable")}
+                    {...nextOptions}
+                    {...events}
+                />,
+                parentElement,
+            ),
+            root,
         );
-
-        this.selfElement = selfElement;
+        this.root = root;
         const target = nextOptions.target!;
         if (isArray(target) && target.length > 1) {
             this.updateRect();
@@ -101,20 +96,10 @@ class MoveableManager extends EventEmitter<MoveableEventsParameters> {
     }
     /** {@inheritDoc MoveableInterface.destroy} */
     public destroy() {
-        const selfElement = this.selfElement!;
-
-        renderSelf(
-            null,
-            selfElement!,
-            this.containerProvider,
-        );
-        if (!this._warp) {
-            selfElement?.parentElement?.removeChild(selfElement);
-        }
-        this.containerProvider = null;
+        render(null, this.root!);
 
         this.off();
-        this.selfElement = null;
+        this.root = null;
         this.innerMoveable = null;
     }
     private getMoveable() {

@@ -22,6 +22,7 @@
     "start": "tsdown --watch",
     "build": "tsdown && pnpm run declaration && pnpm run test:type",
     "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
+    "test": "vitest run",
     "test:type": "node test/checkTypes.mjs"
   },
   "keywords": [
@@ -78,7 +79,10 @@
   },
   "devDependencies": {
     "@types/react": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "playwright": "catalog:",
     "tsdown": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

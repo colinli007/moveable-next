@@ -25,6 +25,15 @@ PROPERTIES.forEach((name) => {
     };
 });
 
+// The control box is rendered in the root element, which has no box (`display: contents`): unless one is set,
+// moveable computes positions in the parent of the component, as if it were created in that parent.
+function getContainer(component: any, container: MoveableOptions["container"]) {
+    return container ?? component.$refs.moveableElement.parentElement;
+}
+watch.container = function (this: any, value: MoveableOptions["container"]) {
+    this.$_moveable.container = getContainer(this, value);
+};
+
 // props, methods and emits are generated at runtime from PROPERTIES / METHODS / EVENTS, so the type is declared, not inferred.
 type VueMoveableComponent = DefineComponent<
     Partial<MoveableProperties>,
@@ -45,7 +54,7 @@ const VueMoveable = defineComponent({
     emits: EVENTS,
     watch,
     render() {
-        return h("div", { ref: "moveableElement" });
+        return h("div", { ref: "moveableElement", style: { display: "contents" } });
     },
     mounted(this: any) {
         const options: Partial<MoveableOptions> = {};
@@ -62,7 +71,7 @@ const VueMoveable = defineComponent({
 
         const moveable = new VanillaMoveable(moveableElement, {
             ...options,
-            warpSelf: true,
+            container: getContainer(this, options.container),
         });
 
         EVENTS.forEach((name) => {

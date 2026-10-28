@@ -82,12 +82,6 @@ export interface DefaultOptions {
      */
     container?: SVGElement | HTMLElement | null;
     /**
-     * Whether to warp itself to the container itself. Don't set it.
-     * @private
-     * @default false
-     */
-    warpSelf?: boolean;
-    /**
      * Moveable Root Container (No Transformed Container)
      * @default parentElement
      * @see [Storybook](../../../../storybook/?path=/story/options--options-root-container)

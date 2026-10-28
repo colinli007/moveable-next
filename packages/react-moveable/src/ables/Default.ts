@@ -6,7 +6,6 @@ export default {
         "dragTarget",
         "dragContainer",
         "container",
-        "warpSelf",
         "rootContainer",
         "useResizeObserver",
         "useMutationObserver",
