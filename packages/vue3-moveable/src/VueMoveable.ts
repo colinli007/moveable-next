@@ -41,6 +41,8 @@ const VueMoveable = defineComponent({
     name: "moveable",
     methods,
     props: PROPERTIES,
+    // Declared so that listeners such as `@click` or `@drag` don't also fall through to the root element as native listeners.
+    emits: EVENTS,
     watch,
     render() {
         return h("div", { ref: "moveableElement" });
