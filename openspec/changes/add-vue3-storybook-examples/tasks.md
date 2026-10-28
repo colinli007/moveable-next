@@ -41,10 +41,10 @@
 
 - [x] 5.1 全量检查：`pnpm lint`、`pnpm doc`、`pnpm packages:build`、`pnpm --filter @moveable-next/react typecheck:stories`、`pnpm test` 全部通过；`storybook-react` 137 个测试、`storybook-vue` 136 个测试；`pnpm build:storybook` 成功，在构建出的 Storybook 中两种模式都能浏览，play 不自动执行
 - [x] 5.2 按 spec 场景逐条检查：临时删除一个 Vue App，确认测试失败、Storybook 中这个 story 文件加载出错且错误中有文件名，然后还原；两种模式的代码面板只有各自的两个 tab；Vue 模式下修改 controls 立即生效；`git status` 确认执行这些命令后没有生成的文件
-- [ ] 5.3 推送分支，CI 的 `Tests` 全部通过；记录测试步骤在改动前后的耗时，写进 6.2 的 ROADMAP 说明
+- [x] 5.3 推送分支，CI 的 `Tests` 全部通过；记录测试步骤在改动前后的耗时，写进 6.2 的 ROADMAP 说明（`feat/vue3-storybook-examples` 的运行 40623342038 通过：290 个测试中 289 个通过、1 个跳过；「Run tests」12–15 秒 → 23 秒，「Type-check stories」4–7 秒 → 8 秒）
 
 ## 6. 文档与收尾
 
 - [x] 6.1 更新 CLAUDE.md：story 写法约定（Vue App 的命名和写法、`@/vue3-moveable` 别名、例外要同时写 `tags` 和 `vue: false`）、代码 tab 的说明（React / Vue 随工具栏切换、Vue tab 的三处转换）、测试说明（两个 vitest project、Vue 模式需要先 `pnpm packages:build`）、常用命令（`typecheck:stories` 包含 vue-tsc）
-- [ ] 6.2 更新 `openspec/ROADMAP.md`：第 7 步改为已完成并写明本 change；新增一步「原生版和 Vue 3 版的 `makeMoveable`」（完成后去掉 TreeShaking 的例外）；「已知遗留」中记下 Vue 模式依赖构建产物
+- [x] 6.2 更新 `openspec/ROADMAP.md`：第 7 步改为已完成并写明本 change；新增一步「原生版和 Vue 3 版的 `makeMoveable`」（完成后去掉 TreeShaking 的例外）；「已知遗留」中记下 Vue 模式依赖构建产物
 - [x] 6.3 `openspec validate add-vue3-storybook-examples --strict` 通过
