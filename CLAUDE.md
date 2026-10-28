@@ -63,7 +63,7 @@ Storybook 10（`@storybook/react-vite`，Vite 8），测试是 `@storybook/addon
 
 测试：每个 story 在 React 和 Vue 下各自在 1280×720 视口下真实渲染并算作一个测试（`storybook-react`、`storybook-vue` 两个 project，由 `initialGlobals.framework` 区分；打了 `react-only` 的 story 不进 Vue 的 project），带 `play` 的再执行断言（`stories/**/*.stories.tsx`，用 `stories/utils/testing.tsx` 的 `pan`/`pinch`/`rotate` 模拟手势，再断言 `style.transform`）。play 只看 DOM，两种框架共用，不允许按框架分支：Vue 下失败要改的是 Vue 示例或 vue3-moveable 的包装。Vue 模式用的是原生版的构建产物，要先 `pnpm packages:build`，改了 react-moveable 源码也要重新构建才能在 Vue 模式中看到（没有构建时 Vue 模式的画布显示 `Failed to fetch dynamically imported module …/Vue…App.vue`，终端显示无法解析 `@moveable-next/vanilla`）；React 模式不需要构建。失败截图在 `.vitest/attachments/failure-screenshots/<project>/`（由 `.storybook/vitest.setup.ts` 按 project 保存，Vitest 内置的截图路径不含 project，两种框架会互相覆盖）；框架包装测试的失败截图在 `.vitest/attachments/failure-screenshots/`。本地调试单个用例：开着 `pnpm storybook`，在 Interactions 面板看对应 story 的 play 的每一步。
 
-框架包装的浏览器测试（vue3-moveable，在 `test/` 下）：Vitest 浏览器模式，import 的是包的 `dist` 产物而不是源码（检查的就是使用者拿到的代码），所以要先构建。原生 moveable 的属性赋值经 croact 的 `setState` 异步生效，断言内部状态前用 `expect.poll` 等待（如 `getManager().props`）。vue3-moveable 的测试用 `createApp` + `h` 挂载，不依赖 `@vue/test-utils`。创建目标元素和模拟鼠标拖动的辅助函数在根目录 `config/testing/browser.ts`（只用 DOM API），清理逻辑留在测试文件中。vue3-moveable 另有类型测试 `test/types.ts`（`pnpm --filter @moveable-next/vue3 test:type`，检查的是 `declaration/`）。
+框架包装的浏览器测试（moveable 和 vue3-moveable，在各自的 `test/` 下）：Vitest 浏览器模式，import 的是包的 `dist` 产物而不是源码（检查的就是使用者拿到的代码），所以要先构建。原生 moveable 的属性赋值经 croact 的 `setState` 异步生效，断言内部状态前用 `expect.poll` 等待（如 `getManager().props`）。vue3-moveable 的测试用 `createApp` + `h` 挂载，不依赖 `@vue/test-utils`。创建目标元素和模拟鼠标拖动的辅助函数在根目录 `config/testing/browser.ts`（只用 DOM API），清理逻辑留在测试文件中。vue3-moveable 另有类型测试 `test/types.ts`（`pnpm --filter @moveable-next/vue3 test:type`，检查的是 `declaration/`）。
 
 story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
 - 每个 story 文件静态 import 自己的 React App，并对**本目录**做三次 `import.meta.glob`（eager 的 `apps`：`./*App.tsx`；非 eager 的 `vueApps`：`./*App.vue`，只在 Vue 模式下由 loaders 加载；`?raw` 的 `sources`：`./{*App.tsx,*App.vue,*.css}`，即 App 源码和 App import 的样式文件），交给 `appStory(App, { apps, sources, vueApps, argTypes, args })` 生成 `loaders`、`render`、`args`、`argTypes` 和代码 tab；`name`、`tags` 必须写成字面量（索引器只读静态值），export 名就是 story id，不要改。
@@ -71,7 +71,7 @@ story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
 - 只为测试存在的 story 打 `tags: ["hidden-test"]`：侧边栏默认隐藏（可在标签筛选中显示），照常参与测试。
 - Vue 示例：`React<Name>App.tsx` 的 Vue 版是同目录的 `Vue<Name>App.vue`，`appStory` 按文件名配对，缺了直接报错。写法：`<script setup lang="ts">` + `<template>`，不写 `<style>`（样式文件在脚本顶部 `import "./xxx.css";`）；从 `@/vue3-moveable` import（别名指向 vue3-moveable 的源码，见 `tsconfig.json` 的 `paths`；不写成 workspace 依赖，否则 react-moveable → vue3-moveable → moveable → croact-moveable → react-moveable 成环）；参数只用一条 `const props = defineProps<{ ... }>();` 声明 story 中存在的参数，模板和脚本里都写 `props.xxx`；prop 和事件名用 moveable 原名（`:throttleDrag`、`@dragStart`）；目标用 `useTemplateRef`；渲染出与 React 版相同的 DOM 结构，play 才能共用。示例中不为包装的问题写绕过代码，问题修在 vue3-moveable 中。
 - 没有 Vue 版的 story（目前只有 TreeShaking：原生版和 Vue 3 版没有 `makeMoveable`）要同时写 `tags: ["react-only"]` 和 `appStory(App, { ..., vue: false })`：前者让 Vue 的测试 project 跳过它（索引器只读字面量的 tags），后者让 Vue 模式显示「不支持」的说明、不生成 Vue tab。只写后者时 Vue 下会把说明文字当作通过的测试。
-- Vue 下的已知失败（问题不在示例和包装中，经用户确认暂不修）打 `tags: ["vue-known-issue"]`：Vue 的测试 project 跳过它，结果中显示为 skipped；每一条都要登记在 monorepo-tooling spec「CI 跑交互测试」场景和 ROADMAP 的已知遗留中，修复后删除标签。
+- Vue 下的已知失败（问题不在示例和包装中，经用户确认暂不修）打 `tags: ["vue-known-issue"]`：Vue 的测试 project 跳过它，结果中显示为 skipped；每一条都要登记在 monorepo-tooling spec「CI 跑交互测试」场景和 ROADMAP 的已知遗留中，修复后删除标签。目前没有使用。
 - 公共样式 `stories/common.css`、`stories/templates/default.css` 在 `.storybook/preview.tsx` 中全局引入；`.storybook/vitest.setup.ts` 给测试页面补上 Storybook 默认的 padded 布局。
 - 工具栏的 Framework（global `framework`，`.storybook/preview.tsx`）切换 React / Vue：画布渲染对应的 App，代码 tab 只显示当前框架的一组（React + CSS 或 Vue + CSS，随 Controls 实时替换参数），由本地 addon `.storybook/addons/code-preview/` 读取 story 的 `parameters.preview`（每项带 `framework`）。React tab 就是 App 源码本身，只做三处转换（`@/react-moveable` 换成 `@moveable-next/react`、`props.xxx` 换成当前参数值、`App(props)` 变成 `App()`）；Vue tab 同样是 `.vue` 源码本身，三处转换是 `@/vue3-moveable` 换成 `@moveable-next/vue3`、`props.xxx` 换成当前参数值、去掉 `defineProps` 那一句，参数值中的字符串写成单引号（值在 `:prop="..."` 的双引号里）。所以展示的代码就是被渲染、被测试的代码；CSS tab 是默认样式，加上当前框架的 App 从自己目录 import 的样式文件（`import "./xxx.css"`，单双引号、有无分号都认，`sources` 中找不到时直接报错）。不要再加入翻译生成的其他框架示例。
 - 控件说明中的「See API」用 `stories/utils.ts` 的 `makeLink(属性名)`（`Moveable` 类页面的锚点）或 `makeTypeLink(类型名, 成员名)` 生成，是指向同一站点 `release/latest/doc/` 的相对链接：部署后和本地 `demo/` 中可用，单独运行 `pnpm storybook` 时是 404。
@@ -83,11 +83,13 @@ story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
 ```
 react-moveable  ← 全部核心逻辑（React class 组件）
  ├─ croact-moveable   内联 react-moveable 的产物，react → croact（轻量 React 兼容运行时）
- │    └─ moveable     原生 JS 版：croact 的 renderSelf 渲染 InnerMoveable，
+ │    └─ moveable     原生 JS 版：croact 的 render 渲染到不挂到页面上的根元素，InnerMoveable 经 createPortal 进入 parentElement，
  │         │          @Properties 装饰器按 MOVEABLE_PROPS / EVENTS / METHODS 自动生成 getter/setter/方法代理
- │         └─ vue3-moveable   包装原生 moveable
+ │         └─ vue3-moveable   包装原生 moveable（根元素是 display: contents 的挂载点，container 默认是组件的父元素）
 helper              独立工具包
 ```
+
+原生版不要用 croact 的 `renderSelf`（self 模式）：`InitialMoveable` 在单目标、组之间切换时会替换根元素，self 模式下被替换的根元素和销毁后的控制框都不会从 DOM 中删除。控制框必须是坐标基准元素（默认 `getContainer()` = 控制框的父元素）的子元素，或显式设置 `container`，否则坐标会算错。
 
 因此：**改行为只改 `react-moveable`**，其它包自动继承；新增 prop/事件必须登记在对应 able 的 `props` / `events` 数组里，才会进入 `MOVEABLE_PROPS` / `MOVEABLE_EVENTS`，进而被原生版和各框架包装自动暴露。
 

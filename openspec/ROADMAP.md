@@ -13,7 +13,7 @@
 | 5 | 文档与部署 | 已完成 | `archive/2026-10-18-deploy-demo-with-actions`、`archive/2026-10-18-replace-jsdoc-with-typedoc`、`archive/2026-10-18-remove-croffle-examples` |
 | 6 | 以 `@moveable-next` 发布 | 已完成 | `archive/2026-10-18-remove-preact-lit-svelte-packages`、`archive/2026-10-18-rename-to-moveable-next-scope`、`archive/2026-10-18-upgrade-react-19`、`archive/2026-10-27-prepare-first-release` |
 | 7 | Storybook 加入 Vue3 示例 | 已完成 | `archive/2026-10-28-add-vue3-storybook-examples` |
-| 8 | 原生版在单目标和组之间切换时删除旧的控制框 | 未开始 | |
+| 8 | 原生版在单目标和组之间切换时删除旧的控制框 | 已完成 | `fix-vanilla-root-switch-leak` |
 | 9 | 原生版和 Vue 3 版的 `makeMoveable` | 未开始 | |
 
 ## 已完成
@@ -56,10 +56,10 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 ### 7. Storybook 加入 Vue3 示例
 `add-vue3-storybook-examples`：Storybook 工具栏增加 Framework（React / Vue）切换。每个 story 只定义一次，Vue 模式下渲染同目录手写的 `Vue<Name>App.vue`（SFC，`<script setup lang="ts">`），代码面板随之显示 Vue 和 CSS tab（`.vue` 源码只做三处转换）；play 断言只看 DOM，两种框架共用，Vitest 分为 `storybook-react`、`storybook-vue` 两个 project，测试从 137 个增加到 273 个，CI 中「Run tests」步骤从 12–15 秒变为 23 秒，「Type-check stories」从 4–7 秒变为 8 秒。137 个 story 中 136 个有 Vue 版，共 135 个 Vue 示例（一个 App 被两个 story 共用）；TreeShaking 是唯一的例外（`react-only`，原生版和 Vue 3 版没有 `makeMoveable`）。Vue 示例通过 `@/vue3-moveable` 别名引用 vue3-moveable 的源码（写成 workspace 依赖会和 react-moveable 成环），只在 Vue 模式下懒加载，React 模式仍不需要构建；Vue 模式用原生版的构建产物。类型检查改为 `vue-tsc -p stories`，同时检查 `.ts`、`.tsx` 和 `.vue`。两个 project 的失败截图由 `.storybook/vitest.setup.ts` 按 project 保存（Vitest 内置的截图路径不含 project，会互相覆盖）。vue3-selecto、vue3-infinite-viewer 漏声明 `vue` 和 `@daybrush/utils`，用 `packageExtensions` 补上。
 
-移植过程中修复了 vue3-moveable 没有声明 `emits` 的问题：`@click`、`@drag` 这类与原生事件同名的监听器会同时挂到根元素上，`@click` 会多收到一次原生 `MouseEvent`（patch changeset）。另外发现原生版的一个已有问题（见第 8 步），受影响的「Snap & Bound / Snap Elements (group)」在 Vue 下标为 `vue-known-issue` 并跳过。
+移植过程中修复了 vue3-moveable 没有声明 `emits` 的问题：`@click`、`@drag` 这类与原生事件同名的监听器会同时挂到根元素上，`@click` 会多收到一次原生 `MouseEvent`（patch changeset）。另外发现原生版的一个已有问题（见第 8 步），受影响的「Snap & Bound / Snap Elements (group)」在 Vue 下标为 `vue-known-issue` 并跳过（第 8 步已修复并删除标签）。
 
 ### 8. 原生版在单目标和组之间切换时删除旧的控制框
-第 7 步中发现：原生版用选择器指定多个目标时，`InitialMoveable._updateRefs` 第一次渲染遍历的是上一次的 `refTargets`（空），所以总是先按单目标渲染、挂载后再切换为组；croact 的 `renderSelf` 把 self 模式下的根节点都标为 `_sel`，卸载时不删除。结果是第一次复用的元素以 `display: none` 留在最前，之后每次在单目标和组之间切换都会多留一个空的控制框。React 版不受影响。修复后删除「Snap Elements (group)」的 `vue-known-issue` 标签和 monorepo-tooling spec 中对应的登记。croact 是第三方包，修复方式（改 react-moveable 的首次渲染、给 croact 打补丁或替换实现）由那个 change 设计。
+`fix-vanilla-root-switch-leak`：第 7 步中发现原生版每次在单目标、组之间切换都会留下上一个控制框（子节点清空、元素保留），`destroy()` 后也不删除；用选择器指定多个目标时，最初的控制框以 `display: none` 排在最前。根因是 croact 的 self 模式：原生版用 `renderSelf` 把传入的元素当作渲染树的根元素复用，`InitialMoveable` 切换模式时会替换根元素，而 self 模式下被替换的根节点都标为 `_sel`、卸载时不删除。croact 停更且是 peer 依赖，补丁到不了 npm 使用者，所以不改 croact：原生版改为用 `render` 渲染到一个不挂到页面上的根元素，再用 `createPortal` 把 Moveable 放进 `parentElement`，控制框仍是 `parentElement` 的子元素，DOM 结构和坐标都不变。备选的「把传入的元素当作容器、控制框放在里面」经探针验证会让坐标算错（矩阵栈以控制框的父元素为终点）。Vue 3 版的根元素改为 `display: contents` 的挂载点，`container` 默认是组件的父元素（`$el` 不再是控制框，minor）。私有选项 `warpSelf` 删除。`InitialMoveable._updateRefs` 首次渲染不解析选择器的行为保留：根元素能被正确删除后它只是多一次挂载。全量截图对比还发现了上游已有的 bug：设置 `container` 且首次渲染就有目标时，控制框（以及单独分组的每个子控制框）一直是 `visibility: hidden`。可见性要等挂载后再渲染一次，而 `MoveableManager.componentDidMount` 只在没有 `container` 时这样做（2019 年「坐标只算一次」的条件，2022 年加入可见性逻辑时只照顾了没有 `container` 的分支）；Vue 版改为总是传 `container` 后，3 个单独分组的 story 因此空白。修为挂载后总是重新渲染、只在没有 `container` 时补算坐标，React 版设置 `container` 的使用者也一并修好。原生版新增针对产物的浏览器测试，新增一个只为测试存在的 story 断言设置 `container` 时控制框可见；「Snap Elements (group)」的 `vue-known-issue` 标签删除，story 测试 275 个（React 138、Vue 137）全部通过、没有跳过。两处方案都由 Fable 独立评审（选出 portal 写法并指出容器写法的坐标问题；找出 `!container` 条件的来历并给出只补渲染、不重复计算的修法）。
 
 ### 9. 原生版和 Vue 3 版的 `makeMoveable`
 原生版和 Vue 3 版只能使用全部 able，不能像 React 版那样用 `makeMoveable` 只组合部分 able 来减小体积。补上之后，TreeShaking 这个 story 可以去掉 `react-only`，写出 Vue 版。
@@ -77,3 +77,4 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 - 原生版和 Vue 3 版没有导出 `DIRECTIONS`（React 版有），两个 Vue 示例（RotateWithControls、RotateWithResize）在本地写方向数组常量。以后统一考虑原生版缺少的导出时一起处理。
 - Storybook 的 Vue 模式用的是原生版的构建产物：要先 `pnpm packages:build`，修改 react-moveable 的源码后也要重新构建才能在 Vue 模式中看到。
 - vue3-selecto 1.12.3、vue3-infinite-viewer 0.17.1 没有声明 `vue` 和 `@daybrush/utils`，`pnpm-workspace.yaml` 中用 `packageExtensions` 补上；上游发布修正后删除。
+- 首次渲染就用数组目标（`target={[a, b]}`）并开启 `individualGroupable`、不设置 `container` 时会报错：子 manager 在 `componentDidMount` 中调用 `wrapperMoveable.getContainer()`，而外层控制框的 ref 要等子组件挂载完才赋值。React 版、原生版和上游 0.56.0 都是这样，用选择器或在挂载后再设置目标时不受影响。`MoveableIndividualGroup` 传给子 manager 的 `isWrapperMounted` 从未被读取，像是上游没做完的修复；以后单独修。
