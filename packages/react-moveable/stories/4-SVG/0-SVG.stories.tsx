@@ -15,7 +15,8 @@ import ReactSVGForeignObjectApp from "./ReactSVGForeignObjectApp";
 import ReactSVGForeignObjectInnerApp from "./ReactSVGForeignObjectInnerApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -30,6 +31,7 @@ export const SVGPathElement = {
     ...appStory(ReactPathApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 export const SVGSVGElement = {
@@ -37,6 +39,7 @@ export const SVGSVGElement = {
     ...appStory(ReactSVGSVGApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -45,6 +48,7 @@ export const SVGCircle = {
     ...appStory(ReactSVGCircleApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -53,6 +57,7 @@ export const SVGLine = {
     ...appStory(ReactSVGLineApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -61,6 +66,7 @@ export const SVGG = {
     ...appStory(ReactSVGGApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -69,6 +75,7 @@ export const SVGTargetG = {
     ...appStory(ReactSVGTargetGApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -78,6 +85,7 @@ export const SVGGroup = {
     ...appStory(ReactSVGGroupApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -96,6 +104,7 @@ export const SVGOrigin = {
     ...appStory(ReactOriginApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -105,6 +114,7 @@ export const SVGFillboxOrigin = {
     ...appStory(ReactOriginFillboxApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -116,6 +126,7 @@ export const SVGForeignObject = {
     ...appStory(ReactSVGForeignObjectApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -125,5 +136,6 @@ export const SVGForeignObjectInner = {
     ...appStory(ReactSVGForeignObjectInnerApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;

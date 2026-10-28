@@ -42,13 +42,24 @@ export function makeArgs(argTypes: any) {
 
 export function convertReactTemplate(text: string) {
     // `@/react-moveable` is the stories' alias of the package source (`paths` in tsconfig.json).
-    const previewText = text.replace(/"@\/react-moveable"/g, "\"@moveable-next/react\"");
+    const previewText = text
+        .replace(/"@\/react-moveable"/g, "\"@moveable-next/react\"")
+        .replace(/App\([^)]*\)/g, "App()");
 
     return convertTemplate(previewText);
 }
 
-export function convertTemplate(text: string): [string[], string[]] {
-    const previewText = text.replace(/App\([^)]*\)/g, "App()");
+export function convertVueTemplate(text: string) {
+    // `@/vue3-moveable` is the stories' alias of the Vue 3 package source (`paths` in tsconfig.json).
+    // The props declaration goes away since `props.xxx` is replaced by the values.
+    const previewText = text
+        .replace(/"@\/vue3-moveable"/g, "\"@moveable-next/vue3\"")
+        .replace(/^const props = defineProps<[\s\S]*?>\(\);?\n/m, "");
+
+    return convertTemplate(previewText);
+}
+
+export function convertTemplate(previewText: string): [string[], string[]] {
     const regex = /props\.([a-zA-Z0-9_]+)/g;
     let result: RegExpExecArray | null;
     let index = 0;

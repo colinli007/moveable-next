@@ -24,7 +24,8 @@ import ReactOriginDraggableApp from "./ReactOriginDraggableApp";
 import ReactPinchableApp from "./ReactPinchableApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -40,6 +41,7 @@ export const BasicDraggable = {
     ...appStory(ReactDraggableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_DRAGGABLE_CONTROLS,
         },
@@ -67,6 +69,7 @@ export const BasicResizable = {
     ...appStory(ReactResizableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_RESIZABLE_CONTROLS,
         },
@@ -96,6 +99,7 @@ export const BasicScalable = {
     ...appStory(ReactScalableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_SCALABLE_CONTROLS,
         },
@@ -122,6 +126,7 @@ export const BasicScalableKeepRatioTest = {
     ...appStory(ReactScalableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_SCALABLE_CONTROLS,
         },
@@ -151,6 +156,7 @@ export const BaiscRotatable = {
     ...appStory(ReactRotatableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_ROTATABLE_CONTROLS,
         },
@@ -179,6 +185,7 @@ export const BasicWarpable = {
     ...appStory(ReactWarpableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_WARPABLE_CONTROLS,
         },
@@ -215,6 +222,7 @@ export const BasicClippable = {
     ...appStory(ReactClippableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_DRAGGABLE_CONTROLS,
             ...DEFAULT_CLIPPABLE_CONTROLS,
@@ -242,6 +250,7 @@ export const BasicRoundable = {
     ...appStory(ReactRoundableApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -281,6 +290,7 @@ export const BasicOriginDraggable = {
     ...appStory(ReactOriginDraggableApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -321,6 +331,7 @@ export const BasicPinchable = {
     ...appStory(ReactPinchableApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();

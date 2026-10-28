@@ -25,7 +25,8 @@ import ReactDragTargetApp from "./ReactDragTargetApp";
 import ReactDragTargetSelfApp from "./ReactDragTargetSelfApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -40,6 +41,7 @@ export const OptionsResizeObserver = {
     ...appStory(ReactUseResizeObserverApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -48,6 +50,7 @@ export const OptionsResizeObserverGroup = {
     ...appStory(ReactUseResizeObserverGroupApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -56,6 +59,7 @@ export const OptionsResizeObserverIndividualGroup = {
     ...appStory(ReactUseResizeObserverIndividualGroupApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -64,6 +68,7 @@ export const OptionsMutationObserver = {
     ...appStory(ReactUseMutationObserverApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -73,6 +78,7 @@ export const OptionsPadding = {
     ...appStory(ReactPaddingApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -115,6 +121,7 @@ export const OptionsLinePadding = {
     ...appStory(ReactLinePaddingApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             linePadding: makeArgType({
                 type: "number",
@@ -131,6 +138,7 @@ export const OptionsControlPadding = {
     ...appStory(ReactControlPaddingApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             controlPadding: makeArgType({
                 type: "number",
@@ -148,6 +156,7 @@ export const OptionsCheckInput = {
     ...appStory(ReactCheckInputApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -157,6 +166,7 @@ export const OptionsDragFocusedInput = {
     ...appStory(ReactDragFocusedInputApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -166,6 +176,7 @@ export const OptionsViewContainer = {
     ...appStory(ReactViewContainerApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -176,6 +187,7 @@ export const OptionsPersistData = {
     ...appStory(ReactPersistDataApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -184,6 +196,7 @@ export const OptionsPersistDataGroup = {
     ...appStory(ReactGroupPersistDataApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -193,6 +206,7 @@ export const OptionsPersistDataIndividualGroup = {
     ...appStory(ReactIndividualGroupPersistDataApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -201,6 +215,7 @@ export const OptionsRootContainer = {
     ...appStory(ReactTransformedApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -209,6 +224,7 @@ export const OptionsRootContainerZoom = {
     ...appStory(ReactRootContainerApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -217,6 +233,7 @@ export const OptionsZoom = {
     ...appStory(ReactZoomApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -226,6 +243,7 @@ export const OptionsAccuratePosition = {
     ...appStory(ReactUseAccuratePositionApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -236,6 +254,7 @@ export const OptionsDragTarget = {
     ...appStory(ReactDragTargetApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -246,5 +265,6 @@ export const OptionsDragTargetSelf = {
     ...appStory(ReactDragTargetSelfApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;

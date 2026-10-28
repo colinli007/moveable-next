@@ -12,7 +12,9 @@
 | 4 | 框架包装升级与依赖升级 | 已完成 | `archive/2026-10-13-upgrade-lit-3`、`archive/2026-10-15-migrate-vue3-to-tsdown`、`archive/2026-10-16-upgrade-svelte-5`、`archive/2026-10-18-bump-dependencies` |
 | 5 | 文档与部署 | 已完成 | `archive/2026-10-18-deploy-demo-with-actions`、`archive/2026-10-18-replace-jsdoc-with-typedoc`、`archive/2026-10-18-remove-croffle-examples` |
 | 6 | 以 `@moveable-next` 发布 | 已完成 | `archive/2026-10-18-remove-preact-lit-svelte-packages`、`archive/2026-10-18-rename-to-moveable-next-scope`、`archive/2026-10-18-upgrade-react-19`、`archive/2026-10-27-prepare-first-release` |
-| 7 | Storybook 加入 Vue3 示例 | 未开始 | |
+| 7 | Storybook 加入 Vue3 示例 | 已完成 | `add-vue3-storybook-examples` |
+| 8 | 原生版在单目标和组之间切换时删除旧的控制框 | 未开始 | |
+| 9 | 原生版和 Vue 3 版的 `makeMoveable` | 未开始 | |
 
 ## 已完成
 
@@ -52,7 +54,15 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 - 首次发布：`prepare-first-release` 先修掉原生版和 Vue 3 版类型声明对 React 类型的依赖（`MOVEABLE_ABLES` 等写出显式类型，moveable 新增类型测试），再用 changesets 管理版本：react、croact、vanilla、vue3 是 fixed 组，helper 独立，版本从 0.1.0 重新开始，上游 CHANGELOG 删除。2026-10-21 维护者在本地发布 5 个包的 0.1.0。之后由 `release.yml` 发布：push 到 `main` 时先跑全部检查，再由 changesets/action 开版本 PR，合并后在 `npm` 环境中用可信发布（OIDC，不保存 token）发布并带 provenance。2026-10-27 用 README 链接改为本站点的改动发布 0.1.1，验证了整个流程。npm 2026-09 之后新建的可信发布配置默认只允许暂存发布、2 天内必须用一次，所以四个 fixed 包勾选了「Allow npm publish」，helper 等它第一次发新版本时再配置。另外新增 `CONTRIBUTING.md`，README 写明 Node ESM 的限制。
 
 ### 7. Storybook 加入 Vue3 示例
-第 5 步删除了 croffle 翻译生成的多框架示例。以后加入 Vue3 示例时，要满足「展示的代码经过测试」：示例要在测试中真实渲染（或至少经过 Vue 编译器检查并挂载），不能再是没有检查的翻译结果。具体方式由那个 change 设计。
+`add-vue3-storybook-examples`：Storybook 工具栏增加 Framework（React / Vue）切换。每个 story 只定义一次，Vue 模式下渲染同目录手写的 `Vue<Name>App.vue`（SFC，`<script setup lang="ts">`），代码面板随之显示 Vue 和 CSS tab（`.vue` 源码只做三处转换）；play 断言只看 DOM，两种框架共用，Vitest 分为 `storybook-react`、`storybook-vue` 两个 project，测试从 137 个增加到 273 个。137 个 story 中 136 个有 Vue 版，共 135 个 Vue 示例（一个 App 被两个 story 共用）；TreeShaking 是唯一的例外（`react-only`，原生版和 Vue 3 版没有 `makeMoveable`）。Vue 示例通过 `@/vue3-moveable` 别名引用 vue3-moveable 的源码（写成 workspace 依赖会和 react-moveable 成环），只在 Vue 模式下懒加载，React 模式仍不需要构建；Vue 模式用原生版的构建产物。类型检查改为 `vue-tsc -p stories`，同时检查 `.ts`、`.tsx` 和 `.vue`。两个 project 的失败截图由 `.storybook/vitest.setup.ts` 按 project 保存（Vitest 内置的截图路径不含 project，会互相覆盖）。vue3-selecto、vue3-infinite-viewer 漏声明 `vue` 和 `@daybrush/utils`，用 `packageExtensions` 补上。
+
+移植过程中修复了 vue3-moveable 没有声明 `emits` 的问题：`@click`、`@drag` 这类与原生事件同名的监听器会同时挂到根元素上，`@click` 会多收到一次原生 `MouseEvent`（patch changeset）。另外发现原生版的一个已有问题（见第 8 步），受影响的「Snap & Bound / Snap Elements (group)」在 Vue 下标为 `vue-known-issue` 并跳过。
+
+### 8. 原生版在单目标和组之间切换时删除旧的控制框
+第 7 步中发现：原生版用选择器指定多个目标时，`InitialMoveable._updateRefs` 第一次渲染遍历的是上一次的 `refTargets`（空），所以总是先按单目标渲染、挂载后再切换为组；croact 的 `renderSelf` 把 self 模式下的根节点都标为 `_sel`，卸载时不删除。结果是第一次复用的元素以 `display: none` 留在最前，之后每次在单目标和组之间切换都会多留一个空的控制框。React 版不受影响。修复后删除「Snap Elements (group)」的 `vue-known-issue` 标签和 monorepo-tooling spec 中对应的登记。croact 是第三方包，修复方式（改 react-moveable 的首次渲染、给 croact 打补丁或替换实现）由那个 change 设计。
+
+### 9. 原生版和 Vue 3 版的 `makeMoveable`
+原生版和 Vue 3 版只能使用全部 able，不能像 React 版那样用 `makeMoveable` 只组合部分 able 来减小体积。补上之后，TreeShaking 这个 story 可以去掉 `react-only`，写出 Vue 版。
 
 ## 已知遗留
 - react-keycon 0.3.0 的依赖声明会装出两份 `@cfcs/core`，目前用 `pnpm-workspace.yaml` 中限定范围的 override 让它们共用一份；上游修复后可删除。
@@ -64,3 +74,6 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 - 测试只在 React 19 上运行：`@moveable-next/react` 的 peer 范围包含 16.8 到 18，这些版本上的行为以升级时产物逐字节不变为依据，以后改动 react-moveable 时不再被测试。需要时加 CI 矩阵。
 - 包不支持 Node 原生 ESM 双格式：`exports` 让 Node 的 `import` 和 `require` 都加载 CJS 产物。在 `moduleResolution: node16` 的 ESM 项目中，`import Moveable from "@moveable-next/react"` 的类型与运行时不符（类型是 `export default`，运行时是 CJS 的 `module.exports`）。要彻底解决，需要把 ESM 产物改为 `.mjs` 并提供 `.d.mts` / `.d.cts` 两套声明，需要时单独评估。根 README 和 react、vanilla、vue3 的 README 中已写明这个限制和绕过方法。
 - helper 还没有配置可信发布：它第一次发新版本前，维护者在 npmjs.com 上为它添加（与其它包相同，勾选「Allow npm publish」），并在 2 天内由 CI 发布一次。
+- 原生版和 Vue 3 版没有导出 `DIRECTIONS`（React 版有），两个 Vue 示例（RotateWithControls、RotateWithResize）在本地写方向数组常量。以后统一考虑原生版缺少的导出时一起处理。
+- Storybook 的 Vue 模式用的是原生版的构建产物：要先 `pnpm packages:build`，修改 react-moveable 的源码后也要重新构建才能在 Vue 模式中看到。
+- vue3-selecto 1.12.3、vue3-infinite-viewer 0.17.1 没有声明 `vue` 和 `@daybrush/utils`，`pnpm-workspace.yaml` 中用 `packageExtensions` 补上；上游发布修正后删除。

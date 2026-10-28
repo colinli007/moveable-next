@@ -7,7 +7,8 @@ import ReactSelectoNestedGroupApp from "./ReactSelectoNestedGroupApp";
 import ReactInfiniteViewerApp from "./ReactInfiniteViewerApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -23,6 +24,7 @@ export const ComponentsSelecto = {
     ...appStory(ReactSelectoApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -31,6 +33,7 @@ export const ComponentsSelectoWithMultipleGroup = {
     ...appStory(ReactSelectoMultipleGroupApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -39,6 +42,7 @@ export const ComponentsSelectoWithGroupUngroup = {
     ...appStory(ReactSelectoMultipleGroupUngroupApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -48,6 +52,7 @@ export const ComponentsSelectoWithNestedGroup = {
     ...appStory(ReactSelectoNestedGroupApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -60,5 +65,6 @@ export const ComponentsInfiniteViewer = {
     ...appStory(ReactInfiniteViewerApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;

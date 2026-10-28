@@ -6,7 +6,8 @@ import ReactClipSnapApp from "./ReactClipSnapApp";
 import ReactClippableResizableKeepRatioApp from "./ReactClippableResizableKeepRatioApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -22,6 +23,7 @@ export const AdvancedClippable = {
     ...appStory(ReactClippableApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -31,6 +33,7 @@ export const AdvancedClippableClippedArea = {
     ...appStory(ReactClippedAreaApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -40,6 +43,7 @@ export const AdvancedClippableClipSnap = {
     ...appStory(ReactClipSnapApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -48,5 +52,6 @@ export const AdvancedClippableResizableKeepRatio = {
     ...appStory(ReactClippableResizableKeepRatioApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;

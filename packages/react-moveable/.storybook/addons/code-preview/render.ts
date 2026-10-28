@@ -7,6 +7,11 @@ import type { SupportedLanguage } from "storybook/internal/components";
 export type Template = string | [strings: string[], values: string[]];
 
 /**
+ * The frameworks an example is written in: the `framework` global (see .storybook/preview.tsx).
+ */
+export type Framework = "react" | "vue";
+
+/**
  * One entry of the `preview` story parameter.
  */
 export interface Preview {
@@ -15,6 +20,14 @@ export interface Preview {
     description?: string;
     language: SupportedLanguage;
     copy?: boolean;
+    /**
+     * The entry is shown while this framework is selected.
+     */
+    framework: Framework;
+    /**
+     * Writes strings in the values with single quotes: the Vue templates put the values in double-quoted attributes (`:prop="..."`).
+     */
+    singleQuote?: boolean;
 }
 
 export interface CodeTab {
@@ -22,7 +35,14 @@ export interface CodeTab {
     codes: Array<Pick<Preview, "description" | "language" | "copy"> & { text: string }>;
 }
 
-export function renderTemplate(template: Template, args: Record<string, unknown>): string {
+function stringify(value: unknown, singleQuote?: boolean) {
+    const json = JSON.stringify(value);
+
+    // Every string literal of the JSON, with `'` escaped instead of `"`.
+    return singleQuote ? json?.replace(/"((?:[^"\\]|\\.)*)"/g, (_, text: string) => `'${text.replace(/'/g, "\\'")}'`) : json;
+}
+
+export function renderTemplate(template: Template, args: Record<string, unknown>, singleQuote?: boolean): string {
     if (typeof template === "string") {
         return template.trim();
     }
@@ -30,7 +50,7 @@ export function renderTemplate(template: Template, args: Record<string, unknown>
 
     return strings.reduce((code, string, i) => {
         const name = values[i];
-        const value = name === undefined ? "" : name in args ? JSON.stringify(args[name]) : name;
+        const value = name === undefined ? "" : name in args ? stringify(args[name], singleQuote) : name;
 
         return code + string + value;
     }, "").trim();
@@ -42,14 +62,14 @@ export function renderTemplate(template: Template, args: Record<string, unknown>
 export function renderTabs(previews: Preview[], args: Record<string, unknown>): CodeTab[] {
     const tabs: CodeTab[] = [];
 
-    previews.forEach(({ tab, template, description, language, copy }) => {
+    previews.forEach(({ tab, template, description, language, copy, singleQuote }) => {
         let codeTab = tabs.find(t => t.tab === tab);
 
         if (!codeTab) {
             codeTab = { tab, codes: [] };
             tabs.push(codeTab);
         }
-        codeTab.codes.push({ description, language, copy, text: renderTemplate(template, args) });
+        codeTab.codes.push({ description, language, copy, text: renderTemplate(template, args, singleQuote) });
     });
     return tabs;
 }

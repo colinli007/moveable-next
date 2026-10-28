@@ -39,7 +39,8 @@ import ReactTranslate50App from "./ReactTranslate50App";
 import ReactNestedSVGApp from "./ReactNestedSVGApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -54,6 +55,7 @@ export const TestsNoTarget = {
     ...appStory(ReactNoTargetApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 export const TestsClickATag = {
@@ -61,6 +63,7 @@ export const TestsClickATag = {
     ...appStory(ReactATagApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -69,6 +72,7 @@ export const TestsInput = {
     ...appStory(ReactInputApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 export const TestsSafari = {
@@ -76,6 +80,7 @@ export const TestsSafari = {
     ...appStory(ReactSafariApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 export const TestsCustomElement = {
@@ -83,6 +88,7 @@ export const TestsCustomElement = {
     ...appStory(ReactCustomElementApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -96,6 +102,7 @@ export const TestsCustomElementBounds = {
     ...appStory(ReactCustomElementBoundsApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -110,6 +117,7 @@ export const TestsAccuracy = {
     ...appStory(ReactAccuracyApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -118,6 +126,7 @@ export const TestsLargeZoom = {
     ...appStory(ReactLargeZoomElementGuidelinesApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -126,6 +135,7 @@ export const TestsFlex = {
     ...appStory(ReactFlexApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -134,6 +144,7 @@ export const TestsWillChange = {
     ...appStory(ReactWillChangeApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -142,6 +153,7 @@ export const TestsStopDrag = {
     ...appStory(ReactStopDragApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -150,6 +162,7 @@ export const TestsClick = {
     ...appStory(ReactClickApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -158,6 +171,7 @@ export const TestsNestedTarget = {
     ...appStory(ReactNestedTargetApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -166,6 +180,7 @@ export const TestsZoomedCursor = {
     ...appStory(ReactZoomedCursorApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -174,6 +189,7 @@ export const TestsHandleLargeNumber = {
     ...appStory(ReactHandleLargeNumberApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -182,6 +198,7 @@ export const TestsOverflow = {
     ...appStory(ReactOverflowApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -190,6 +207,7 @@ export const TestsDragtarget = {
     ...appStory(ReactDragTargetApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -198,6 +216,7 @@ export const TestsDragStart = {
     ...appStory(ReactDragStartGroupApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -206,6 +225,7 @@ export const TestsChangingSnapContainer = {
     ...appStory(ReactChangingSnapContainerApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -214,6 +234,7 @@ export const TestsFixedSnap = {
     ...appStory(ReactFixedSnapApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -223,6 +244,7 @@ export const TestsZoomedTarget = {
     ...appStory(ReactZoomedTargetApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -232,6 +254,7 @@ export const TestsTRSTarget = {
     ...appStory(ReactTRSTargetApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -272,6 +295,7 @@ export const TestsZoomedSnap = {
     ...appStory(ReactZoomedSnapApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -280,6 +304,7 @@ export const TestsRequestBounds = {
     ...appStory(ReactRequestBoundsApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -288,6 +313,7 @@ export const TestsRotateClippable = {
     ...appStory(ReactRotateClippableApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -297,6 +323,7 @@ export const TestsAccurateElementGuidelines = {
     ...appStory(ReactAccurateElementGuidelineApp, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -320,6 +347,7 @@ export const TestsAccurateElementGuidelines2 = {
     ...appStory(ReactAccurateElementGuideline2App, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -341,6 +369,7 @@ export const TestDragAPI = {
     ...appStory(ReactDragAPIApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -350,6 +379,7 @@ export const TestChangeTargetsOnClick = {
     ...appStory(ReactChangeTargetsOnClickApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -360,6 +390,7 @@ export const TestScalableKeepRatio = {
     ...appStory(ReactScalableKeepRatioApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -370,6 +401,7 @@ export const TestIframe = {
     ...appStory(ReactIframeApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -379,6 +411,7 @@ export const TestGroupPadding = {
     ...appStory(ReactGroupPaddingApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -388,6 +421,7 @@ export const TestTranslate50 = {
     ...appStory(ReactTranslate50App, {
         apps,
         sources,
+        vueApps,
     }),
     play: devPlay(async ({ canvasElement }) => {
         await wait();
@@ -413,5 +447,6 @@ export const TestNestedSVG = {
     ...appStory(ReactNestedSVGApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;

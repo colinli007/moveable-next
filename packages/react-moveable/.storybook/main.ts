@@ -1,6 +1,7 @@
 import { fileURLToPath } from "node:url";
 import type { StorybookConfig } from "@storybook/react-vite";
 import react from "@vitejs/plugin-react";
+import vue from "@vitejs/plugin-vue";
 import { mergeConfig } from "vite";
 import "./readme.ts";
 
@@ -35,9 +36,13 @@ const config: StorybookConfig = {
         reactDocgen: false,
     },
     viteFinal: config => mergeConfig(config, {
-        // The react-vite framework expects the project to bring the React plugin.
-        plugins: [react()],
-        // `@/stories`, `@/react-moveable` and `@moveable-next/helper` come from the `paths` of tsconfig.json.
+        // The react-vite framework expects the project to bring the React plugin; the Vue examples (`*App.vue`) need Vue's.
+        plugins: [
+            react(),
+            // `<custom-element>` in the 99-Tests examples is a native custom element, not a Vue component.
+            vue({ template: { compilerOptions: { isCustomElement: tag => tag === "custom-element" } } }),
+        ],
+        // `@/stories`, `@/react-moveable`, `@/vue3-moveable` and `@moveable-next/helper` come from the `paths` of tsconfig.json.
         resolve: { tsconfigPaths: true },
     }),
 };

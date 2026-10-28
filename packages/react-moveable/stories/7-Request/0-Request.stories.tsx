@@ -11,7 +11,8 @@ import ReactResizableSnappableApp from "./ReactResizableSnappableApp";
 import ReactAlignApp from "./ReactAlignApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -28,6 +29,7 @@ export const RequestDraggable = {
     ...appStory(ReactDraggableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             containerScale: makeArgType({
                 type: "number",
@@ -44,6 +46,7 @@ export const RequestResizable = {
     ...appStory(ReactResizableApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_RESIZABLE_CONTROLS,
         },
@@ -55,6 +58,7 @@ export const RequestResizableDelta = {
     ...appStory(ReactResizableDeltaApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_RESIZABLE_CONTROLS,
         },
@@ -66,6 +70,7 @@ export const RequestResizableGroup = {
     ...appStory(ReactResizableGroupApp, {
         apps,
         sources,
+        vueApps,
         argTypes: {
             ...DEFAULT_RESIZABLE_CONTROLS,
         },
@@ -79,6 +84,7 @@ export const RequestDraggableSnappable = {
     ...appStory(ReactDraggableSnappableApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -87,6 +93,7 @@ export const RequestResizableSnappable = {
     ...appStory(ReactResizableSnappableApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
 
@@ -97,5 +104,6 @@ export const RequestDraggableAlign = {
     ...appStory(ReactAlignApp, {
         apps,
         sources,
+        vueApps,
     }),
 } satisfies StoryObj;
