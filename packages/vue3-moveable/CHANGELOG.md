@@ -1,5 +1,13 @@
 # @moveable-next/vue3
 
+## 0.1.2
+
+### Patch Changes
+
+- [#4](https://github.com/colinli007/moveable-next/pull/4) [`eaaf88d`](https://github.com/colinli007/moveable-next/commit/eaaf88d6a0feb37fcfe6b800363c0fb1cbf04251) Thanks [@colinli007](https://github.com/colinli007)! - The component declares moveable's events in `emits`. Listeners whose names are also native DOM events, such as `@click` and `@drag`, no longer fall through to the root element as native listeners, so `@click` only receives moveable's `click` event instead of also receiving the browser's `MouseEvent` when the control box is clicked.
+- Updated dependencies []:
+  - @moveable-next/vanilla@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
