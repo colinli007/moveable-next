@@ -617,7 +617,7 @@ const directionCondition = getDirectionCondition("", ["resizable", "scalable"]);
 
 export default {
     name: "snappable",
-    dragRelation: "strong",
+    dragRelation: "strong" as const,
     props: [
         "snappable",
         "snapContainer",
@@ -968,6 +968,7 @@ color: #f55;
         if (!e.isRequest && e.inputEvent) {
             return hasClass(e.inputEvent.target, prefix("snap-control"));
         }
+        return false;
     },
     dragControlStart(
         moveable: MoveableManagerInterface<SnappableProps, SnappableState>

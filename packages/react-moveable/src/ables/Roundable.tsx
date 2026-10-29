@@ -251,10 +251,10 @@ cursor: pointer;
 
         return roundClickable === true || roundClickable === "line" ? prefix("round-line-clickable") : "";
     },
-    requestStyle(): Array<keyof CSSStyleDeclaration> {
+    requestStyle(): string[] {
         return ["borderRadius"];
     },
-    requestChildStyle(): Array<keyof CSSStyleDeclaration> {
+    requestChildStyle(): string[] {
         return ["borderRadius"];
     },
     render(moveable: MoveableManagerInterface<RoundableProps, RoundableState>, React: Renderer): any {

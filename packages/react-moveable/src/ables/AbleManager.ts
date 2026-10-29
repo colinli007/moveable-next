@@ -1,5 +1,6 @@
 import { Able } from "../types";
 
+/*#__NO_SIDE_EFFECTS__*/
 export function makeAble<
     Name extends string,
     AbleObject extends Partial<Able<any, any>>,

@@ -1261,6 +1261,7 @@ export function getTinyDist(v: number) {
 export function viewDraggingPrefix(ableName: string) {
     return prefix(`${ableName}-view-dragging`);
 }
+/*#__NO_SIDE_EFFECTS__*/
 export function getDirectionViewClassName(ableName: string) {
     return (moveable: MoveableManagerInterface) => {
         if (!moveable.isDragging(ableName)) {
@@ -1274,6 +1275,7 @@ export function getDirectionViewClassName(ableName: string) {
         return prefix(`view-control-rotation${deg}`);
     };
 }
+/*#__NO_SIDE_EFFECTS__*/
 export function getDirectionCondition(ableName: string, checkAbles: string[] = [ableName]) {
     return (moveable: any, e: any) => {
         if (e.isRequest) {
