@@ -144,6 +144,20 @@ export default {
 
 The root element of the component is a mount point without a box (`display: contents`) that holds the control box, and positions are computed in the parent of the component unless `container` is set. To reach the control box, call `getControlBoxElement()` through the component ref; to give it classes, use the `className` prop, since attributes set on the component (such as `class`) go to the mount point.
 
+### Only some ables (tree shaking)
+
+`makeMoveable` makes a Moveable component with only the ables you pass (and those every Moveable has), so that your bundler leaves the other ables out. Its type parameter is the props of those ables, which type the props and events.
+
+```vue
+<script setup lang="ts">
+import { makeMoveable, Draggable, Resizable, type DraggableProps, type ResizableProps } from "@moveable-next/vue3";
+
+const Moveable = makeMoveable<DraggableProps & ResizableProps>([Draggable, Resizable]);
+</script>
+```
+
+The ables that can be combined are `Draggable`, `Resizable`, `Scalable`, `Rotatable`, `Warpable`, `Clippable`, `EdgeDraggable`, `Snappable`, `Roundable` and `Pinchable`.
+
 
 ## ⭐️ Show Your Support
 Please give a ⭐️ if this project helped you!

@@ -14,7 +14,7 @@
 | 6 | 以 `@moveable-next` 发布 | 已完成 | `archive/2026-10-18-remove-preact-lit-svelte-packages`、`archive/2026-10-18-rename-to-moveable-next-scope`、`archive/2026-10-18-upgrade-react-19`、`archive/2026-10-27-prepare-first-release` |
 | 7 | Storybook 加入 Vue3 示例 | 已完成 | `archive/2026-10-28-add-vue3-storybook-examples` |
 | 8 | 原生版在单目标和组之间切换时删除旧的控制框 | 已完成 | `archive/2026-10-28-fix-vanilla-root-switch-leak` |
-| 9 | 原生版和 Vue 3 版的 `makeMoveable` | 未开始 | |
+| 9 | 原生版和 Vue 3 版的 `makeMoveable` | 已完成 | `add-make-moveable-to-vanilla-and-vue`（归档时改为归档路径） |
 
 ## 已完成
 
@@ -62,9 +62,10 @@ Storybook 6.5 + webpack 4 换成 Storybook 10 + Vite 8；`@storybook/test-runner
 `fix-vanilla-root-switch-leak`：第 7 步中发现原生版每次在单目标、组之间切换都会留下上一个控制框（子节点清空、元素保留），`destroy()` 后也不删除；用选择器指定多个目标时，最初的控制框以 `display: none` 排在最前。根因是 croact 的 self 模式：原生版用 `renderSelf` 把传入的元素当作渲染树的根元素复用，`InitialMoveable` 切换模式时会替换根元素，而 self 模式下被替换的根节点都标为 `_sel`、卸载时不删除。croact 停更且是 peer 依赖，补丁到不了 npm 使用者，所以不改 croact：原生版改为用 `render` 渲染到一个不挂到页面上的根元素，再用 `createPortal` 把 Moveable 放进 `parentElement`，控制框仍是 `parentElement` 的子元素，DOM 结构和坐标都不变。备选的「把传入的元素当作容器、控制框放在里面」经探针验证会让坐标算错（矩阵栈以控制框的父元素为终点）。Vue 3 版的根元素改为 `display: contents` 的挂载点，`container` 默认是组件的父元素（`$el` 不再是控制框，minor）。私有选项 `warpSelf` 删除。`InitialMoveable._updateRefs` 首次渲染不解析选择器的行为保留：根元素能被正确删除后它只是多一次挂载。全量截图对比还发现了上游已有的 bug：设置 `container` 且首次渲染就有目标时，控制框（以及单独分组的每个子控制框）一直是 `visibility: hidden`。可见性要等挂载后再渲染一次，而 `MoveableManager.componentDidMount` 只在没有 `container` 时这样做（2019 年「坐标只算一次」的条件，2022 年加入可见性逻辑时只照顾了没有 `container` 的分支）；Vue 版改为总是传 `container` 后，3 个单独分组的 story 因此空白。修为挂载后总是重新渲染、只在没有 `container` 时补算坐标，React 版设置 `container` 的使用者也一并修好。原生版新增针对产物的浏览器测试，新增一个只为测试存在的 story 断言设置 `container` 时控制框可见；「Snap Elements (group)」的 `vue-known-issue` 标签删除，story 测试 275 个（React 138、Vue 137）全部通过、没有跳过。两处方案都由 Fable 独立评审（选出 portal 写法并指出容器写法的坐标问题；找出 `!container` 条件的来历并给出只补渲染、不重复计算的修法）。
 
 ### 9. 原生版和 Vue 3 版的 `makeMoveable`
-原生版和 Vue 3 版只能使用全部 able，不能像 React 版那样用 `makeMoveable` 只组合部分 able 来减小体积。补上之后，TreeShaking 这个 story 可以去掉 `react-only`，写出 Vue 版。
+`add-make-moveable-to-vanilla-and-vue`：排查时发现 React 版的 `makeMoveable` 本身也已经不裁剪：组合 3 个 able 和默认导出体积相同。原因是第 3 步把产物目标改为 ES2022 后，默认 `Moveable` 的静态字段 `defaultAbles` 被编译成 `static {}` 块，打包工具当作副作用，连同全部 able 一起保留（上游 0.56.0 的 ES5 产物能裁剪）；另有 5 处顶层 `makeAble(...)` 和 able 对象字面量中的 `getRenderDirections(...)` 等调用没有标注。修法是 `static get defaultAbles()`，并给 `makeAble`、`getRenderDirections`、`getDirectionViewClassName`、`getDirectionCondition` 的声明加 `/*#__NO_SIDE_EFFECTS__*/`；默认导出仍是 class，类型用法不变（`defaultAbles` 不能再赋值，minor）。原生版新增 `makeMoveable(ables)` 和与 React 版相同的 10 个 able 导出：选项访问器不再由模块顶层的 `@Properties(PROPERTIES)` 按全部 able 生成，改为类的第一个实例创建时按类的 able 生成（`MoveableManager.getAbleInfo()`，名称来自 React 版新增的 `InitialMoveable.getAllAbles()`）；able 写出 `Able<XxxProps>` 类型，避免类型声明引入 React。Vue 3 版的组件改为工厂生成，默认组件是 `/*#__PURE__*/` 的工厂调用，显式导出自己的 `makeMoveable`。为了让 able 能写出 `Able` 类型，修正了 Snappable、Scrollable、Roundable 推断类型与 `Able` 不符的地方。用 rolldown 压缩打包、第三方依赖外部化，只组合 Draggable、Resizable、Rotatable 时：React 105.8KB / 全量 161.0KB，原生版 107.9KB / 163.0KB，Vue 3 版 108.7KB / 163.8KB（都是 0.66）。三个包的构建最后执行 `config/check-tree-shaking.mjs`：断言没有组合的 able 不出现、体积不超过全量的 75%；临时去掉 `getRenderDirections` 的标注时检查会失败（Scalable 被保留），所以不需要另加 esbuild。TreeShaking story 写了 Vue 版，`react-only` 目前没有使用；story 测试 276 个（React 138、Vue 138）全部通过。方案由 Fable 独立评审（排查出全部 4 类原因，并比较了 PURE 工厂、define 语义等写法）。
 
 ## 已知遗留
+- 只组合一个 able（如 Draggable）时仍有约 77KB 的固定开销：`InitialMoveable.render` 引用 `MoveableGroup`、`MoveableIndividualGroup`，`getTotalAbles()` 总带 Groupable、IndividualGroupable、DragArea，Draggable 等直接 import snap 的辅助函数。要再缩小需要拆分这些结构，需要时单独评估。
 - react-keycon 0.3.0 的依赖声明会装出两份 `@cfcs/core`，目前用 `pnpm-workspace.yaml` 中限定范围的 override 让它们共用一份；上游修复后可删除。
 - eslint-plugin-react 7.37.5 的 peer 范围还不包含 ESLint 10，`pnpm-workspace.yaml` 中用 `peerDependencyRules.allowedVersions` 只对它放行；它的推荐集在 ESLint 10 下能正常运行，但推荐集以外有规则（如 `jsx-filename-extension`、`forward-ref-uses-ref`）调用了 ESLint 10 已删除的 API，所以配置只启用推荐集，额外启用 react 规则前要先确认它在 ESLint 10 下能运行。上游发布支持 ESLint 10 的版本后删除放行。
 - typescript-eslint 8 支持的 TypeScript 是 `<6.1`，以后升级到 TS 7 需要等它支持（npm 上已有 7.0.2）。
