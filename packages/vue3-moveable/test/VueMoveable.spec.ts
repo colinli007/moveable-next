@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { createApp, h, ref, shallowReactive, vShow, withDirectives } from "vue";
 import VanillaMoveable from "@moveable-next/vanilla";
-import Moveable from "../dist/moveable.esm.js";
+import Moveable, { makeMoveable, Draggable, Resizable, Rotatable } from "../dist/moveable.esm.js";
 import { createTarget, drag, mouse } from "../../../config/testing/browser";
 
 const cleanups: Array<() => void> = [];
@@ -20,13 +20,13 @@ function target() {
 
 // Renders <Moveable v-bind="props" ref="moveable" /> the way a template does: props are reactive.
 // `containerStyle` is the style of the element the app is mounted in, the parent of the component.
-function mount(initialProps: Record<string, unknown>, containerStyle = "") {
+function mount(initialProps: Record<string, unknown>, containerStyle = "", component: any = Moveable) {
     const props = shallowReactive(initialProps);
     const moveable = ref();
     const container = document.body.appendChild(document.createElement("div"));
 
     container.style.cssText = containerStyle;
-    const app = createApp({ render: () => h(Moveable, { ...props, ref: moveable }) });
+    const app = createApp({ render: () => h(component, { ...props, ref: moveable }) });
     let mounted = true;
     const unmount = () => {
         mounted && app.unmount();
@@ -243,5 +243,31 @@ describe("vue3-moveable", () => {
         await expect.poll(() => container.querySelectorAll(".moveable-line").length).toBe(4);
         unmount();
         expect(container.querySelectorAll(".moveable-control-box")).toHaveLength(0);
+    });
+
+    it("renders a component of only the given ables with makeMoveable", async () => {
+        const events: string[] = [];
+        const dragTarget = target();
+        const { moveable } = mount({
+            target: dragTarget,
+            draggable: true,
+            resizable: true,
+            rotatable: true,
+            onDrag: () => events.push("drag"),
+            onResize: () => events.push("resize"),
+            onRotate: () => events.push("rotate"),
+            onRender: () => events.push("render"),
+        }, "", makeMoveable([Draggable, Resizable, Rotatable]));
+        const box: HTMLElement = moveable.getControlBoxElement();
+
+        // scalable is not one of its ables, so not one of its props
+        expect(Object.keys(moveable.$props)).toContain("draggable");
+        expect(Object.keys(moveable.$props)).not.toContain("scalable");
+        await expect.poll(() => box.querySelectorAll(".moveable-line").length).toBeGreaterThan(0);
+        drag(dragTarget, [50, 30]);
+        drag(box.querySelector<HTMLElement>(".moveable-se")!, [20, 10]);
+        drag(box.querySelector<HTMLElement>(".moveable-rotation-control")!, [60, 60]);
+
+        expect(new Set(events)).toEqual(new Set(["drag", "resize", "rotate", "render"]));
     });
 });

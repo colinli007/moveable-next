@@ -15,10 +15,11 @@
     "module": "dist/moveable.esm.js",
     "sideEffects": false,
     "scripts": {
-        "build": "tsdown && pnpm run declaration && pnpm run test:type",
+        "build": "tsdown && pnpm run declaration && pnpm run test:type && pnpm run test:tree-shaking",
         "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
         "test": "vitest run",
-        "test:type": "tsc -p tsconfig.test.json"
+        "test:type": "tsc -p tsconfig.test.json",
+        "test:tree-shaking": "node ../../config/check-tree-shaking.mjs"
     },
     "keywords": [
         "moveable",

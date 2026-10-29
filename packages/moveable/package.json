@@ -20,10 +20,11 @@
   "jsdelivr": "./dist/moveable.min.js",
   "scripts": {
     "start": "tsdown --watch",
-    "build": "tsdown && pnpm run declaration && pnpm run test:type",
+    "build": "tsdown && pnpm run declaration && pnpm run test:type && pnpm run test:tree-shaking",
     "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
     "test": "vitest run",
-    "test:type": "node test/checkTypes.mjs"
+    "test:type": "node test/checkTypes.mjs",
+    "test:tree-shaking": "node ../../config/check-tree-shaking.mjs"
   },
   "keywords": [
     "moveable",
