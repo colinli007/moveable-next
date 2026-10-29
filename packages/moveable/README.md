@@ -234,6 +234,23 @@ moveable.on("pinchStart", ({ target, clientX, clientY }) => {
 });
 ```
 
+### Only some ables (tree shaking)
+
+`makeMoveable` makes a Moveable class with only the ables you pass (and those every Moveable has), so that your bundler leaves the other ables out. Its type parameter is the props of those ables, which type the options and events.
+
+```ts
+import { makeMoveable, Draggable, Resizable, DraggableProps, ResizableProps } from "@moveable-next/vanilla";
+
+const DragResize = makeMoveable<DraggableProps & ResizableProps>([Draggable, Resizable]);
+const moveable = new DragResize(document.body, {
+    target: document.querySelector(".target"),
+    draggable: true,
+    resizable: true,
+});
+```
+
+The ables that can be combined are `Draggable`, `Resizable`, `Scalable`, `Rotatable`, `Warpable`, `Clippable`, `EdgeDraggable`, `Snappable`, `Roundable` and `Pinchable`. With the script tag, they are on the global: `new (Moveable.makeMoveable([Moveable.Draggable]))(document.body, { target, draggable: true })`.
+
 
 ## 📦 Packages
 * [**@moveable-next/vanilla**](https://github.com/colinli007/moveable-next/tree/main/packages/moveable): A Vanilla Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable.

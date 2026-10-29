@@ -39,7 +39,7 @@ pnpm storybook             # = react-moveable 的 Storybook（端口 6006），�
 pnpm test                  # 跑所有包的 Vitest（react-moveable 的 story 测试 + 各包单元测试 + 框架包装的浏览器测试；story 的 Vue 模式和框架包装测试读构建产物，要先 pnpm packages:build）
 pnpm build                 # 只构建 react-moveable
 pnpm lint                  # ESLint 检查库包的 src（警告也算失败），再检查各包有没有重复的依赖版本范围；不需要先构建
-pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact → moveable → vue3，helper 独立）；moveable、vue3-moveable 的构建最后执行类型测试
+pnpm packages:build        # pnpm -r build：按依赖拓扑构建所有包（react-moveable → croact → moveable → vue3，helper 独立）；moveable、vue3-moveable 的构建最后执行类型测试，react-moveable、moveable、vue3-moveable 的构建最后执行 tree-shaking 检查
 pnpm build:storybook       # 构建静态 Storybook 到 demo/storybook
 pnpm doc                   # TypeDoc 从源码生成 moveable 的 API 文档到 doc/（typedoc.json + config/typedoc/，警告视为错误；不需要先构建，CI 会跑）
 pnpm demo:build            # 构建所有包、文档和 Storybook，再由 config/copy-demo-files.mjs 把 moveable/helper 的 dist 和 doc/ 复制进 demo/；完成后 demo/ 就是站点根目录
@@ -49,7 +49,7 @@ pnpm release               # 全量构建后 changeset publish：CI 的发布步
 # packages/react-moveable（或在根目录用 pnpm --filter @moveable-next/react <script>）
 pnpm test:type             # tsc -p tsconfig.test.json，对 tests/types.ts 做类型断言检查
 pnpm typecheck:stories     # vue-tsc -p stories：stories（含 Vue 示例 *.vue）和 .storybook 的类型检查（CI 会跑）
-pnpm build                 # test:type + tsdown + declaration（不含 lint）
+pnpm build                 # test:type + tsdown + declaration + test:tree-shaking（不含 lint）
 pnpm exec playwright install chromium   # 首次跑测试前安装浏览器（不靠 postinstall）
 pnpm test                  # 跑本包的 Vitest
 pnpm exec vitest run stories/1-Basic    # 只跑某个目录 / 文件的 story 测试
@@ -70,7 +70,7 @@ story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
 - `play` 用 `devPlay(...)` 包一层：开发模式和测试中执行，发布的 Storybook 中不执行。`userEvent` 等来自 `storybook/test`，是异步的，要 `await`。
 - 只为测试存在的 story 打 `tags: ["hidden-test"]`：侧边栏默认隐藏（可在标签筛选中显示），照常参与测试。
 - Vue 示例：`React<Name>App.tsx` 的 Vue 版是同目录的 `Vue<Name>App.vue`，`appStory` 按文件名配对，缺了直接报错。写法：`<script setup lang="ts">` + `<template>`，不写 `<style>`（样式文件在脚本顶部 `import "./xxx.css";`）；从 `@/vue3-moveable` import（别名指向 vue3-moveable 的源码，见 `tsconfig.json` 的 `paths`；不写成 workspace 依赖，否则 react-moveable → vue3-moveable → moveable → croact-moveable → react-moveable 成环）；参数只用一条 `const props = defineProps<{ ... }>();` 声明 story 中存在的参数，模板和脚本里都写 `props.xxx`；prop 和事件名用 moveable 原名（`:throttleDrag`、`@dragStart`）；目标用 `useTemplateRef`；渲染出与 React 版相同的 DOM 结构，play 才能共用。示例中不为包装的问题写绕过代码，问题修在 vue3-moveable 中。
-- 没有 Vue 版的 story（目前只有 TreeShaking：原生版和 Vue 3 版没有 `makeMoveable`）要同时写 `tags: ["react-only"]` 和 `appStory(App, { ..., vue: false })`：前者让 Vue 的测试 project 跳过它（索引器只读字面量的 tags），后者让 Vue 模式显示「不支持」的说明、不生成 Vue tab。只写后者时 Vue 下会把说明文字当作通过的测试。
+- 没有 Vue 版的 story（目前没有）要同时写 `tags: ["react-only"]` 和 `appStory(App, { ..., vue: false })`：前者让 Vue 的测试 project 跳过它（索引器只读字面量的 tags），后者让 Vue 模式显示「不支持」的说明、不生成 Vue tab。只写后者时 Vue 下会把说明文字当作通过的测试。
 - Vue 下的已知失败（问题不在示例和包装中，经用户确认暂不修）打 `tags: ["vue-known-issue"]`：Vue 的测试 project 跳过它，结果中显示为 skipped；每一条都要登记在 monorepo-tooling spec「CI 跑交互测试」场景和 ROADMAP 的已知遗留中，修复后删除标签。目前没有使用。
 - 公共样式 `stories/common.css`、`stories/templates/default.css` 在 `.storybook/preview.tsx` 中全局引入；`.storybook/vitest.setup.ts` 给测试页面补上 Storybook 默认的 padded 布局。
 - 工具栏的 Framework（global `framework`，`.storybook/preview.tsx`）切换 React / Vue：画布渲染对应的 App，代码 tab 只显示当前框架的一组（React + CSS 或 Vue + CSS，随 Controls 实时替换参数），由本地 addon `.storybook/addons/code-preview/` 读取 story 的 `parameters.preview`（每项带 `framework`）。React tab 就是 App 源码本身，只做三处转换（`@/react-moveable` 换成 `@moveable-next/react`、`props.xxx` 换成当前参数值、`App(props)` 变成 `App()`）；Vue tab 同样是 `.vue` 源码本身，三处转换是 `@/vue3-moveable` 换成 `@moveable-next/vue3`、`props.xxx` 换成当前参数值、去掉 `defineProps` 那一句，参数值中的字符串写成单引号（值在 `:prop="..."` 的双引号里）。所以展示的代码就是被渲染、被测试的代码；CSS tab 是默认样式，加上当前框架的 App 从自己目录 import 的样式文件（`import "./xxx.css"`，单双引号、有无分号都认，`sources` 中找不到时直接报错）。不要再加入翻译生成的其他框架示例。
@@ -84,7 +84,8 @@ story 的写法约定（CSF3，见 `stories/utils/story.tsx`）：
 react-moveable  ← 全部核心逻辑（React class 组件）
  ├─ croact-moveable   内联 react-moveable 的产物，react → croact（轻量 React 兼容运行时）
  │    └─ moveable     原生 JS 版：croact 的 render 渲染到不挂到页面上的根元素，InnerMoveable 经 createPortal 进入 parentElement，
- │         │          @Properties 装饰器按 MOVEABLE_PROPS / EVENTS / METHODS 自动生成 getter/setter/方法代理
+ │         │          类的第一个实例创建时按类的 able 在原型上生成选项的 getter/setter（MoveableManager.getAbleInfo），
+ │         │          方法代理由 @Properties 装饰器按 MOVEABLE_METHODS 生成
  │         └─ vue3-moveable   包装原生 moveable（根元素是 display: contents 的挂载点，container 默认是组件的父元素）
 helper              独立工具包
 ```
@@ -96,7 +97,8 @@ helper              独立工具包
 ### 构建（tsdown）
 
 5 个库包（react-moveable、croact、moveable、vue3、helper）用 tsdown（Rolldown）构建，每个包一份 `tsdown.config.mts`，共用选项（`target: "es2022"`、sourcemap、banner、`dts: false`）在根目录 `config/build.mjs`；类型声明由各包的 `declaration` 脚本（tsc）输出到 `declaration/`。产物文件名、CJS 的 `require()` 形状、UMD 全局名对外不变，改动后可以用 `openspec/changes/archive/*replace-build-with-tsdown/baseline.md` 中的方法对比。约束：
-- 产物语法目标是 ES2022，tsconfig 中的 `useDefineForClassFields: false` 不能去掉：`@Properties`、`@withMethods` 定义在原型上的访问器会被实例字段遮住。
+- 产物语法目标是 ES2022，tsconfig 中的 `useDefineForClassFields: false` 不能去掉：改为 define 语义后，只声明不初始化的字段（`public foo!: X`）会在 `super()` 之后被重新定义为 `undefined`，覆盖父类构造函数已经设好的值，`MoveableGroup extends MoveableManager` 等层级都要重审。
+- 产物要能按 able 裁剪（`makeMoveable` 只组合部分 able 时，打包工具删掉其余 able）：默认 `Moveable`、able 和它们引用的代码中不要写类的静态字段（编译成 `static {}` 块，打包工具当作副作用，用 `static get`），不要在模块顶层或 able 对象字面量中调用没有标注的函数（被这样调用的工厂函数在声明前加 `/*#__NO_SIDE_EFFECTS__*/`，如 `makeAble`、`getRenderDirections`；表达式加 `/*#__PURE__*/`）。react-moveable、moveable、vue3-moveable 的构建最后执行 `config/check-tree-shaking.mjs`（`test:tree-shaking`）：用本包产物打包只组合 Draggable、Resizable、Rotatable 的代码（本仓库的包一起打包，第三方依赖外部化），出现其它 able 或体积超过全量的 75% 时失败。
 - JSX 必须是经典转换（`jsx: react`，输出 `React.createElement`）：croact 没有 `jsx-runtime`。react-moveable 的构建读 `tsconfig.build.json`，因为 `tsconfig.json` 为了 Storybook 是 `jsx: preserve`。
 - 产物运行时 import 的包必须在该包 `package.json` 中声明；ESM/CJS 配置都设了 `deps.onlyBundle: []`，有 node_modules 包被打进产物时构建直接报错。tsdown 会自动把 peerDependency 当作外部模块：react-moveable 的 react（`^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0`）和 vue3-moveable 的 vue（`^3.5.0`）都是 peer。react 的 peer 在 `peerDependenciesMeta` 中标为可选：croact-moveable、moveable 的类型声明引用 `@moveable-next/react`，所以它在这两个包的 `dependencies` 中，必需的 peer 会让原生版和 Vue 3 版的使用者被装上（npm 7+）或被提示安装 React。开发依赖是 React 19，测试只在 19 上运行。
 - croact-moveable 内联 react-moveable 的 ESM 产物（`deps.alwaysBundle` + `mainFields: ["module", "main"]`），用 `outputOptions.paths` 把输出中的 `react` / `react-css-styled` 改名为 `croact` / `croact-css-styled`；moveable 的 ESM/CJS 同样把 `@moveable-next/react` 改名为 `@moveable-next/croact`。这些是输出改名，不能换成 alias（已声明的依赖会先被判定为 external，alias 不生效）。
@@ -108,7 +110,7 @@ helper              独立工具包
 所有功能（Draggable、Resizable、Rotatable、Snappable、Groupable……）都是 `src/ables/` 下的 Able 对象，不是组件。接口与自定义示例见 `src/ables/README.md`。
 
 - `src/ables/consts.ts` 的 `MOVEABLE_ABLES` 定义默认 able 及**顺序**（顺序即事件执行顺序：`BeforeRenderable` 最先，`Snappable` 在 `Draggable`/`Resizable` 等之前以便修正位移，`Renderable` 最后）。`MOVEABLE_PROPS/EVENTS` 由它归约得出。
-- `makeMoveable(ables)` 可只组合部分 able（tree-shaking），默认 `Moveable` 即 `InitialMoveable` + 全部 able。
+- `makeMoveable(ables)` 可只组合部分 able（tree-shaking），默认 `Moveable` 即 `InitialMoveable` + 全部 able；三个包都导出 `makeMoveable`（原生版返回类，Vue 3 版返回组件，都由 React 版的 `makeMoveable` 生成内部组件）和 10 个可组合的 able。原生版、Vue 3 版读取类的选项名和事件名用 `MoveableManager.getAbleInfo()`，它来自 `InitialMoveable.getAllAbles()`（`getTotalAbles()` 加上总会触发的 BeforeRenderable、Renderable）。
 - Able 钩子按「操作 × 作用对象 × 阶段」命名：`drag` / `dragControl` / `dragGroup` / `dragGroupControl`（以及 pinch 对应）× `Start` / `` / `End`，可选 `*Condition` 决定是否参与、`render` 渲染控件、`request` 支持程序化调用（`moveable.request(...)`）。
 
 ### 渲染与事件流

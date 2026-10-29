@@ -252,6 +252,18 @@ root.render(
 );
 ```
 
+### Only some ables (tree shaking)
+
+`makeMoveable` makes a Moveable component with only the ables you pass (and those every Moveable has), so that your bundler leaves the other ables out. Its type parameter is the props of those ables.
+
+```tsx
+import { makeMoveable, Draggable, Resizable, DraggableProps, ResizableProps } from "@moveable-next/react";
+
+const Moveable = makeMoveable<DraggableProps & ResizableProps>([Draggable, Resizable]);
+```
+
+The ables that can be combined are `Draggable`, `Resizable`, `Scalable`, `Rotatable`, `Warpable`, `Clippable`, `EdgeDraggable`, `Snappable`, `Roundable` and `Pinchable`.
+
 ## ⚙️ Developments
 ### `npm start`
 
