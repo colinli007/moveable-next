@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { appStory } from "../utils/story";
-import TreeShakingApp from "./TreeShakingApp";
+import ReactTreeShakingApp from "./ReactTreeShakingApp";
 
 const apps = import.meta.glob("./*App.tsx", { eager: true });
-const sources = import.meta.glob<string>("./{*App.tsx,*.css}", {
+const vueApps = import.meta.glob("./*App.vue", { import: "default" });
+const sources = import.meta.glob<string>("./{*App.tsx,*App.vue,*.css}", {
     query: "?raw",
     import: "default",
     eager: true,
@@ -18,11 +19,9 @@ export default {
 
 export const TreeShaking = {
     name: "Use only Draggable, Resizable, Rotatable",
-    // @moveable-next/vanilla and @moveable-next/vue3 have no makeMoveable.
-    tags: ["react-only"],
-    ...appStory(TreeShakingApp, {
+    ...appStory(ReactTreeShakingApp, {
         apps,
         sources,
-        vue: false,
+        vueApps,
     }),
 } satisfies StoryObj;

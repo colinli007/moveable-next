@@ -14,7 +14,7 @@ const Moveable = makeMoveable<DraggableProps & ResizableProps & RotatableProps>(
 export default function App() {
     const targetRef = React.useRef<HTMLDivElement>(null);
     return <div className="container">
-        <p>Use only Draggable, Resizable, Rotatable (30% size reduction)</p>
+        <p>Use only Draggable, Resizable, Rotatable (the other ables are left out of the bundle)</p>
         <div className="target" ref={targetRef}>Target</div>
         <Moveable
             target={targetRef}
