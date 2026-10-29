@@ -1,5 +1,18 @@
 # @moveable-next/vanilla
 
+## 0.2.0
+
+### Minor Changes
+
+- [#8](https://github.com/colinli007/moveable-next/pull/8) [`4d01a29`](https://github.com/colinli007/moveable-next/commit/4d01a292dfe96aa9f444b27d89ba22cc431302b2) Thanks [@colinli007](https://github.com/colinli007)! - Add `makeMoveable(ables)`, which returns a Moveable class with only the given ables, and export the ables that can be combined: `Draggable`, `Resizable`, `Scalable`, `Rotatable`, `Warpable`, `Clippable`, `EdgeDraggable`, `Snappable`, `Roundable` and `Pinchable`. Bundlers leave the other ables out. In the UMD build they are on the global: `Moveable.makeMoveable([Moveable.Draggable])`. The option properties of a Moveable class are now defined on its prototype when its first instance is created, not when the module is loaded.
+
+### Patch Changes
+
+- [#6](https://github.com/colinli007/moveable-next/pull/6) [`f54e201`](https://github.com/colinli007/moveable-next/commit/f54e201cfb88441e41d131648f1e04ebb2c5b45d) Thanks [@colinli007](https://github.com/colinli007)! - Switching between a single target, a group and no target no longer leaves the previous control boxes in the DOM, and `destroy()` removes all of them. With a selector that matches several targets, there is no hidden control box in front of the group's any more. Moveable is now rendered through a portal into the parent element instead of taking that element over (croact's self mode, which keeps every replaced root element), so the control box is still a child of the parent element and positions are computed as before.
+- Updated dependencies [[`7d0d537`](https://github.com/colinli007/moveable-next/commit/7d0d537fd151ca9adc7a5e0ce7dd4a7c5a8a71ea), [`8fef438`](https://github.com/colinli007/moveable-next/commit/8fef438ce5c1d512d199921212f6de93eee9dfcf), [`f54e201`](https://github.com/colinli007/moveable-next/commit/f54e201cfb88441e41d131648f1e04ebb2c5b45d)]:
+  - @moveable-next/react@0.2.0
+  - @moveable-next/croact@0.2.0
+
 ## 0.1.2
 
 ### Patch Changes

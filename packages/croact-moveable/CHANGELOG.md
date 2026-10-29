@@ -1,5 +1,12 @@
 # @moveable-next/croact
 
+## 0.2.0
+
+### Patch Changes
+
+- Updated dependencies [[`7d0d537`](https://github.com/colinli007/moveable-next/commit/7d0d537fd151ca9adc7a5e0ce7dd4a7c5a8a71ea), [`8fef438`](https://github.com/colinli007/moveable-next/commit/8fef438ce5c1d512d199921212f6de93eee9dfcf), [`f54e201`](https://github.com/colinli007/moveable-next/commit/f54e201cfb88441e41d131648f1e04ebb2c5b45d)]:
+  - @moveable-next/react@0.2.0
+
 ## 0.1.2
 
 ### Patch Changes

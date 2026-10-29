@@ -1,6 +1,6 @@
 {
     "name": "@moveable-next/vue3",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "A Vue 3 Component that create Moveable, Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable, Groupable.",
     "types": "declaration/index.d.ts",
     "exports": {

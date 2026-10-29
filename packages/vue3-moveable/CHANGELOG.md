@@ -1,5 +1,18 @@
 # @moveable-next/vue3
 
+## 0.2.0
+
+### Minor Changes
+
+- [#8](https://github.com/colinli007/moveable-next/pull/8) [`4d01a29`](https://github.com/colinli007/moveable-next/commit/4d01a292dfe96aa9f444b27d89ba22cc431302b2) Thanks [@colinli007](https://github.com/colinli007)! - Add `makeMoveable(ables)`, which returns a Moveable component with only the given ables, so that bundlers leave the other ables out. It replaces the vanilla `makeMoveable` that the package re-exported. The ables to combine (`Draggable`, `Resizable`, ...) are exported as in `@moveable-next/vanilla`.
+
+- [#6](https://github.com/colinli007/moveable-next/pull/6) [`f54e201`](https://github.com/colinli007/moveable-next/commit/f54e201cfb88441e41d131648f1e04ebb2c5b45d) Thanks [@colinli007](https://github.com/colinli007)! - The root element of the component is now a mount point without a box (`display: contents`) that holds the control box, instead of being the control box itself; positions are still computed in the parent of the component unless `container` is set. Code that used `$el` as the control box should call `getControlBoxElement()` through the component ref, and classes for the control box go in the `className` prop: attributes set on the component fall through to the mount point. Switching targets no longer leaves control boxes behind (see `@moveable-next/vanilla`).
+
+### Patch Changes
+
+- Updated dependencies [[`4d01a29`](https://github.com/colinli007/moveable-next/commit/4d01a292dfe96aa9f444b27d89ba22cc431302b2), [`f54e201`](https://github.com/colinli007/moveable-next/commit/f54e201cfb88441e41d131648f1e04ebb2c5b45d)]:
+  - @moveable-next/vanilla@0.2.0
+
 ## 0.1.2
 
 ### Patch Changes
