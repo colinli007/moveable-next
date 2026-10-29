@@ -38,12 +38,29 @@
 - **WHEN** 检查 react-moveable 和 moveable 的 ESM、CJS 产物，以及 moveable 的 UMD 产物中来自本仓库源码的部分（按 sourcemap 区分）
 - **THEN** 组件以 `class ... extends ...` 形式出现，其中不存在 `__extends`、`extendStatics` 这类 ES5 继承辅助函数
 
+### Requirement: 产物支持按 able 裁剪
+react-moveable、moveable、vue3-moveable 的 ESM 产物中，默认导出和没有被引用的 able MUST NOT 带有使打包工具无法删除它们的副作用（例如类的静态块、顶层的未标注调用）。
+
+这条约束 SHALL 有自动化检查，在这三个包各自的构建最后执行：用本包产物打包一段只组合 Draggable、Resizable、Rotatable 的使用方代码（本仓库的包一起打包，第三方依赖作为外部模块），断言打包结果中没有其它 able（以 able 的 `name` 判断），并断言体积不超过引入默认导出时的固定比例；任一断言不满足时构建失败。
+
+#### Scenario: 引入副作用时构建失败
+- **WHEN** 某个改动让默认 `Moveable` 或某个 able 在产物中重新带有副作用（例如把 `static get defaultAbles()` 改回静态字段）
+- **THEN** 该包的构建失败，输出中能看到被保留的 able 名称
+
+#### Scenario: 正常构建
+- **WHEN** 执行全量构建
+- **THEN** 三个包的检查都通过，输出组合三个 able 与全量的体积
+
 ### Requirement: 原生 moveable 的装饰器属性在产物中可用
-源码中通过装饰器定义在原型上的属性访问器和方法代理，在产物中 SHALL 可以通过实例访问，MUST NOT 被同名的实例字段遮住。
+原生 moveable 的选项属性访问器和方法代理 SHALL 定义在类的原型上，可以通过实例访问，MUST NOT 被同名的实例字段遮住。它们 SHALL 按类组合的 able 生成（默认 `Moveable` 是全部 able），在类的第一个实例创建时生成，MUST NOT 在模块加载时就以全部 able 生成（否则只引入 `makeMoveable` 时无法删掉其余 able）。
 
 #### Scenario: 原生 moveable 的属性
 - **WHEN** 使用 moveable 的产物创建实例，给一个选项属性（如 `draggable`）赋值后再读取
 - **THEN** 读取到的是刚赋的值，并且这个值已经传给内部的 Moveable 组件
+
+#### Scenario: 组合部分 able 的类
+- **WHEN** 用 `makeMoveable([Draggable])` 创建的类 `new` 一个实例
+- **THEN** 实例上有 `draggable` 等 Draggable 的选项属性和全部方法代理，可以赋值和读取
 
 ### Requirement: 外部依赖与声明一致
 ESM 和 CJS 产物 SHALL 把运行时依赖保留为外部 import 或 require，MUST NOT 内联它们。例外：croact-moveable SHALL 内联 react-moveable 的代码。产物中出现的每个外部模块所属的包，SHALL 在该包 `package.json` 的 `dependencies` 或 `peerDependencies` 中声明，没有例外：react-moveable 的 `react` 是 peerDependency，不再需要在构建配置中单独指定为外部模块。

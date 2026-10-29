@@ -14,7 +14,7 @@
 | 6 | 以 `@moveable-next` 发布 | 已完成 | `archive/2026-10-18-remove-preact-lit-svelte-packages`、`archive/2026-10-18-rename-to-moveable-next-scope`、`archive/2026-10-18-upgrade-react-19`、`archive/2026-10-27-prepare-first-release` |
 | 7 | Storybook 加入 Vue3 示例 | 已完成 | `archive/2026-10-28-add-vue3-storybook-examples` |
 | 8 | 原生版在单目标和组之间切换时删除旧的控制框 | 已完成 | `archive/2026-10-28-fix-vanilla-root-switch-leak` |
-| 9 | 原生版和 Vue 3 版的 `makeMoveable` | 已完成 | `add-make-moveable-to-vanilla-and-vue`（归档时改为归档路径） |
+| 9 | 原生版和 Vue 3 版的 `makeMoveable` | 已完成 | `archive/2026-10-29-add-make-moveable-to-vanilla-and-vue` |
 
 ## 已完成
 
