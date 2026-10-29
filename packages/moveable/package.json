@@ -1,6 +1,6 @@
 {
   "name": "@moveable-next/vanilla",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Moveable is Draggable, Resizable, Scalable, Rotatable, Warpable, Pinchable, Groupable, Snappable.",
   "main": "./dist/moveable.cjs.js",
   "module": "./dist/moveable.esm.js",
