@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
-import Moveable from "../dist/moveable.esm.js";
-import { createTarget } from "../../../config/testing/browser";
+import Moveable, { makeMoveable, Draggable, Resizable, Rotatable } from "../dist/moveable.esm.js";
+import { createTarget, drag } from "../../../config/testing/browser";
 
 const cleanups: Array<() => void> = [];
 
@@ -144,4 +144,57 @@ describe("moveable", () => {
             }).toBe(true);
         });
     }
+});
+
+describe("makeMoveable", () => {
+    it("drags, resizes and rotates with the combined ables", async () => {
+        const el = target();
+        const DragResizeRotate = makeMoveable([Draggable, Resizable, Rotatable]);
+        const made = new DragResizeRotate(document.body, { target: el, draggable: true, resizable: true, rotatable: true });
+        const events: string[] = [];
+
+        cleanups.push(() => made.destroy());
+        for (const name of ["drag", "resize", "rotate", "render"]) {
+            made.on(name, () => events.push(name));
+        }
+        const box = made.getControlBoxElement();
+
+        await expect.poll(() => box.querySelectorAll(".moveable-line").length).toBeGreaterThan(0);
+        drag(el, [50, 30]);
+        drag(box.querySelector<HTMLElement>(".moveable-se")!, [20, 10]);
+        drag(box.querySelector<HTMLElement>(".moveable-rotation-control")!, [60, 60]);
+
+        expect(new Set(events)).toEqual(new Set(["drag", "resize", "rotate", "render"]));
+    });
+
+    it("keeps the option accessors that a subclass defines, and shares the ables of its class", () => {
+        class CustomMoveable extends Moveable {
+            get className() {
+                return "custom";
+            }
+            set className(_: string) {}
+        }
+        const moveable = new CustomMoveable(document.body, { target: target() });
+
+        cleanups.push(() => moveable.destroy());
+
+        expect(moveable.className).toBe("custom");
+        expect(CustomMoveable.getAbleInfo()).toBe(Moveable.getAbleInfo());
+    });
+
+    it("has the options of the combined ables as properties, and not the others", async () => {
+        const Draggables = makeMoveable([Draggable]);
+        const made = new Draggables(document.body, { target: target(), draggable: true, scalable: true });
+
+        cleanups.push(() => made.destroy());
+        made.draggable = false;
+
+        // Vanilla moveable applies option changes asynchronously (croact setState)
+        await expect.poll(() => made.draggable).toBe(false);
+        expect(Object.getOwnPropertyDescriptor(Draggables.prototype, "draggable")?.set).toBeTypeOf("function");
+        expect(Object.getOwnPropertyDescriptor(Draggables.prototype, "scalable")).toBeUndefined();
+        expect(made.getRect().offsetWidth).toBe(200);
+        // scalable is not combined: it renders no controls
+        expect(made.getControlBoxElement().querySelectorAll(".moveable-control")).toHaveLength(0);
+    });
 });
