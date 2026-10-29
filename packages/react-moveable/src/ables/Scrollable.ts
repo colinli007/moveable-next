@@ -29,7 +29,7 @@ export default {
         "scroll",
         "scrollGroup",
     ] as const,
-    dragRelation: "strong",
+    dragRelation: "strong" as const,
     dragStart(moveable: MoveableManagerInterface<ScrollableProps, Record<string, any>>, e: any) {
         const props = moveable.props;
         const {

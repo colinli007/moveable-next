@@ -507,6 +507,10 @@ export interface MoveableInitalOptions extends ExcludeKeys<MoveableDefaultOption
 export interface MoveableDefaultProps extends MoveableInitalOptions, MoveableDefaultEvents {
 
 }
+/**
+ * Props of the ables every Moveable has, including one made by `makeMoveable`.
+ */
+export type DefaultAbleProps = GroupableProps & IndividualGroupableProps & BeforeRenderableProps & RenderableProps;
 export type MoveableRefTargetType = MoveableRefType | ArrayFormat<MoveableRefTargetType>;
 
 export type MoveableRefTargetsResultType

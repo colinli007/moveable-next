@@ -1,8 +1,8 @@
 import * as React from "react";
 import {
-    Able, MoveableInterface, GroupableProps, MoveableDefaultProps,
-    IndividualGroupableProps, MoveableManagerInterface, MoveableRefTargetsResultType,
-    MoveableTargetGroupsType, BeforeRenderableProps, RenderableProps, MoveableManagerState,
+    Able, MoveableInterface, MoveableDefaultProps, DefaultAbleProps,
+    MoveableManagerInterface, MoveableRefTargetsResultType,
+    MoveableTargetGroupsType, MoveableManagerState,
 } from "./types";
 import MoveableManager from "./MoveableManager";
 import MoveableGroup from "./MoveableGroup";
@@ -15,6 +15,8 @@ import DragArea from "./ables/DragArea";
 import { styled } from "react-css-styled";
 import { getRefTargets } from "./utils";
 import IndividualGroupable from "./ables/IndividualGroupable";
+import BeforeRenderable from "./ables/BeforeRenderable";
+import Renderable from "./ables/Renderable";
 import MoveableIndividualGroup from "./MoveableIndividualGroup";
 import ChildrenDiffer from "@egjs/children-differ";
 
@@ -89,10 +91,8 @@ function compareRefTargets(
     });
 }
 
-type DefaultAbles = GroupableProps & IndividualGroupableProps & BeforeRenderableProps & RenderableProps;
-
 export class InitialMoveable<T = {}>
-    extends React.PureComponent<MoveableDefaultProps & DefaultAbles & T> {
+    extends React.PureComponent<MoveableDefaultProps & DefaultAbleProps & T> {
     public static defaultAbles: readonly Able<any>[] = [];
     public static customStyledMap: Record<string, any> = {};
     public static defaultStyled: any = null;
@@ -114,6 +114,14 @@ export class InitialMoveable<T = {}>
     }
     public static getTotalAbles(): Able[] {
         return [Default, Groupable, IndividualGroupable, DragArea, ...this.defaultAbles];
+    }
+    /**
+     * Every able in effect for this Moveable, once each: {@link InitialMoveable.getTotalAbles} and
+     * BeforeRenderable and Renderable, which are triggered for every Moveable. Their props and
+     * events are the props and events this Moveable supports.
+     */
+    public static getAllAbles(): Able[] {
+        return [...new Set([BeforeRenderable, ...this.getTotalAbles(), Renderable])];
     }
     @withMethods(MOVEABLE_METHODS)
     public moveable!: MoveableManager | MoveableGroup | MoveableIndividualGroup;
@@ -329,7 +337,7 @@ export class InitialMoveable<T = {}>
     }
 }
 export interface InitialMoveable<T = {}>
-    extends React.PureComponent<MoveableDefaultProps & DefaultAbles & T>,
+    extends React.PureComponent<MoveableDefaultProps & DefaultAbleProps & T>,
     MoveableInterface {
     setState(state: any, callback?: () => any): any;
     forceUpdate(callback?: () => any): any;

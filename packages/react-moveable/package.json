@@ -28,7 +28,8 @@
         "storybook": "storybook dev -p 6006",
         "test": "vitest run",
         "test:type": "tsc -p tsconfig.test.json",
-        "build": "pnpm run test:type && tsdown && pnpm run declaration",
+        "test:tree-shaking": "node ../../config/check-tree-shaking.mjs",
+        "build": "pnpm run test:type && tsdown && pnpm run declaration && pnpm run test:tree-shaking",
         "build:storybook": "storybook build -o ../../demo/storybook",
         "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
         "typecheck:stories": "vue-tsc -p stories"

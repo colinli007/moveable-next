@@ -139,6 +139,7 @@ export function renderEdgeLines(
     }).filter(Boolean);
 }
 
+/*#__NO_SIDE_EFFECTS__*/
 export function getRenderDirections(ableName: string) {
     return (
         moveable: MoveableManagerInterface<Partial<RenderDirections>>,
